@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ModernServer.Helpers;
+using CommonLib.Helpers;
 using System.IO;
 using System.Reflection;
 
@@ -33,7 +33,8 @@ namespace ModernServer
         static void Main(string[] args)
         {
             InitializeLogger();
-            
+            Log(string.Format("Started server v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
+
         }
     }
 }

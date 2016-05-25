@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Database.Store" Alias="Self" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.1" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DatabaseStoreContainer">
+    <EntitySet Name="InstrumentsSet" EntityType="Database.Store.InstrumentsSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ItemsSet" EntityType="Database.Store.ItemsSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StockDataSet" EntityType="Database.Store.StockDataSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="InstrumentsItems" Association="Database.Store.InstrumentsItems">
+      <End Role="Instruments" EntitySet="InstrumentsSet" />
+      <End Role="Items" EntitySet="ItemsSet" />
+    </AssociationSet>
+    <AssociationSet Name="ItemsStockData" Association="Database.Store.ItemsStockData">
+      <End Role="Items" EntitySet="ItemsSet" />
+      <End Role="StockData" EntitySet="StockDataSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="InstrumentsSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ItemsSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ticker" Type="longtext" Nullable="false" />
+    <Property Name="InstrumentCode" Type="longtext" Nullable="false" />
+    <Property Name="MarketCode" Type="longtext" Nullable="false" />
+    <Property Name="DateFrom" Type="datetime" Nullable="false" />
+    <Property Name="DateTo" Type="datetime" Nullable="false" />
+    <Property Name="InstrumentsId" Type="int" Nullable="false" />
+    <Property Name="Period" Type="utinyint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="StockDataSet">
+    <Key>
+      <PropertyRef Name="DateTimeStamp" />
+    </Key>
+    <Property Name="DateTimeStamp" Type="datetime" Nullable="false" />
+    <Property Name="Open" Type="float" Nullable="false" />
+    <Property Name="High" Type="float" Nullable="false" />
+    <Property Name="Low" Type="float" Nullable="false" />
+    <Property Name="Close" Type="float" Nullable="false" />
+    <Property Name="Volume" Type="float" Nullable="false" />
+    <Property Name="ItemsId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="InstrumentsItems">
+    <End Role="Instruments" Type="Database.Store.InstrumentsSet" Multiplicity="1" />
+    <End Role="Items" Type="Database.Store.ItemsSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Instruments">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="InstrumentsId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ItemsStockData">
+    <End Role="Items" Type="Database.Store.ItemsSet" Multiplicity="1" />
+    <End Role="StockData" Type="Database.Store.StockDataSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="StockData">
+        <PropertyRef Name="ItemsId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Database" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="DatabaseContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="InstrumentsSet" EntityType="Database.Instruments" />
+          <EntitySet Name="ItemsSet" EntityType="Database.Items" />
+          <EntitySet Name="StockDataSet" EntityType="Database.StockData" />
+          <AssociationSet Name="InstrumentsItems" Association="Database.InstrumentsItems">
+            <End Role="Instruments" EntitySet="InstrumentsSet" />
+            <End Role="Items" EntitySet="ItemsSet" />
+          </AssociationSet>
+          <AssociationSet Name="ItemsStockData" Association="Database.ItemsStockData">
+            <End Role="Items" EntitySet="ItemsSet" />
+            <End Role="StockData" EntitySet="StockDataSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Instruments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" Nullable="false" />
+          <NavigationProperty Name="Items" Relationship="Database.InstrumentsItems" FromRole="Instruments" ToRole="Items" />
+        </EntityType>
+        <EntityType Name="Items">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Ticker" Nullable="false" />
+          <Property Type="String" Name="InstrumentCode" Nullable="false" />
+          <Property Type="String" Name="MarketCode" Nullable="false" />
+          <Property Type="DateTime" Name="DateFrom" Nullable="false" />
+          <Property Type="DateTime" Name="DateTo" Nullable="false" />
+          <Property Type="Int32" Name="InstrumentsId" Nullable="false" />
+          <NavigationProperty Name="Instruments" Relationship="Database.InstrumentsItems" FromRole="Items" ToRole="Instruments" />
+          <NavigationProperty Name="StockData" Relationship="Database.ItemsStockData" FromRole="Items" ToRole="StockData" />
+          <Property Type="Byte" Name="Period" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StockData">
+          <Key>
+            <PropertyRef Name="DateTimeStamp" />
+          </Key>
+          <Property Type="DateTime" Name="DateTimeStamp" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="Single" Name="Open" Nullable="false" />
+          <Property Type="Single" Name="High" Nullable="false" />
+          <Property Type="Single" Name="Low" Nullable="false" />
+          <Property Type="Single" Name="Close" Nullable="false" />
+          <Property Type="Single" Name="Volume" Nullable="false" />
+          <Property Type="Int32" Name="ItemsId" Nullable="false" />
+          <NavigationProperty Name="Items" Relationship="Database.ItemsStockData" FromRole="StockData" ToRole="Items" />
+        </EntityType>
+        <Association Name="InstrumentsItems">
+          <End Type="Database.Instruments" Role="Instruments" Multiplicity="1" />
+          <End Type="Database.Items" Role="Items" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Instruments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Items">
+              <PropertyRef Name="InstrumentsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ItemsStockData">
+          <End Type="Database.Items" Role="Items" Multiplicity="1" />
+          <End Type="Database.StockData" Role="StockData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Items">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockData">
+              <PropertyRef Name="ItemsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DatabaseStoreContainer" CdmEntityContainer="DatabaseContainer">
+    <EntitySetMapping Name="InstrumentsSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Database.Instruments)">
+        <MappingFragment StoreEntitySet="InstrumentsSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ItemsSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Database.Items)">
+        <MappingFragment StoreEntitySet="ItemsSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Ticker" ColumnName="Ticker" />
+          <ScalarProperty Name="InstrumentCode" ColumnName="InstrumentCode" />
+          <ScalarProperty Name="MarketCode" ColumnName="MarketCode" />
+          <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+          <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+          <ScalarProperty Name="InstrumentsId" ColumnName="InstrumentsId" />
+          <ScalarProperty Name="Period" ColumnName="Period" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockDataSet">
+      <EntityTypeMapping TypeName="IsTypeOf(Database.StockData)">
+        <MappingFragment StoreEntitySet="StockDataSet">
+          <ScalarProperty Name="DateTimeStamp" ColumnName="DateTimeStamp" />
+          <ScalarProperty Name="Open" ColumnName="Open" />
+          <ScalarProperty Name="High" ColumnName="High" />
+          <ScalarProperty Name="Low" ColumnName="Low" />
+          <ScalarProperty Name="Close" ColumnName="Close" />
+          <ScalarProperty Name="Volume" ColumnName="Volume" />
+          <ScalarProperty Name="ItemsId" ColumnName="ItemsId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToMySQL.tt" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
