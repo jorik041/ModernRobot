@@ -7,7 +7,7 @@ using CommonLib.Helpers;
 using System.IO;
 using System.Reflection;
 using DBAccess;
-using DBDriver.Interfaces;
+using DBAccess.Database;
 
 namespace ModernServer
 {
@@ -34,24 +34,11 @@ namespace ModernServer
         }
         #endregion
 
-        private static IDBDriver _dbDriver;
-
         static void Main(string[] args)
         {
             InitializeLogger();
             Log(string.Format("Started server v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
-            _dbDriver = new DBDriver.DBDriver();
-            Log(" Started database driver.");
-            var canContinue = _dbDriver.CheckDBIntegrity();
-            Log(string.Format(" Checked DB integrity: {0}", canContinue ? "OK" : "Failed"));
-            if (!canContinue)
-                return;
-        }
-
-        ~Server()
-        {
-            ((IDisposable)_dbDriver).Dispose();
-            Log(" Stopped DB Driver.");
+            
         }
     }
 }

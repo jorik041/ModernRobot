@@ -71,9 +71,6 @@
     <Compile Include="Database\StockData.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="DBDriver.cs" />
-    <Compile Include="Entities\CandleType.cs" />
-    <Compile Include="Interfaces\IDBDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

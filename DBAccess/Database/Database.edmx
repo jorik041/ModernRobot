@@ -109,8 +109,8 @@
           <Property Type="String" Name="MarketCode" Nullable="false" />
           <Property Type="DateTime" Name="DateFrom" Nullable="false" />
           <Property Type="DateTime" Name="DateTo" Nullable="false" />
-          <Property Type="Int32" Name="InstrumentsId" Nullable="false" />
-          <NavigationProperty Name="Instruments" Relationship="Database.InstrumentsItems" FromRole="Items" ToRole="Instruments" />
+          <Property Type="Int32" Name="InstrumentId" Nullable="false" />
+          <NavigationProperty Name="Instrument" Relationship="Database.InstrumentsItems" FromRole="Items" ToRole="Instruments" />
           <NavigationProperty Name="StockData" Relationship="Database.ItemsStockData" FromRole="Items" ToRole="StockData" />
           <Property Type="Byte" Name="Period" Nullable="false" />
         </EntityType>
@@ -124,8 +124,8 @@
           <Property Type="Single" Name="Low" Nullable="false" />
           <Property Type="Single" Name="Close" Nullable="false" />
           <Property Type="Single" Name="Volume" Nullable="false" />
-          <Property Type="Int32" Name="ItemsId" Nullable="false" />
-          <NavigationProperty Name="Items" Relationship="Database.ItemsStockData" FromRole="StockData" ToRole="Items" />
+          <Property Type="Int32" Name="ItemId" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="Database.ItemsStockData" FromRole="StockData" ToRole="Items" />
         </EntityType>
         <Association Name="InstrumentsItems">
           <End Type="Database.Instruments" Role="Instruments" Multiplicity="1" />
@@ -135,7 +135,7 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Items">
-              <PropertyRef Name="InstrumentsId" />
+              <PropertyRef Name="InstrumentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -147,7 +147,7 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="StockData">
-              <PropertyRef Name="ItemsId" />
+              <PropertyRef Name="ItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -174,7 +174,7 @@
           <ScalarProperty Name="MarketCode" ColumnName="MarketCode" />
           <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
           <ScalarProperty Name="DateTo" ColumnName="DateTo" />
-          <ScalarProperty Name="InstrumentsId" ColumnName="InstrumentsId" />
+          <ScalarProperty Name="InstrumentId" ColumnName="InstrumentsId" />
           <ScalarProperty Name="Period" ColumnName="Period" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -188,7 +188,7 @@
           <ScalarProperty Name="Low" ColumnName="Low" />
           <ScalarProperty Name="Close" ColumnName="Close" />
           <ScalarProperty Name="Volume" ColumnName="Volume" />
-          <ScalarProperty Name="ItemsId" ColumnName="ItemsId" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemsId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

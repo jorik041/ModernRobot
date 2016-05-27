@@ -20,8 +20,8 @@ namespace DBAccess.Database
         public float Low { get; set; }
         public float Close { get; set; }
         public float Volume { get; set; }
-        public int ItemsId { get; set; }
+        public int ItemId { get; set; }
     
-        public virtual Items Items { get; set; }
+        public virtual Items Item { get; set; }
     }
 }

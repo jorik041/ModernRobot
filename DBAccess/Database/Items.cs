@@ -25,10 +25,10 @@ namespace DBAccess.Database
         public string MarketCode { get; set; }
         public System.DateTime DateFrom { get; set; }
         public System.DateTime DateTo { get; set; }
-        public int InstrumentsId { get; set; }
+        public int InstrumentId { get; set; }
         public byte Period { get; set; }
     
-        public virtual Instruments Instruments { get; set; }
+        public virtual Instruments Instrument { get; set; }
         public virtual ICollection<StockData> StockData { get; set; }
     }
 }
