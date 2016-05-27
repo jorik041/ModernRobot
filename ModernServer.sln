@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModernServer", "ModernServer\ModernServer.csproj", "{ED040C2A-BF81-4149-A7F8-E386BDB16A6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "CommonLib\CommonLib.csproj", "{44289A73-77FE-4B2A-B15E-E38FA29C533F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBAccess", "DBAccess\DBAccess.csproj", "{7FF122EA-31B0-400C-AD44-B16540511B57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBDriver", "DBAccess\DBDriver.csproj", "{7FF122EA-31B0-400C-AD44-B16540511B57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
