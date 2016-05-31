@@ -34,11 +34,18 @@ namespace ModernServer
         }
         #endregion
 
+        private static DBActualizer _dbActualizer;
+
         static void Main(string[] args)
         {
             InitializeLogger();
             Log(string.Format("Started server v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
-            
+            _dbActualizer = new DBActualizer(Log);
+
+            //_dbActualizer.ParseItemsStrings("SI", File.ReadAllLines(@"D:\Dropbox\MyOwn\RoboTrader\RoboTrader\RoboCalc\bin\Debug\Derivatives\SI.dat"), "dd.MM.yyyy");
+
+            Console.ReadLine();
+            _dbActualizer.Dispose();
         }
     }
 }

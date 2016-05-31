@@ -14,13 +14,14 @@ namespace DBAccess.Database
     
     public partial class StockData
     {
-        public System.DateTime DateTimeStamp { get; set; }
+        public int Id { get; set; }
         public float Open { get; set; }
         public float High { get; set; }
         public float Low { get; set; }
         public float Close { get; set; }
         public float Volume { get; set; }
         public int ItemId { get; set; }
+        public System.DateTime DateTimeStamp { get; set; }
     
         public virtual Items Item { get; set; }
     }

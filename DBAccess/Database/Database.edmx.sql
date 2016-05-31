@@ -1,113 +1,120 @@
 
-
-
-
--- -----------------------------------------------------------
--- Entity Designer DDL Script for MySQL Server 4.1 and higher
--- -----------------------------------------------------------
--- Date Created: 05/25/2016 11:49:12
+-- --------------------------------------------------
+-- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
+-- --------------------------------------------------
+-- Date Created: 05/31/2016 14:09:16
 -- Generated from EDMX file: D:\Dropbox\MyOwn\RoboTrader\ModernRobot\ModernServer\DBAccess\Database\Database.edmx
--- Target version: 3.0.0.0
 -- --------------------------------------------------
 
-DROP DATABASE IF EXISTS `stockinstruments`;
-CREATE DATABASE `stockinstruments`;
-USE `stockinstruments`;
+SET QUOTED_IDENTIFIER OFF;
+GO
+USE [stockinstruments];
+GO
+IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
+GO
 
 -- --------------------------------------------------
 -- Dropping existing FOREIGN KEY constraints
--- NOTE: if the constraint does not exist, an ignorable error will be reported.
 -- --------------------------------------------------
 
---    ALTER TABLE `ItemsSet` DROP CONSTRAINT `FK_InstrumentsItems`;
---    ALTER TABLE `StockDataSet` DROP CONSTRAINT `FK_ItemsStockData`;
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
-SET foreign_key_checks = 0;
-    DROP TABLE IF EXISTS `InstrumentsSet`;
-    DROP TABLE IF EXISTS `ItemsSet`;
-    DROP TABLE IF EXISTS `StockDataSet`;
-SET foreign_key_checks = 1;
+
 
 -- --------------------------------------------------
 -- Creating all tables
 -- --------------------------------------------------
 
-CREATE TABLE `InstrumentsSet`(
-	`Id` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`Name` longtext NOT NULL);
+-- Creating table 'InstrumentsSet'
+CREATE TABLE [dbo].[InstrumentsSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Name] nvarchar(max)  NOT NULL
+);
+GO
 
-ALTER TABLE `InstrumentsSet` ADD PRIMARY KEY (Id);
+-- Creating table 'ItemsSet'
+CREATE TABLE [dbo].[ItemsSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Ticker] nvarchar(max)  NOT NULL,
+    [InstrumentCode] nvarchar(max)  NOT NULL,
+    [MarketCode] nvarchar(max)  NOT NULL,
+    [DateFrom] datetime  NOT NULL,
+    [DateTo] datetime  NOT NULL,
+    [InstrumentId] int  NOT NULL,
+    [Period] tinyint  NOT NULL
+);
+GO
 
+-- Creating table 'StockDataSet'
+CREATE TABLE [dbo].[StockDataSet] (
+    [Id] int  NOT NULL,
+    [Open] real  NOT NULL,
+    [High] real  NOT NULL,
+    [Low] real  NOT NULL,
+    [Close] real  NOT NULL,
+    [Volume] real  NOT NULL,
+    [ItemId] int  NOT NULL,
+    [DateTimeStamp] datetime  NOT NULL
+);
+GO
 
+-- --------------------------------------------------
+-- Creating all PRIMARY KEY constraints
+-- --------------------------------------------------
 
+-- Creating primary key on [Id] in table 'InstrumentsSet'
+ALTER TABLE [dbo].[InstrumentsSet]
+ADD CONSTRAINT [PK_InstrumentsSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
 
-CREATE TABLE `ItemsSet`(
-	`Id` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`Ticker` longtext NOT NULL, 
-	`InstrumentCode` longtext NOT NULL, 
-	`MarketCode` longtext NOT NULL, 
-	`DateFrom` datetime NOT NULL, 
-	`DateTo` datetime NOT NULL, 
-	`InstrumentsId` int NOT NULL, 
-	`Period` TINYINT UNSIGNED NOT NULL);
+-- Creating primary key on [Id] in table 'ItemsSet'
+ALTER TABLE [dbo].[ItemsSet]
+ADD CONSTRAINT [PK_ItemsSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
 
-ALTER TABLE `ItemsSet` ADD PRIMARY KEY (Id);
-
-
-
-
-CREATE TABLE `StockDataSet`(
-	`DateTimeStamp` datetime NOT NULL, 
-	`Open` float NOT NULL, 
-	`High` float NOT NULL, 
-	`Low` float NOT NULL, 
-	`Close` float NOT NULL, 
-	`Volume` float NOT NULL, 
-	`ItemsId` int NOT NULL);
-
-ALTER TABLE `StockDataSet` ADD PRIMARY KEY (DateTimeStamp);
-
-
-
-
-
+-- Creating primary key on [Id] in table 'StockDataSet'
+ALTER TABLE [dbo].[StockDataSet]
+ADD CONSTRAINT [PK_StockDataSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
 
 -- --------------------------------------------------
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on `InstrumentsId` in table 'ItemsSet'
-
-ALTER TABLE `ItemsSet`
-ADD CONSTRAINT `FK_InstrumentsItems`
-    FOREIGN KEY (`InstrumentsId`)
-    REFERENCES `InstrumentsSet`
-        (`Id`)
+-- Creating foreign key on [InstrumentId] in table 'ItemsSet'
+ALTER TABLE [dbo].[ItemsSet]
+ADD CONSTRAINT [FK_InstrumentsItems]
+    FOREIGN KEY ([InstrumentId])
+    REFERENCES [dbo].[InstrumentsSet]
+        ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_InstrumentsItems'
+CREATE INDEX [IX_FK_InstrumentsItems]
+ON [dbo].[ItemsSet]
+    ([InstrumentId]);
+GO
 
-CREATE INDEX `IX_FK_InstrumentsItems` 
-    ON `ItemsSet`
-    (`InstrumentsId`);
-
--- Creating foreign key on `ItemsId` in table 'StockDataSet'
-
-ALTER TABLE `StockDataSet`
-ADD CONSTRAINT `FK_ItemsStockData`
-    FOREIGN KEY (`ItemsId`)
-    REFERENCES `ItemsSet`
-        (`Id`)
+-- Creating foreign key on [ItemId] in table 'StockDataSet'
+ALTER TABLE [dbo].[StockDataSet]
+ADD CONSTRAINT [FK_ItemsStockData]
+    FOREIGN KEY ([ItemId])
+    REFERENCES [dbo].[ItemsSet]
+        ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ItemsStockData'
-
-CREATE INDEX `IX_FK_ItemsStockData` 
-    ON `StockDataSet`
-    (`ItemsId`);
+CREATE INDEX [IX_FK_ItemsStockData]
+ON [dbo].[StockDataSet]
+    ([ItemId]);
+GO
 
 -- --------------------------------------------------
 -- Script has ended

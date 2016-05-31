@@ -71,20 +71,13 @@
     <Compile Include="Database\StockData.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBActualizer.cs" />
+    <Compile Include="FuturesDownloader.cs" />
+    <Compile Include="InstrumentDescription.cs" />
+    <Compile Include="Interfaces\IActualizer.cs" />
+    <Compile Include="Interfaces\IItemsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Database\Database.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Database.edmx</DependentUpon>
-      <LastGenOutput>Database.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Database\Database.edmx.sql" />
-    <Content Include="Database\Database.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Database.edmx</DependentUpon>
-      <LastGenOutput>Database.cs</LastGenOutput>
-    </Content>
+    <Compile Include="TimePeriods.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -94,15 +87,25 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Database.Designer.cs</LastGenOutput>
     </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.Config" />
     <None Include="Database\Database.edmx.diagram">
       <DependentUpon>Database.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Database\Database.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.Context.cs</LastGenOutput>
+      <DependentUpon>Database.edmx</DependentUpon>
+    </Content>
+    <Content Include="Database\Database.edmx.sql" />
+    <Content Include="Database\Database.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.cs</LastGenOutput>
+      <DependentUpon>Database.edmx</DependentUpon>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
