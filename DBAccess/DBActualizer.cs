@@ -20,7 +20,7 @@ namespace DBAccess
         /// </summary>
         /// <param name="instrumentName"></param>
         /// <param name="lines"></param>
-        public bool ParseItemsStrings(string instrumentName, string[] lines, string formatLine)
+        public bool ParseItemsStrings(string instrumentName, string[] lines, string formatLine = DATEFORMAT)
         {
             using (var context = new DatabaseContainer())
             {
@@ -69,7 +69,7 @@ namespace DBAccess
         /// <param name="instrumentName"></param>
         /// <param name="formatLine"></param>
         /// <returns></returns>
-        public string[] GetItemsStrings(string instrumentName, string formatLine)
+        public string[] GetItemsStrings(string instrumentName, string formatLine = DATEFORMAT)
         {
             var lines = new List<string>();
             using (var context = new DatabaseContainer())
@@ -89,10 +89,11 @@ namespace DBAccess
         #region Actualizer
 
         private Action<string> _log;
-        private FuturesDownloader _downloader;
         private Timer _checkTimer;
 
         private const int DBCHECKPERIOD = 3600 * 24 * 1000;
+        private const int DOWNLOADPERIOD = 24; // hrs
+        private const string DATEFORMAT = "dd.MM.yyy";
 
         private void Log(string contents)
         {
@@ -115,15 +116,50 @@ namespace DBAccess
             {
                 foreach (var ins in context.InstrumentsSet)
                 {
+                    var downloader = new FuturesDownloader();
                     foreach (var item in ins.Items)
                     {
-                        Log(string.Format(" Checking ticker {0} for instrument {1} from {2} to {3}", item.Ticker, ins.Name, item.DateFrom, item.DateTo));
+                        Log(string.Format(" Checking ticker {0} for instrument {1} from {2} to {3} for period {4}", item.Ticker, ins.Name, item.DateFrom, item.DateTo, (TimePeriods)item.Period));
                         if (!item.StockData.Any() || (item.StockData.Max(o => o.DateTimeStamp) < item.DateTo))
                         {
                             Log(string.Format(" Need actualizaion for {0}", item.Ticker));
+                            var ct = item.DateFrom;
+                            while (ct <= item.DateTo)
+                            {
+                                if (!item.StockData.Any(o => o.DateTimeStamp == ct))
+                                {
+                                    try
+                                    {
+                                        var data = downloader.LoadFinamData(item.Ticker, item.Period, item.MarketCode, item.InstrumentCode, ct, ct.AddHours(DOWNLOADPERIOD));
+                                        foreach (var d in data)
+                                        {
+                                            Log(string.Format("Actualizing : {0}", string.Join(", ", d)));
+                                            var dtStamp = DateTime.ParseExact(d[0], FuturesDownloader.DateTemplate, CultureInfo.InvariantCulture);
+                                            if (!item.StockData.Any(o => o.DateTimeStamp == dtStamp))
+                                                item.StockData.Add(new StockData()
+                                                {
+                                                    DateTimeStamp = dtStamp,
+                                                    Open = float.Parse(d[1],CultureInfo.InvariantCulture),
+                                                    High = float.Parse(d[2], CultureInfo.InvariantCulture),
+                                                    Low = float.Parse(d[3], CultureInfo.InvariantCulture),
+                                                    Close = float.Parse(d[4], CultureInfo.InvariantCulture),
+                                                    Volume = float.Parse(d[5], CultureInfo.InvariantCulture),
+                                                    ItemId = item.Id
+                                                });
+                                        }
+                                    }
+                                    catch (InvalidOperationException ex)
+                                    {
+                                        Log("ERROR loading data.");
+                                        Log(ex.ToString());
+                                    }
+                                }
+                                ct = ct.AddHours(DOWNLOADPERIOD);
+                            }
                         }
                     }
                 }
+                context.SaveChanges();
             }
         }
 
