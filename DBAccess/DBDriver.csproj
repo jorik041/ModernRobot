@@ -73,7 +73,6 @@
     </Compile>
     <Compile Include="DBActualizer.cs" />
     <Compile Include="FuturesDownloader.cs" />
-    <Compile Include="InstrumentDescription.cs" />
     <Compile Include="Interfaces\IActualizer.cs" />
     <Compile Include="Interfaces\IItemsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,6 +9,8 @@ namespace DBAccess.Interfaces
     public interface IActualizer
     {
         void ActualizeDB();
-        void CheckDBIntegrity();
+        bool CheckDBIntegrity();
+        void Start();
+        void Stop();
     }
 }

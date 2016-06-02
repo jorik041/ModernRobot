@@ -89,7 +89,9 @@ namespace DBAccess
         #region Actualizer
 
         private Action<string> _log;
+        private Action<string> _logToScreen;
         private Timer _checkTimer;
+        private FuturesDownloader _downloader;
 
         private const int DBCHECKPERIOD = 3600 * 24 * 1000;
         private const int DOWNLOADPERIOD = 24; // hrs
@@ -99,9 +101,15 @@ namespace DBAccess
         {
             _log?.Invoke(contents);
         }
-        public DBActualizer(Action<string> logAction)
+        public DBActualizer(Action<string> logAction, Action<string> logToScreenAction)
         {
             _log = logAction;
+            _logToScreen = logToScreenAction;
+            _downloader = new FuturesDownloader();
+        }
+
+        public void Start()
+        {
             Log("Started DB actualizer.");
             _checkTimer = new Timer(o => ActualizeDB(), null, 0, DBCHECKPERIOD);
         }
@@ -114,66 +122,95 @@ namespace DBAccess
             Log("Checking DB to be actual..");
             using (var context = new DatabaseContainer())
             {
-                foreach (var ins in context.InstrumentsSet)
+                var itemIds = context.ItemsSet.Select(o => o.Id).ToList();
+                var itemDatesFrom = context.ItemsSet.Select(o => o.DateFrom).ToArray();
+                var itemDatesTo = context.ItemsSet.Select(o => o.DateTo).ToArray();
+                var itemNames = context.ItemsSet.Select(o => o.Ticker).ToArray();
+                var itemPeriods = context.ItemsSet.Select(o => o.Period).ToArray();
+                var itemMarketCodes = context.ItemsSet.Select(o => o.MarketCode).ToArray();
+                var itemInsCodes = context.ItemsSet.Select(o => o.InstrumentCode).ToArray();
+
+                foreach (var itemId in itemIds)
                 {
-                    var downloader = new FuturesDownloader();
-                    foreach (var item in ins.Items)
+                    var i = itemIds.IndexOf(itemId);
+                    _logToScreen?.Invoke(string.Format(" Actualizing item {0} from {1}", i+1, itemIds.Count()));
+                    var date = itemDatesFrom[i];
+                    var dateFrom = itemDatesFrom[i];
+                    var dateTo = itemDatesTo[i];
+                    while (date <= dateTo)
                     {
-                        Log(string.Format(" Checking ticker {0} for instrument {1} from {2} to {3} for period {4}", item.Ticker, ins.Name, item.DateFrom, item.DateTo, (TimePeriods)item.Period));
-                        if (!item.StockData.Any() || (item.StockData.Max(o => o.DateTimeStamp) < item.DateTo))
+                        var maxId = context.StockDataSet.Any() ? context.StockDataSet.Max(o => o.Id) : 0;
+                        if (date >= DateTime.Now)
+                            break;
+                        var newDate = date.AddHours(DOWNLOADPERIOD);
+                        var needsActualization = !context.StockDataSet.Where(o => o.ItemId == itemId)
+                            .Any(o => o.DateTimeStamp >= date && o.DateTimeStamp <= newDate);
+                        if (needsActualization)
                         {
-                            Log(string.Format(" Need actualizaion for {0}", item.Ticker));
-                            var ct = item.DateFrom;
-                            while (ct <= item.DateTo)
-                            {
-                                if (!item.StockData.Any(o => o.DateTimeStamp == ct))
+                            var dataToAdd = _downloader.LoadFinamData(itemNames[i], itemPeriods[i], itemMarketCodes[i], itemInsCodes[i], date, newDate)
+                                .Select(o => new StockData()
                                 {
-                                    try
-                                    {
-                                        var data = downloader.LoadFinamData(item.Ticker, item.Period, item.MarketCode, item.InstrumentCode, ct, ct.AddHours(DOWNLOADPERIOD));
-                                        foreach (var d in data)
-                                        {
-                                            Log(string.Format("Actualizing : {0}", string.Join(", ", d)));
-                                            var dtStamp = DateTime.ParseExact(d[0], FuturesDownloader.DateTemplate, CultureInfo.InvariantCulture);
-                                            if (!item.StockData.Any(o => o.DateTimeStamp == dtStamp))
-                                                item.StockData.Add(new StockData()
-                                                {
-                                                    DateTimeStamp = dtStamp,
-                                                    Open = float.Parse(d[1],CultureInfo.InvariantCulture),
-                                                    High = float.Parse(d[2], CultureInfo.InvariantCulture),
-                                                    Low = float.Parse(d[3], CultureInfo.InvariantCulture),
-                                                    Close = float.Parse(d[4], CultureInfo.InvariantCulture),
-                                                    Volume = float.Parse(d[5], CultureInfo.InvariantCulture),
-                                                    ItemId = item.Id
-                                                });
-                                        }
-                                    }
-                                    catch (InvalidOperationException ex)
-                                    {
-                                        Log("ERROR loading data.");
-                                        Log(ex.ToString());
-                                    }
+                                    DateTimeStamp = DateTime.ParseExact(o[0],FuturesDownloader.DateTemplate, CultureInfo.InvariantCulture),
+                                    Open = float.Parse(o[1], CultureInfo.InvariantCulture),
+                                    High = float.Parse(o[2], CultureInfo.InvariantCulture),
+                                    Low = float.Parse(o[3], CultureInfo.InvariantCulture),
+                                    Close = float.Parse(o[4], CultureInfo.InvariantCulture),
+                                    Volume = float.Parse(o[5], CultureInfo.InvariantCulture),
+                                    ItemId = itemId
+                                });
+                            var idc = 0;
+                            if (dataToAdd.Count() > 0)
+                            {
+                                Log(string.Format("Need actualization for item {0} from {1} to {2} for {3} data", itemNames[i], date, newDate, (TimePeriods)itemPeriods[i]));
+                                foreach (var d in dataToAdd)
+                                {
+                                    idc++;
+                                    d.Id = maxId + idc;
+                                    if (!context.StockDataSet.Any(o => o.DateTimeStamp == d.DateTimeStamp))
+                                        context.StockDataSet.Add(d);
                                 }
-                                ct = ct.AddHours(DOWNLOADPERIOD);
+                                Log("Done.");
                             }
                         }
+                        date = date.AddHours(DOWNLOADPERIOD);
+                        context.SaveChanges();
                     }
                 }
-                context.SaveChanges();
+
+                _logToScreen?.Invoke("");
+                Log("Actualization completed.");
+
+                if (!CheckDBIntegrity())
+                    Log("DB integrity check: DB corruped.");
+                else
+                    Log("DB integrity check: ok.");
             }
         }
 
         /// <summary>
         ///  Checks DB integrity
         /// </summary>
-        public void CheckDBIntegrity()
+        public bool CheckDBIntegrity()
         {
+            using (var context = new DatabaseContainer())
+            {
+                var corruped = false;
+                foreach (var sd in context.StockDataSet)
+                    if (context.StockDataSet.Any(o => o.Id!=sd.Id && o.DateTimeStamp == sd.DateTimeStamp))
+                        corruped = true;
 
+                return !corruped;
+            }
+        }
+
+        public void Stop()
+        {
+            this.Dispose();
         }
 
         public void Dispose()
         {
-            _checkTimer.Dispose();
+            _checkTimer?.Dispose();
         }
 
         #endregion
