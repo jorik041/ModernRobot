@@ -96,6 +96,7 @@ namespace DBAccess
         private const int DBCHECKPERIOD = 3600 * 24 * 1000;
         private const int DOWNLOADPERIOD = 24; // hrs
         private const string DATEFORMAT = "dd.MM.yyy";
+        private object _lockObject = new object();
 
         private void Log(string contents)
         {
@@ -111,81 +112,51 @@ namespace DBAccess
         public void Start()
         {
             Log("Started DB actualizer.");
-            _checkTimer = new Timer(o => ActualizeDB(), null, 0, DBCHECKPERIOD);
+            _checkTimer = new Timer(o => { lock (_lockObject) { ActualizeDB(); }; }, null, 0, DBCHECKPERIOD);
         }
 
-        /// <summary>
-        /// Actualizes DB
-        /// </summary>
         public void ActualizeDB()
         {
-            Log("Checking DB to be actual..");
             using (var context = new DatabaseContainer())
             {
-                var itemIds = context.ItemsSet.Select(o => o.Id).ToList();
-                var itemDatesFrom = context.ItemsSet.Select(o => o.DateFrom).ToArray();
-                var itemDatesTo = context.ItemsSet.Select(o => o.DateTo).ToArray();
-                var itemNames = context.ItemsSet.Select(o => o.Ticker).ToArray();
-                var itemPeriods = context.ItemsSet.Select(o => o.Period).ToArray();
-                var itemMarketCodes = context.ItemsSet.Select(o => o.MarketCode).ToArray();
-                var itemInsCodes = context.ItemsSet.Select(o => o.InstrumentCode).ToArray();
-
-                foreach (var itemId in itemIds)
-                {
-                    var i = itemIds.IndexOf(itemId);
-                    _logToScreen?.Invoke(string.Format(" Actualizing item {0} from {1}", i+1, itemIds.Count()));
-                    var date = itemDatesFrom[i];
-                    var dateFrom = itemDatesFrom[i];
-                    var dateTo = itemDatesTo[i];
-                    while (date <= dateTo)
+                foreach (var ins in context.InstrumentsSet.ToArray())
+                    foreach (var item in ins.Items.Where(o => context.StockDataSet.Any() ? (o.DateTo >= DateTime.Now && o.DateFrom <= DateTime.Now) : o.Id > 0).ToArray())
                     {
-                        var maxId = context.StockDataSet.Any() ? context.StockDataSet.Max(o => o.Id) : 0;
-                        if (date >= DateTime.Now)
-                            break;
-                        var newDate = date.AddHours(DOWNLOADPERIOD);
-                        var needsActualization = !context.StockDataSet.Where(o => o.ItemId == itemId)
-                            .Any(o => o.DateTimeStamp >= date && o.DateTimeStamp <= newDate);
-                        if (needsActualization)
-                        {
-                            var dataToAdd = _downloader.LoadFinamData(itemNames[i], itemPeriods[i], itemMarketCodes[i], itemInsCodes[i], date, newDate)
-                                .Select(o => new StockData()
-                                {
-                                    DateTimeStamp = DateTime.ParseExact(o[0],FuturesDownloader.DateTemplate, CultureInfo.InvariantCulture),
-                                    Open = float.Parse(o[1], CultureInfo.InvariantCulture),
-                                    High = float.Parse(o[2], CultureInfo.InvariantCulture),
-                                    Low = float.Parse(o[3], CultureInfo.InvariantCulture),
-                                    Close = float.Parse(o[4], CultureInfo.InvariantCulture),
-                                    Volume = float.Parse(o[5], CultureInfo.InvariantCulture),
-                                    ItemId = itemId
-                                });
-                            var idc = 0;
-                            if (dataToAdd.Count() > 0)
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        Log(string.Format("Getting item {0} for instrument {1} for period {2}", item.Ticker, ins.Name, (TimePeriods)item.Period));
+                        var maxId = context.StockDataSet.Count();
+                        var dataToAdd = _downloader.LoadFinamData(item.Ticker, item.Period, item.MarketCode,
+                            item.InstrumentCode, item.DateFrom, item.DateTo > DateTime.Now ? DateTime.Now : item.DateTo)
+                            .Select(o => new StockData()
                             {
-                                Log(string.Format("Need actualization for item {0} from {1} to {2} for {3} data", itemNames[i], date, newDate, (TimePeriods)itemPeriods[i]));
-                                foreach (var d in dataToAdd)
-                                {
-                                    idc++;
-                                    d.Id = maxId + idc;
-                                    if (!context.StockDataSet.Any(o => o.DateTimeStamp == d.DateTimeStamp))
-                                        context.StockDataSet.Add(d);
-                                }
-                                Log("Done.");
-                            }
+                                DateTimeStamp = DateTime.ParseExact(o[0], FuturesDownloader.DateTemplate, CultureInfo.InvariantCulture),
+                                Open = float.Parse(o[1], CultureInfo.InvariantCulture),
+                                High = float.Parse(o[2], CultureInfo.InvariantCulture),
+                                Low = float.Parse(o[3], CultureInfo.InvariantCulture),
+                                Close = float.Parse(o[4], CultureInfo.InvariantCulture),
+                                Volume = float.Parse(o[5], CultureInfo.InvariantCulture),
+                                ItemId = item.Id,
+                            }).Where(o => !context.StockDataSet.Any(d => d.DateTimeStamp == o.DateTimeStamp && d.ItemId == o.ItemId));
+
+                        Log(string.Format("Saving {0} candles total.", dataToAdd.Count()));
+                        foreach (var data in dataToAdd)
+                        {
+                            maxId++;
+                            data.Id = maxId;
+                            item.StockData.Add(data);
                         }
-                        date = date.AddHours(DOWNLOADPERIOD);
                         context.SaveChanges();
+                        Log("Done.");
                     }
-                }
-
-                _logToScreen?.Invoke("");
                 Log("Actualization completed.");
-
                 if (!CheckDBIntegrity())
-                    Log("DB integrity check: DB corruped.");
+                    Log("DB corruped.");
                 else
-                    Log("DB integrity check: ok.");
+                    Log("DB ok.");
             }
         }
+
+ 
 
         /// <summary>
         ///  Checks DB integrity

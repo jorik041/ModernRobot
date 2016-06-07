@@ -50,7 +50,6 @@ namespace ModernServer
             _dbActualizer = new DBActualizer(Log, LogToScreen);
             _dbActualizer.Start();
 
-
             Console.ReadLine();
             _dbActualizer.Stop();
         }
