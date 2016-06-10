@@ -72,8 +72,10 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="DBActualizer.cs" />
+    <Compile Include="DBDataReader.cs" />
     <Compile Include="FuturesDownloader.cs" />
     <Compile Include="Interfaces\IActualizer.cs" />
+    <Compile Include="Interfaces\IDBDataReader.cs" />
     <Compile Include="Interfaces\IItemsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimePeriods.cs" />

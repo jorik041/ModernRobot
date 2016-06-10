@@ -93,10 +93,12 @@ namespace DBAccess
         private Timer _checkTimer;
         private FuturesDownloader _downloader;
 
-        private const int DBCHECKPERIOD = 3600 * 24 * 1000;
+        private const int DBCHECKHOUR = 5;
+
         private const int DOWNLOADPERIOD = 24; // hrs
         private const string DATEFORMAT = "dd.MM.yyy";
         private object _lockObject = new object();
+        private DateTime _dbLastCheck;
 
         private void Log(string contents)
         {
@@ -112,17 +114,36 @@ namespace DBAccess
         public void Start()
         {
             Log("Started DB actualizer.");
-            _checkTimer = new Timer(o => { lock (_lockObject) { ActualizeDB(); }; }, null, 0, DBCHECKPERIOD);
+            _checkTimer = new Timer(o =>
+            {
+                lock (_lockObject)
+                {
+                    try
+                    {
+                        if (DateTime.Now.Subtract(_dbLastCheck).TotalHours > 1)
+                            if ((DateTime.Now.Hour == DBCHECKHOUR) || (_dbLastCheck == DateTime.MinValue))
+                            {
+                                _dbLastCheck = DateTime.Now;
+                                Log(string.Format("Started actualization at {0}", _dbLastCheck)); 
+                                ActualizeDB();
+                            }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log(string.Format("Error actualizing DB: {0}", ex));
+                    }
+                };
+            }, null, 0, 1000*60);
         }
 
         public void ActualizeDB()
         {
             using (var context = new DatabaseContainer())
             {
+                var startTime = DateTime.Now;
                 foreach (var ins in context.InstrumentsSet.ToArray())
-                    foreach (var item in ins.Items.Where(o => context.StockDataSet.Any() ? (o.DateTo >= DateTime.Now && o.DateFrom <= DateTime.Now) : o.Id > 0).ToArray())
+                    foreach (var item in ins.Items.Where(o => context.StockDataSet.Where(sd => sd.ItemId == o.Id).Any() ? ((o.DateTo >= DateTime.Now.AddHours(-DOWNLOADPERIOD) && o.DateFrom <= DateTime.Now)) : o.Id > 0).ToArray())
                     {
-                        context.Configuration.AutoDetectChangesEnabled = false;
                         Log(string.Format("Getting item {0} for instrument {1} for period {2}", item.Ticker, ins.Name, (TimePeriods)item.Period));
                         var maxId = context.StockDataSet.Count();
                         var dataToAdd = _downloader.LoadFinamData(item.Ticker, item.Period, item.MarketCode,
@@ -136,18 +157,22 @@ namespace DBAccess
                                 Close = float.Parse(o[4], CultureInfo.InvariantCulture),
                                 Volume = float.Parse(o[5], CultureInfo.InvariantCulture),
                                 ItemId = item.Id,
-                            }).Where(o => !context.StockDataSet.Any(d => d.DateTimeStamp == o.DateTimeStamp && d.ItemId == o.ItemId));
-
-                        Log(string.Format("Saving {0} candles total.", dataToAdd.Count()));
+                            }).Where(o => !item.StockData.Any(sd => sd.DateTimeStamp == o.DateTimeStamp));
+                        if (dataToAdd.Count() > 0)
+                            Log(string.Format("Saving {0} candles total.", dataToAdd.Count()));
+                        else
+                            Log("Item is actual.");
                         foreach (var data in dataToAdd)
                         {
                             maxId++;
                             data.Id = maxId;
                             item.StockData.Add(data);
+                            Log(string.Format("Added DateTimeStamp {0} with Id {1} for item {2}", data.DateTimeStamp, data.Id, item.Ticker));
                         }
                         context.SaveChanges();
                         Log("Done.");
                     }
+                Log(string.Format("Last actualized date: {0}", context.StockDataSet.Max(o => o.DateTimeStamp)));
                 Log("Actualization completed.");
                 if (!CheckDBIntegrity())
                     Log("DB corruped.");
