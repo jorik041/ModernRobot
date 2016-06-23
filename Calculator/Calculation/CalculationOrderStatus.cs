@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DBAccess.Interfaces
+namespace Calculator.Calculation
 {
-    public interface IActualizer
+    public enum CalculationOrderStatus
     {
-        void ActualizeDB();
-        void Start();
-        void Stop();
+        Waiting,
+        Processing,
+        Finished
     }
 }

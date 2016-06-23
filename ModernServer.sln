@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "CommonLib\Comm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBDriver", "DBAccess\DBDriver.csproj", "{7FF122EA-31B0-400C-AD44-B16540511B57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "Calculator\Calculator.csproj", "{7AAEF14F-E877-4685-A298-B71E24E0E3D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7FF122EA-31B0-400C-AD44-B16540511B57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FF122EA-31B0-400C-AD44-B16540511B57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FF122EA-31B0-400C-AD44-B16540511B57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AAEF14F-E877-4685-A298-B71E24E0E3D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AAEF14F-E877-4685-A298-B71E24E0E3D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AAEF14F-E877-4685-A298-B71E24E0E3D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AAEF14F-E877-4685-A298-B71E24E0E3D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Reflection;
 
 namespace CommonLib.Helpers
 {
     public class Logger
     {
         private string _logPath;
+
+        private const string LOGSFOLDER = "Logs";
+        private const string LOGFILENAME = "modernServer.log";
 
         private void CheckLogFile()
         {
@@ -24,9 +28,12 @@ namespace CommonLib.Helpers
             }
         }
 
-        public Logger(string logPath)
+        public Logger()
         {
-            _logPath = logPath;
+            var logFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), LOGSFOLDER);
+            if (!Directory.Exists(logFolder))
+                Directory.CreateDirectory(logFolder);
+            _logPath = Path.Combine(logFolder, LOGFILENAME);
             Log("Started.");
         }
 

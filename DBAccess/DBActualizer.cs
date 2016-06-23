@@ -7,6 +7,7 @@ using DBAccess.Database;
 using System.Globalization;
 using DBAccess.Interfaces;
 using System.Threading;
+using CommonLib.Helpers;
 
 namespace DBAccess
 {
@@ -81,16 +82,13 @@ namespace DBAccess
                 foreach (var item in ins.Items)
                     lines.Add(string.Format("{0}, {1}, {2}, {3}, {4}",item.Ticker, item.InstrumentCode, item.MarketCode, item.DateFrom.ToString(formatLine), item.DateTo.ToString(formatLine)));
             }
-            return lines.ToArray();
+            return lines.Distinct().ToArray();
         }
 
         #endregion
 
         #region Actualizer
 
-        private Action<string> _log;
-        private Action<string> _logToScreen;
-        private Timer _checkTimer;
         private FuturesDownloader _downloader;
 
         private const int DBCHECKHOUR = 5;
@@ -99,32 +97,35 @@ namespace DBAccess
         private const string DATEFORMAT = "dd.MM.yyy";
         private object _lockObject = new object();
         private DateTime _dbLastCheck;
+        private Timer _checkTimer;
+        private Logger _logger = new Logger();
 
         private void Log(string contents)
         {
-            _log?.Invoke(contents);
+            var strToLog = string.Format("DB Actualizer: {0}", contents);
+            Console.WriteLine(strToLog);
+            _logger.Log(strToLog);   
         }
-        public DBActualizer(Action<string> logAction, Action<string> logToScreenAction)
+        public DBActualizer()
         {
-            _log = logAction;
-            _logToScreen = logToScreenAction;
             _downloader = new FuturesDownloader();
         }
 
         public void Start()
         {
             Log("Started DB actualizer.");
-            _checkTimer = new Timer(o =>
+            _checkTimer = new Timer(new TimerCallback((o) =>
             {
                 lock (_lockObject)
                 {
                     try
                     {
+                        Log("Check if actualization needed.");
                         if (DateTime.Now.Subtract(_dbLastCheck).TotalHours > 1)
-                            if ((DateTime.Now.Hour == DBCHECKHOUR) || (_dbLastCheck == DateTime.MinValue))
+                            if ((DateTime.Now.Hour == DBCHECKHOUR))
                             {
                                 _dbLastCheck = DateTime.Now;
-                                Log(string.Format("Started actualization at {0}", _dbLastCheck)); 
+                                Log(string.Format("Started actualization at {0}", _dbLastCheck));
                                 ActualizeDB();
                             }
                     }
@@ -133,7 +134,7 @@ namespace DBAccess
                         Log(string.Format("Error actualizing DB: {0}", ex));
                     }
                 };
-            }, null, 0, 1000*60);
+            }), null, 0, 3600*1000);
         }
 
         public void ActualizeDB()
@@ -174,28 +175,6 @@ namespace DBAccess
                     }
                 Log(string.Format("Last actualized date: {0}", context.StockDataSet.Max(o => o.DateTimeStamp)));
                 Log("Actualization completed.");
-                if (!CheckDBIntegrity())
-                    Log("DB corruped.");
-                else
-                    Log("DB ok.");
-            }
-        }
-
- 
-
-        /// <summary>
-        ///  Checks DB integrity
-        /// </summary>
-        public bool CheckDBIntegrity()
-        {
-            using (var context = new DatabaseContainer())
-            {
-                var corruped = false;
-                foreach (var sd in context.StockDataSet)
-                    if (context.StockDataSet.Any(o => o.Id!=sd.Id && o.DateTimeStamp == sd.DateTimeStamp))
-                        corruped = true;
-
-                return !corruped;
             }
         }
 
@@ -206,7 +185,8 @@ namespace DBAccess
 
         public void Dispose()
         {
-            _checkTimer?.Dispose();
+            _checkTimer.Dispose();
+            _checkTimer = null;
         }
 
         #endregion
