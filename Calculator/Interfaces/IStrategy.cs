@@ -1,4 +1,5 @@
 ﻿using DBAccess.Database;
+using DBAccess.Entities;
 
 namespace Calculator.Strategies
 {
@@ -7,7 +8,7 @@ namespace Calculator.Strategies
         string Name { get; }
         int AnalysisDataLength { get; }
         StrategyParameter[] Parameters { get; }
-        StrategyResult Analyze(StockData[] candles, out object[] outData);
+        StrategyResult Analyze(Candle[] candles, out object[] outData);
         string[] OutDataDescription { get; }
     }
 }

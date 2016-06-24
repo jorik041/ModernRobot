@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="DBActualizer.cs" />
     <Compile Include="DBDataReader.cs" />
+    <Compile Include="Entities\Candle.cs" />
     <Compile Include="FuturesDownloader.cs" />
     <Compile Include="Interfaces\IActualizer.cs" />
     <Compile Include="Interfaces\IDBDataReader.cs" />

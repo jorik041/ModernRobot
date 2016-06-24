@@ -9,6 +9,7 @@ using Calculator.Strategies;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Collections.Specialized;
+using DBAccess.Database;
 
 namespace Calculator.Calculation
 {
@@ -27,6 +28,7 @@ namespace Calculator.Calculation
         #endregion
 
         private ObservableCollection<CalculationOrder> _orders = new ObservableCollection<CalculationOrder>();
+        private DBDataReader _dbReader = new DBDataReader();
 
         public IStrategy Strategy { get; private set; }
 
@@ -73,9 +75,11 @@ namespace Calculator.Calculation
             }
         }
 
-        public void AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
+        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
         {
-            _orders.Add(CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters));
+            var order = CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters);
+            _orders.Add(order);
+            return order.Id;
         }
 
         public void Flush()
@@ -85,14 +89,22 @@ namespace Calculator.Calculation
 
         private void GetResultsForOrder(CalculationOrder order)
         {
-            
+            try
+            {
+
+                Log(string.Format("Succesfully obtained DB data for order id {0}", order.Id));
+
+            }
+            catch (Exception ex)
+            {
+                Log(string.Format(" Error on calculation: {0}", ex.ToString()));
+            }    
         }
 
         private void CalculateSingleOrder(CalculationOrder order)
         {
             if (Strategy.Parameters.Count() != order.Parameters.Count())
                 return;
-            Log(string.Format("Calculating order with id {0}", order.Id));
             order.Status = CalculationOrderStatus.Processing;
             ThreadPool.QueueUserWorkItem((obj) => GetResultsForOrder(order));
         }
