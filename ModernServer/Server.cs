@@ -32,6 +32,12 @@ namespace ModernServer
             _dbActualizer = new DBActualizer();
             _dbActualizer.Start();
 
+            /*var pool = new Calculator.Calculation.CalculationOrdersPool(new Calculator.Strategies.FortsBasic());
+            for (int i=0; i < 100;i++)
+            {
+                pool.AddNewOrderForCalculation("SI", DateTime.Now.AddMonths(-3), DateTime.Now.AddMonths(-2), TimePeriods.Minute, new float[5]);
+            }*/
+
             Console.ReadLine();
             _dbActualizer.Stop();
         }

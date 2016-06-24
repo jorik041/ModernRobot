@@ -10,10 +10,11 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Collections.Specialized;
 using DBAccess.Database;
+using System.Diagnostics;
 
 namespace Calculator.Calculation
 {
-    public class CalculationOrdersPool : ICalculationOrdersPool
+    public class CalculationOrdersPool : ICalculationOrdersPool, IDisposable
     {
         #region Logging
 
@@ -91,8 +92,10 @@ namespace Calculator.Calculation
         {
             try
             {
-
-                Log(string.Format("Succesfully obtained DB data for order id {0}", order.Id));
+                var sw = Stopwatch.StartNew();
+                var candles = _dbReader.GetCandles(order.InstrumentName, order.Period, order.DateFrom, order.DateTo);
+                sw.Stop();
+                Log(string.Format("Succesfully obtained DB data for order id {0} [{1} ms]", order.Id, sw.ElapsedMilliseconds));
 
             }
             catch (Exception ex)
@@ -107,6 +110,11 @@ namespace Calculator.Calculation
                 return;
             order.Status = CalculationOrderStatus.Processing;
             ThreadPool.QueueUserWorkItem((obj) => GetResultsForOrder(order));
+        }
+
+        public void Dispose()
+        {
+            _dbReader.Dispose();
         }
     }
 }

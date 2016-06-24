@@ -7,7 +7,6 @@ namespace DBAccess.Interfaces
 {
     public interface IDBDataReader
     {
-        Candle[] GetCandles(string instrumentName, TimePeriods period, DateTime dateFrom, DateTime dateTo);
-        string GetTickerForCandle(DateTime dateTimeStamp);        
+        Candle[] GetCandles(string instrumentName, TimePeriods period, DateTime dateFrom, DateTime dateTo);       
     }
 }
