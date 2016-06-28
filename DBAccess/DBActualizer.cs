@@ -91,7 +91,7 @@ namespace DBAccess
 
         private FuturesDownloader _downloader;
 
-        private const int DBCHECKHOUR = 5;
+        private const int DBCHECKHOUR = 9;
 
         private const int DOWNLOADPERIOD = 24; // hrs
         private const string DATEFORMAT = "dd.MM.yyy";
@@ -103,7 +103,6 @@ namespace DBAccess
         private void Log(string contents)
         {
             var strToLog = string.Format("DB Actualizer: {0}", contents);
-            Console.WriteLine(strToLog);
             _logger.Log(strToLog);   
         }
         public DBActualizer()

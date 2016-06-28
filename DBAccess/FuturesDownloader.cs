@@ -32,12 +32,6 @@ namespace DBAccess
             var splits = new string[] {"\r\n"};
             var strings = data.Split(splits, StringSplitOptions.None);
 
-            //var logPath = Path.Combine(_coreDirectory,"download.log");
-            //File.AppendAllLines(logPath, new string[] { "", " ----"+DateTime.Now+"----------- ", " Loading " + ticker + " from " + dateFrom + " to " + dateTo});
-            //File.AppendAllLines(logPath, strings);
-            // in <- <DATE>,<TIME>,<OPEN>,<HIGH>,<LOW>,<CLOSE>,<VOL>
-            // out -> Date, Open, High, Low, Close, Volume, Adj Close
-            //File.AppendAllLines(logPath, new string[] { "Date, Open, High, Low, Close, Volume, Adj Close" });
             var result = new List<string[]>();
             for (int i = 1; i < strings.Count()-1; i++)
             {

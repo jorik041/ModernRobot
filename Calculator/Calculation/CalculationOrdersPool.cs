@@ -22,7 +22,6 @@ namespace Calculator.Calculation
         private void Log(string contents)
         {
             var strToLog = string.Format("Calc orders pool: {0}", contents);
-            Console.WriteLine(strToLog);
             _logger.Log(strToLog);         
         }
 
@@ -92,10 +91,7 @@ namespace Calculator.Calculation
         {
             try
             {
-                var sw = Stopwatch.StartNew();
                 var candles = _dbReader.GetCandles(order.InstrumentName, order.Period, order.DateFrom, order.DateTo);
-                sw.Stop();
-                Log(string.Format("Succesfully obtained DB data for order id {0} [{1} ms]", order.Id, sw.ElapsedMilliseconds));
 
             }
             catch (Exception ex)

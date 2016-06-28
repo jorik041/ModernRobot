@@ -8,11 +8,15 @@ using DBAccess.Interfaces;
 using DBAccess.Entities;
 using System.Data.SqlClient;
 using System.Configuration;
+using CommonLib.Helpers;
+using System.Diagnostics;
 
 namespace DBAccess
 {
     public class DBDataReader : IDBDataReader, IDisposable
     {
+        private Logger _logger = new Logger();
+
         private SqlConnection _connection;
         public DBDataReader()
         {
@@ -29,20 +33,22 @@ namespace DBAccess
 
         public Candle[] GetCandles(string instrumentName, TimePeriods period, DateTime dateFrom, DateTime dateTo)
         {
+            var sw = new Stopwatch();
+            sw.Start();
             var cmd = new StringBuilder();
             cmd.AppendLine("SELECT * FROM StockDataSet");
             cmd.AppendLine(string.Format("JOIN ItemsSet ON StockDataSet.ItemId = ItemsSet.Id AND ItemsSet.Period = {0}", (int)period));
             cmd.AppendLine(string.Format("JOIN InstrumentsSet ON InstrumentsSet.Id = ItemsSet.InstrumentId AND InstrumentsSet.Name='{0}'", instrumentName));
             cmd.AppendLine(string.Format("WHERE StockDataSet.DateTimeStamp >= CONVERT(DATETIME, '{0}-{1}-{2} {3}:{4}:{5}.000', 121)", dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, dateFrom.Second));
-            cmd.AppendLine(string.Format("AND StockDataSet.DateTimeStamp <=  CONVERT(DATETIME, '{0}-{1}-{2} {3}:{4}:{5}.000', 121) ORDER BY DateTimeStamp;", dateTo.Year, dateTo.Month, dateTo.Day, dateTo.Hour, dateTo.Minute, dateTo.Second));
+            cmd.AppendLine(string.Format("AND StockDataSet.DateTimeStamp <=  CONVERT(DATETIME, '{0}-{1}-{2} {3}:{4}:{5}.000', 121) ORDER BY DateTimeStamp ASC;", dateTo.Year, dateTo.Month, dateTo.Day, dateTo.Hour, dateTo.Minute, dateTo.Second));
 
             var query = new SqlCommand(cmd.ToString(),_connection);
-            var candles = new Stack<Candle>();
+            var candles = new List<Candle>();
             var dataReader = query.ExecuteReader();
 
             while (dataReader.Read())
             {
-                candles.Push(new Candle()
+                candles.Add(new Candle()
                 {
                     DateTimeStamp = (DateTime)dataReader["DateTimeStamp"],
                     Close = (float)dataReader["Close"],
@@ -52,6 +58,8 @@ namespace DBAccess
                 });
             }
             dataReader.Close();
+            sw.Stop();
+            _logger.Log(string.Format("Obtained data from DB for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
 
             return candles.ToArray(); 
         }

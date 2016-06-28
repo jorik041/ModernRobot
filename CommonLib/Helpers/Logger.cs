@@ -11,6 +11,7 @@ namespace CommonLib.Helpers
     public class Logger
     {
         private string _logPath;
+        private static object _lockObject = new object();
 
         private const string LOGSFOLDER = "Logs";
         private const string LOGFILENAME = "modernServer.log";
@@ -39,8 +40,9 @@ namespace CommonLib.Helpers
 
         public void Log(string info)
         {
-            lock (this)
+            lock (_lockObject)
             {
+                Console.WriteLine(info);
                 CheckLogFile();
                 using (var stream = new StreamWriter(_logPath, true))
                 {
