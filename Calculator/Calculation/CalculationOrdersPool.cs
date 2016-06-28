@@ -92,7 +92,6 @@ namespace Calculator.Calculation
             try
             {
                 var candles = _dbReader.GetCandles(order.InstrumentName, order.Period, order.DateFrom, order.DateTo);
-
             }
             catch (Exception ex)
             {

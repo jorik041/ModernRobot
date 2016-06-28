@@ -21,7 +21,7 @@ namespace CommonLib.Helpers
             var fInfo = new FileInfo(_logPath);
             if (fInfo.Exists)
             {
-                if (fInfo.Length / 1024 / 1024  >= 1)
+                if (fInfo.Length / 1024 / 1024  >= 10)
                 {
                     File.Move(_logPath, string.Format("{0}_{1}.backup.log", _logPath.Split('.').First(), DateTime.Now.Ticks));
                     File.WriteAllLines(_logPath, new List<string>() { string.Format("Log continued at {0}", DateTime.Now) });
@@ -40,9 +40,9 @@ namespace CommonLib.Helpers
 
         public void Log(string info)
         {
+            Console.WriteLine(info);
             lock (_lockObject)
             {
-                Console.WriteLine(info);
                 CheckLogFile();
                 using (var stream = new StreamWriter(_logPath, true))
                 {

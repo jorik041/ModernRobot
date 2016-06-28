@@ -16,6 +16,8 @@ namespace DBAccess
     public class DBDataReader : IDBDataReader, IDisposable
     {
         private Logger _logger = new Logger();
+        private List<DBCandlesCache> _cache = new List<DBCandlesCache>();
+        private const int maxCacheSize = 100;
 
         private SqlConnection _connection;
         public DBDataReader()
@@ -35,6 +37,14 @@ namespace DBAccess
         {
             var sw = new Stopwatch();
             sw.Start();
+
+            if (_cache.Any(o => o.InstrumentName == instrumentName && o.DateFrom == dateFrom && o.DateTo == dateTo && o.Period == period))
+            {
+                sw.Stop();
+                _logger.Log(string.Format("Obtained data from CACHE for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
+                return _cache.First(o => o.InstrumentName == instrumentName && o.DateFrom == dateFrom && o.DateTo == dateTo && o.Period == period).Candles;
+            }
+
             var cmd = new StringBuilder();
             cmd.AppendLine("SELECT * FROM StockDataSet");
             cmd.AppendLine(string.Format("JOIN ItemsSet ON StockDataSet.ItemId = ItemsSet.Id AND ItemsSet.Period = {0}", (int)period));
@@ -58,7 +68,20 @@ namespace DBAccess
                 });
             }
             dataReader.Close();
+            if (!_cache.Any(o => o.InstrumentName == instrumentName && o.DateFrom == dateFrom && o.DateTo == dateTo && o.Period == period))
+                _cache.Add(new DBCandlesCache()
+                {
+                    InstrumentName = instrumentName,
+                    DateFrom = dateFrom,
+                    DateTo = dateTo,
+                    Candles = candles.ToArray(),
+                    Period = period
+                });
+
+            if (_cache.Count > maxCacheSize)
+                _cache = _cache.Skip(maxCacheSize - 1).ToList();
             sw.Stop();
+
             _logger.Log(string.Format("Obtained data from DB for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
 
             return candles.ToArray(); 
