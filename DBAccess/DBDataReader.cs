@@ -87,5 +87,17 @@ namespace DBAccess
 
             return candles.ToArray(); 
         }
+
+        public DateTime GetMaxDateTimeStamp(string instrumentName)
+        {
+            var query = new SqlCommand(string.Format(" SELECT MAX([DateTimeStamp]) from StockDataSet JOIN ItemsSet ON StockDataSet.ItemId = ItemsSet.Id JOIN InstrumentsSet ON InstrumentsSet.Id = ItemsSet.InstrumentId AND InstrumentsSet.Name='{0}'; ", instrumentName), _connection);
+            return (DateTime)query.ExecuteScalar();
+        }
+
+        public DateTime GetMinDateTimeStamp(string instrumentName)
+        {
+            var query = new SqlCommand(string.Format(" SELECT MIN([DateTimeStamp]) from StockDataSet JOIN ItemsSet ON StockDataSet.ItemId = ItemsSet.Id JOIN InstrumentsSet ON InstrumentsSet.Id = ItemsSet.InstrumentId AND InstrumentsSet.Name='{0}'; ", instrumentName), _connection);
+            return (DateTime)query.ExecuteScalar();
+        }
     }
 }

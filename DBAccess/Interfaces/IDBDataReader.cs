@@ -7,6 +7,8 @@ namespace DBAccess.Interfaces
 {
     public interface IDBDataReader
     {
-        Candle[] GetCandles(string instrumentName, TimePeriods period, DateTime dateFrom, DateTime dateTo);       
+        Candle[] GetCandles(string instrumentName, TimePeriods period, DateTime dateFrom, DateTime dateTo);
+        DateTime GetMaxDateTimeStamp(string instrumentName);
+        DateTime GetMinDateTimeStamp(string instrumentName);      
     }
 }
