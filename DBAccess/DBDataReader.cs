@@ -17,7 +17,7 @@ namespace DBAccess
     {
         private Logger _logger = new Logger();
         private List<DBCandlesCache> _cache = new List<DBCandlesCache>();
-        private const int maxCacheSize = 100;
+        private const int maxCacheSize = 10;
 
         private SqlConnection _connection;
         public DBDataReader()
@@ -46,7 +46,7 @@ namespace DBAccess
             }
 
             var cmd = new StringBuilder();
-            cmd.AppendLine("SELECT * FROM StockDataSet");
+            cmd.AppendLine("SELECT [Open], [High], [Low], [Close], [DateTimeStamp], [Ticker] FROM StockDataSet");
             cmd.AppendLine(string.Format("JOIN ItemsSet ON StockDataSet.ItemId = ItemsSet.Id AND ItemsSet.Period = {0}", (int)period));
             cmd.AppendLine(string.Format("JOIN InstrumentsSet ON InstrumentsSet.Id = ItemsSet.InstrumentId AND InstrumentsSet.Name='{0}'", instrumentName));
             cmd.AppendLine(string.Format("WHERE StockDataSet.DateTimeStamp >= CONVERT(DATETIME, '{0}-{1}-{2} {3}:{4}:{5}.000', 121)", dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, dateFrom.Second));
@@ -64,7 +64,8 @@ namespace DBAccess
                     Close = (float)dataReader["Close"],
                     Open = (float)dataReader["Open"],
                     High = (float)dataReader["High"],
-                    Low = (float)dataReader["Low"]
+                    Low = (float)dataReader["Low"],
+                    Ticker = dataReader["Ticker"].ToString()
                 });
             }
             dataReader.Close();

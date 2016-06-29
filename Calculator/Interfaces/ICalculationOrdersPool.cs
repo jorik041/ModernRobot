@@ -12,6 +12,7 @@ namespace Calculator.Calculation
         int OrdersCount { get; }
         bool AllOrdersFinished { get; }
         Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters);
+        void CalculateSingleOrder(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters);
         void Flush();
     }
 }

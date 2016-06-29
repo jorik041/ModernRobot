@@ -13,5 +13,6 @@ namespace DBAccess.Entities
         public float Low { get; set; }
         public float Close { get; set; }
         public DateTime DateTimeStamp { get; set; }
+        public string Ticker { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace Calculator.Calculation
         private void OrdersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             foreach (var order in _orders.Where(o => o.Status == CalculationOrderStatus.Waiting))
-                CalculateSingleOrder(order);
+                CalculateSingleOrder(order, true);
         }
 
         public CalculationOrder[] FinishedOrders
@@ -99,12 +99,20 @@ namespace Calculator.Calculation
             }    
         }
 
-        private void CalculateSingleOrder(CalculationOrder order)
+        private void CalculateSingleOrder(CalculationOrder order, bool newThread)
         {
             if (Strategy.Parameters.Count() != order.Parameters.Count())
                 return;
             order.Status = CalculationOrderStatus.Processing;
-            ThreadPool.QueueUserWorkItem((obj) => GetResultsForOrder(order));
+            if (newThread)
+                ThreadPool.QueueUserWorkItem((obj) => GetResultsForOrder(order));
+            else
+                GetResultsForOrder(order);
+        }
+
+        public void CalculateSingleOrder(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
+        {
+            CalculateSingleOrder(CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters), false);
         }
 
         public void Dispose()
