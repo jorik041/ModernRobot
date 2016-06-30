@@ -17,7 +17,6 @@ namespace Calculator.Calculation
         private Type _strategyType;
         private Queue<CalculationOrder> _ordersQueue = new Queue<CalculationOrder>();
         private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
-        private Logger _logger = new Logger();
 
         public CalculationOrdersPool(Type strategyType)
         {
@@ -28,7 +27,7 @@ namespace Calculator.Calculation
         {
             get
             {
-                return _ordersQueue.Count == 0;
+                return _ordersQueue.Count == 0 && !_ordersQueue.Any();
             }
         }
 
@@ -60,23 +59,48 @@ namespace Calculator.Calculation
 
         public void ProcessOrders()
         {
-            while (_ordersQueue.Any())
+            ThreadPool.QueueUserWorkItem(obj =>
             {
-                ThreadPool.QueueUserWorkItem(o => { CalculateNextOrder(); });    
-            }
+                while (_ordersQueue.Any())
+                {
+                    var order = _ordersQueue.Dequeue();
+                    ThreadPool.QueueUserWorkItem(o => { CalculateNextOrder(order); });
+                }
+            });
         }
 
-        private void CalculateNextOrder()
+        private void CalculateNextOrder(CalculationOrder order)
         {
-            var order = _ordersQueue.Dequeue();
             order.Status = CalculationOrderStatus.Processing;
+            Logger.Log(string.Format("Calculation order {0}", order.Id));
+            var datefrom = order.DateFrom.AddMonths(-3);
+            if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
+            {
+                Logger.Log(" ERROR: incorrect data in order DATE FROM.");
+                return;
+            }
+            var candles = _reader.GetCandles(order.InstrumentName, TimePeriods.Hour, datefrom, order.DateTo);
+            var sw = new Stopwatch();
 
-            _logger.Log(string.Format("Calculation order {0}", order.Id));
+            sw.Start();
+            try
+            {
+                var tickers = candles.Select(o => o.Ticker).Distinct()
+                    .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
+                Logger.Log(string.Format("Process tickers:{0}", string.Join(", ", tickers)));
 
-
-
-            order.Status = CalculationOrderStatus.Finished;
-            _finishedOrders.Add(order);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(string.Format(" ERROR on calculation: {0}", ex));
+            }
+            finally
+            {
+                sw.Stop();
+                Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
+                order.Status = CalculationOrderStatus.Finished;
+                _finishedOrders.Add(order);
+            }
         }
     }
 }

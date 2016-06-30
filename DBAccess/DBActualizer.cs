@@ -98,12 +98,11 @@ namespace DBAccess
         private object _lockObject = new object();
         private DateTime _dbLastCheck = DateTime.MinValue;
         private Timer _checkTimer;
-        private Logger _logger = new Logger();
 
         private void Log(string contents)
         {
             var strToLog = string.Format("DB Actualizer: {0}", contents);
-            _logger.Log(strToLog);   
+            Logger.Log(strToLog);   
         }
         public DBActualizer()
         {

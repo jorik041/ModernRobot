@@ -13,16 +13,12 @@ namespace ModernServer
 {
     class Server
     {
-        #region Logger settings
-        private static Logger _logger = new Logger();
-
-        #endregion
 
         private static DBActualizer _dbActualizer;
 
         static void Main(string[] args)
         { 
-            _logger.Log(string.Format("Started server v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log(string.Format("Started server v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
             _dbActualizer = new DBActualizer();
             _dbActualizer.Start();
 

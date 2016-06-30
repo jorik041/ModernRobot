@@ -10,6 +10,20 @@ namespace CommonLib.Helpers
 {
     public class Logger
     {
+        private static Logger _instance;
+        public static bool IsEnabled = true;
+
+        static Logger()
+        {
+            _instance = new Logger();
+        }
+
+        public static void Log(string contents)
+        {
+            if (IsEnabled)
+                _instance.DoLog(contents);
+        }
+
         private string _logPath;
         private static object _lockObject = new object();
 
@@ -29,7 +43,7 @@ namespace CommonLib.Helpers
             }
         }
 
-        public Logger()
+        private Logger()
         {
             var logFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), LOGSFOLDER);
             if (!Directory.Exists(logFolder))
@@ -37,7 +51,7 @@ namespace CommonLib.Helpers
             _logPath = Path.Combine(logFolder, LOGFILENAME);
         }
 
-        public void Log(string info)
+        private void DoLog(string info)
         {
             Console.WriteLine(info);
             lock (_lockObject)
