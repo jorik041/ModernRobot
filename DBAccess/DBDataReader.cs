@@ -100,5 +100,15 @@ namespace DBAccess
             var query = new SqlCommand(string.Format(" SELECT MIN([DateTimeStamp]) from StockDataSet JOIN ItemsSet ON StockDataSet.ItemId = ItemsSet.Id JOIN InstrumentsSet ON InstrumentsSet.Id = ItemsSet.InstrumentId AND InstrumentsSet.Name='{0}'; ", instrumentName), _connection);
             return (DateTime)query.ExecuteScalar();
         }
+
+        public DateTime GetItemDateFrom(string ticker)
+        {
+            var query = new SqlCommand(string.Format(" SELECT * FROM ItemsSet WHERE ItemsSet.Ticker='{0}'; ", ticker), _connection);
+            using (var dataReader = query.ExecuteReader())
+            {
+                dataReader.Read();
+                return (DateTime)dataReader["DateFrom"];
+            }
+        }
     }
 }

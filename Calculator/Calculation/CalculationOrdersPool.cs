@@ -72,7 +72,7 @@ namespace Calculator.Calculation
         private void CalculateNextOrder(CalculationOrder order)
         {
             order.Status = CalculationOrderStatus.Processing;
-            Logger.Log(string.Format("Calculation order {0}", order.Id));
+            Logger.Log(string.Format("Calculation order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
             var datefrom = order.DateFrom.AddMonths(-3);
             if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
             {
@@ -88,19 +88,40 @@ namespace Calculator.Calculation
                 var tickers = candles.Select(o => o.Ticker).Distinct()
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
                 Logger.Log(string.Format("Process tickers:{0}", string.Join(", ", tickers)));
+                var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
 
+                foreach (var ticker in tickers)
+                {
+                    var tc = candles.Where(o => o.Ticker == ticker).OrderBy(o => o.DateTimeStamp).ToList();
+                    var itemDateFrom = _reader.GetItemDateFrom(ticker);
+                    if (order.DateFrom > itemDateFrom)
+                        itemDateFrom = order.DateFrom;
+                    var startIndex = tc.FindIndex(o => o.DateTimeStamp >= itemDateFrom );
+                    if (startIndex == -1)
+                        continue;
+                    Logger.Log(string.Format("Preload data count = {0} for ticker {1} [DateTimeStamp={2}", startIndex, ticker, tc[startIndex].DateTimeStamp));
+                    if (strategy.AnalysisDataLength > startIndex)
+                    {
+                        Logger.Log("ERROR: Preload data count < data count needed for analysis!");
+                        return;
+                    }
+                    strategy.Initialize();
+                    for (var i = startIndex; i < tc.Count; i++)
+                    {
+                        var data = tc.Take(i).Skip(i - strategy.AnalysisDataLength).ToArray();
+                        object[] outData;
+                        var result = strategy.Analyze(data, out outData);
+                    }
+                }
             }
             catch (Exception ex)
             {
                 Logger.Log(string.Format(" ERROR on calculation: {0}", ex));
             }
-            finally
-            {
-                sw.Stop();
-                Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
-                order.Status = CalculationOrderStatus.Finished;
-                _finishedOrders.Add(order);
-            }
+            sw.Stop();
+            Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
+            order.Status = CalculationOrderStatus.Finished;
+            _finishedOrders.Add(order);
         }
     }
 }

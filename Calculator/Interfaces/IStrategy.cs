@@ -6,6 +6,7 @@ namespace Calculator.Strategies
     public interface IStrategy
     {
         string Name { get; }
+        void Initialize();
         int AnalysisDataLength { get; }
         StrategyParameter[] Parameters { get; }
         StrategyResult Analyze(Candle[] candles, out object[] outData);
