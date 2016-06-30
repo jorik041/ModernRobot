@@ -26,6 +26,10 @@ namespace ModernServer
             _dbActualizer = new DBActualizer();
             _dbActualizer.Start();
 
+            var calcPool = new Calculator.Calculation.CalculationOrdersPool(typeof(Calculator.Strategies.FortsBasic));
+            calcPool.AddNewOrderForCalculation("SI", DateTime.Now.AddYears(-3), DateTime.Now, TimePeriods.Hour, new float[5]);
+            calcPool.ProcessOrders();
+
             Console.ReadLine();
             _dbActualizer.Stop();
         }

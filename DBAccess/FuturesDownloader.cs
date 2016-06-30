@@ -22,6 +22,7 @@ namespace DBAccess
             string data = "";
 
                 HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(link);
+                req.Timeout = int.MaxValue;
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 using (StreamReader stream = new StreamReader(
                      resp.GetResponseStream(), Encoding.UTF8))

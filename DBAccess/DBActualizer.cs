@@ -94,9 +94,9 @@ namespace DBAccess
         private const int DBCHECKHOUR = 9;
 
         private const int DOWNLOADPERIOD = 24; // hrs
-        private const string DATEFORMAT = "dd.MM.yyy";
+        private const string DATEFORMAT = "dd.MM.yyyy";
         private object _lockObject = new object();
-        private DateTime _dbLastCheck;
+        private DateTime _dbLastCheck = DateTime.MinValue;
         private Timer _checkTimer;
         private Logger _logger = new Logger();
 
@@ -121,7 +121,7 @@ namespace DBAccess
                     {
                         Log("Check if actualization needed.");
                         if (DateTime.Now.Subtract(_dbLastCheck).TotalHours > 1)
-                            if ((DateTime.Now.Hour == DBCHECKHOUR))
+                            if ((DateTime.Now.Hour == DBCHECKHOUR) /*||  _dbLastCheck == DateTime.MinValue*/)
                             {
                                 _dbLastCheck = DateTime.Now;
                                 Log(string.Format("Started actualization at {0}", _dbLastCheck));
@@ -147,7 +147,7 @@ namespace DBAccess
                         Log(string.Format("Getting item {0} for instrument {1} for period {2}", item.Ticker, ins.Name, (TimePeriods)item.Period));
                         var maxId = context.StockDataSet.Count();
                         var dataToAdd = _downloader.LoadFinamData(item.Ticker, item.Period, item.MarketCode,
-                            item.InstrumentCode, item.DateFrom, item.DateTo > DateTime.Now ? DateTime.Now : item.DateTo)
+                            item.InstrumentCode, item.DateFrom.AddMonths(-3), item.DateTo > DateTime.Now ? DateTime.Now : item.DateTo)
                             .Select(o => new StockData()
                             {
                                 DateTimeStamp = DateTime.ParseExact(o[0], FuturesDownloader.DateTemplate, CultureInfo.InvariantCulture),
@@ -167,7 +167,6 @@ namespace DBAccess
                             maxId++;
                             data.Id = maxId;
                             item.StockData.Add(data);
-                            Log(string.Format("Added DateTimeStamp {0} with Id {1} for item {2}", data.DateTimeStamp, data.Id, item.Ticker));
                         }
                         context.SaveChanges();
                         Log("Done.");

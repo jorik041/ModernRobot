@@ -54,21 +54,23 @@ namespace DBAccess
 
             var query = new SqlCommand(cmd.ToString(),_connection);
             var candles = new List<Candle>();
-            var dataReader = query.ExecuteReader();
-
-            while (dataReader.Read())
+            using (var dataReader = query.ExecuteReader())
             {
-                candles.Add(new Candle()
+
+                while (dataReader.Read())
                 {
-                    DateTimeStamp = (DateTime)dataReader["DateTimeStamp"],
-                    Close = (float)dataReader["Close"],
-                    Open = (float)dataReader["Open"],
-                    High = (float)dataReader["High"],
-                    Low = (float)dataReader["Low"],
-                    Ticker = dataReader["Ticker"].ToString()
-                });
+                    candles.Add(new Candle()
+                    {
+                        DateTimeStamp = (DateTime)dataReader["DateTimeStamp"],
+                        Close = (float)dataReader["Close"],
+                        Open = (float)dataReader["Open"],
+                        High = (float)dataReader["High"],
+                        Low = (float)dataReader["Low"],
+                        Ticker = dataReader["Ticker"].ToString()
+                    });
+                }
+                dataReader.Close();
             }
-            dataReader.Close();
             if (!_cache.Any(o => o.InstrumentName == instrumentName && o.DateFrom == dateFrom && o.DateTo == dateTo && o.Period == period))
                 _cache.Add(new DBCandlesCache()
                 {

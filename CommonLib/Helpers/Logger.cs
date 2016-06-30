@@ -35,7 +35,6 @@ namespace CommonLib.Helpers
             if (!Directory.Exists(logFolder))
                 Directory.CreateDirectory(logFolder);
             _logPath = Path.Combine(logFolder, LOGFILENAME);
-            Log("Started.");
         }
 
         public void Log(string info)

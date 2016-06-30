@@ -6,118 +6,77 @@ using System.Threading.Tasks;
 using DBAccess;
 using CommonLib.Helpers;
 using Calculator.Strategies;
-using System.Collections.ObjectModel;
 using System.Threading;
-using System.Collections.Specialized;
-using DBAccess.Database;
 using System.Diagnostics;
 
 namespace Calculator.Calculation
 {
     public class CalculationOrdersPool : ICalculationOrdersPool, IDisposable
     {
-        #region Logging
-
+        private DBDataReader _reader = new DBDataReader();
+        private Type _strategyType;
+        private Queue<CalculationOrder> _ordersQueue = new Queue<CalculationOrder>();
+        private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
         private Logger _logger = new Logger();
-        private void Log(string contents)
+
+        public CalculationOrdersPool(Type strategyType)
         {
-            var strToLog = string.Format("Calc orders pool: {0}", contents);
-            _logger.Log(strToLog);         
+            _strategyType = strategyType;
         }
 
-        #endregion
-
-        private ObservableCollection<CalculationOrder> _orders = new ObservableCollection<CalculationOrder>();
-        private DBDataReader _dbReader = new DBDataReader();
-
-        public IStrategy Strategy { get; private set; }
-
-        public CalculationOrdersPool(IStrategy strategy)
+        public bool AllOrdersFinished
         {
-            Strategy = strategy;
-            Log(string.Format("Opened pool for strategy {0}", strategy.Name));
-            _orders.CollectionChanged += OrdersChanged;
-        }
-
-        private void OrdersChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            foreach (var order in _orders.Where(o => o.Status == CalculationOrderStatus.Waiting))
-                CalculateSingleOrder(order, true);
+            get
+            {
+                return _ordersQueue.Count == 0;
+            }
         }
 
         public CalculationOrder[] FinishedOrders
         {
             get
             {
-                return _orders.Where(o => o.Status == CalculationOrderStatus.Finished).ToArray();
-            }
-        }
-
-        public int ProcessingOrdersCount
-        {
-            get
-            {
-                return _orders.Where(o => o.Status == CalculationOrderStatus.Processing).Count();
-            }
-        }
-        public int OrdersCount
-        {
-            get
-            {
-                return _orders.Count;
-            }
-        }
-        public bool AllOrdersFinished
-        {
-            get
-            {
-                return _orders.All(o => o.Status == CalculationOrderStatus.Finished);
+                return _finishedOrders.ToArray();
             }
         }
 
         public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
         {
-            var order = CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters);
-            _orders.Add(order);
+            var order = CalculationOrder.CreateNew("SI", dateFrom, dateTo, period, parameters);
+            _ordersQueue.Enqueue(order);
             return order.Id;
-        }
-
-        public void Flush()
-        {
-            _orders.Clear();
-        }
-
-        private void GetResultsForOrder(CalculationOrder order)
-        {
-            try
-            {
-                var candles = _dbReader.GetCandles(order.InstrumentName, order.Period, order.DateFrom, order.DateTo);
-            }
-            catch (Exception ex)
-            {
-                Log(string.Format(" Error on calculation: {0}", ex.ToString()));
-            }    
-        }
-
-        private void CalculateSingleOrder(CalculationOrder order, bool newThread)
-        {
-            if (Strategy.Parameters.Count() != order.Parameters.Count())
-                return;
-            order.Status = CalculationOrderStatus.Processing;
-            if (newThread)
-                ThreadPool.QueueUserWorkItem((obj) => GetResultsForOrder(order));
-            else
-                GetResultsForOrder(order);
-        }
-
-        public void CalculateSingleOrder(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
-        {
-            CalculateSingleOrder(CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters), false);
         }
 
         public void Dispose()
         {
-            _dbReader.Dispose();
+            _reader.Dispose();
+        }
+
+        public void Flush()
+        {
+            _ordersQueue.Clear();
+            _finishedOrders.Clear();
+        }
+
+        public void ProcessOrders()
+        {
+            while (_ordersQueue.Any())
+            {
+                ThreadPool.QueueUserWorkItem(o => { CalculateNextOrder(); });    
+            }
+        }
+
+        private void CalculateNextOrder()
+        {
+            var order = _ordersQueue.Dequeue();
+            order.Status = CalculationOrderStatus.Processing;
+
+            _logger.Log(string.Format("Calculation order {0}", order.Id));
+
+
+
+            order.Status = CalculationOrderStatus.Finished;
+            _finishedOrders.Add(order);
         }
     }
 }
