@@ -89,6 +89,7 @@ namespace Calculator.Calculation
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
                 Logger.Log(string.Format("Process tickers:{0}", string.Join(", ", tickers)));
                 var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
+                var outDatas = new List<object>();
 
                 foreach (var ticker in tickers)
                 {
@@ -111,6 +112,8 @@ namespace Calculator.Calculation
                         var data = tc.Take(i).Skip(i - strategy.AnalysisDataLength).ToArray();
                         object[] outData;
                         var result = strategy.Analyze(data, out outData);
+                        outDatas.Add(outData);
+
                     }
                 }
             }
