@@ -79,7 +79,7 @@ namespace Calculator.Calculation
                 Logger.Log(" ERROR: incorrect data in order DATE FROM.");
                 return;
             }
-            var candles = _reader.GetCandles(order.InstrumentName, TimePeriods.Hour, datefrom, order.DateTo);
+            var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
             var sw = new Stopwatch();
 
             sw.Start();
@@ -87,9 +87,8 @@ namespace Calculator.Calculation
             {
                 var tickers = candles.Select(o => o.Ticker).Distinct()
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
-                Logger.Log(string.Format("Process tickers:{0}", string.Join(", ", tickers)));
                 var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
-                var outDatas = new List<object>();
+                var outDatas = new List<object[]>();
 
                 foreach (var ticker in tickers)
                 {
@@ -100,7 +99,6 @@ namespace Calculator.Calculation
                     var startIndex = tc.FindIndex(o => o.DateTimeStamp >= itemDateFrom );
                     if (startIndex == -1)
                         continue;
-                    Logger.Log(string.Format("Preload data count = {0} for ticker {1} [DateTimeStamp={2}", startIndex, ticker, tc[startIndex].DateTimeStamp));
                     if (strategy.AnalysisDataLength > startIndex)
                     {
                         Logger.Log("ERROR: Preload data count < data count needed for analysis!");
@@ -109,7 +107,7 @@ namespace Calculator.Calculation
                     strategy.Initialize();
                     for (var i = startIndex; i < tc.Count; i++)
                     {
-                        var data = tc.Take(i).Skip(i - strategy.AnalysisDataLength).ToArray();
+                        var data = tc.GetRange(i - strategy.AnalysisDataLength, strategy.AnalysisDataLength).ToArray();
                         object[] outData;
                         var result = strategy.Analyze(data, out outData);
                         outDatas.Add(outData);
