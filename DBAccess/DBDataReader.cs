@@ -40,7 +40,7 @@ namespace DBAccess
             if (_cache.Any(o => o.InstrumentName == instrumentName && o.DateFrom == dateFrom && o.DateTo == dateTo && o.Period == period))
             {
                 sw.Stop();
-                Logger.Log(string.Format("Obtained data from CACHE for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
+                //Logger.Log(string.Format("Obtained data from CACHE for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
                 return _cache.First(o => o.InstrumentName == instrumentName && o.DateFrom == dateFrom && o.DateTo == dateTo && o.Period == period).Candles;
             }
 
@@ -83,9 +83,7 @@ namespace DBAccess
             if (_cache.Count > maxCacheSize)
                 _cache = _cache.Skip(maxCacheSize - 1).ToList();
             sw.Stop();
-
-            Logger.Log(string.Format("Obtained data from DB for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
-
+            //Logger.Log(string.Format("Obtained data from DB for {0}, period {1} from {2} to {3} [{4} ms]", instrumentName, period, dateFrom, dateTo, sw.ElapsedMilliseconds));
             return candles.ToArray(); 
         }
 

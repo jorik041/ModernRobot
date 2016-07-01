@@ -17,6 +17,7 @@ namespace Calculator.Calculation
         private Type _strategyType;
         private Queue<CalculationOrder> _ordersQueue = new Queue<CalculationOrder>();
         private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
+        private object _lock = new object();
 
         public CalculationOrdersPool(Type strategyType)
         {
@@ -35,7 +36,10 @@ namespace Calculator.Calculation
         {
             get
             {
-                return _finishedOrders.ToArray();
+                lock (_lock)
+                {
+                    return _finishedOrders.ToArray();
+                }
             }
         }
 
@@ -73,6 +77,8 @@ namespace Calculator.Calculation
         {
             order.Status = CalculationOrderStatus.Processing;
             Logger.Log(string.Format("Calculation order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
+            var sw = new Stopwatch();
+            sw.Start();
             var datefrom = order.DateFrom.AddMonths(-3);
             if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
             {
@@ -80,9 +86,6 @@ namespace Calculator.Calculation
                 return;
             }
             var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
-            var sw = new Stopwatch();
-
-            sw.Start();
             try
             {
                 var tickers = candles.Select(o => o.Ticker).Distinct()
@@ -101,7 +104,7 @@ namespace Calculator.Calculation
                         continue;
                     if (strategy.AnalysisDataLength > startIndex)
                     {
-                        Logger.Log("ERROR: Preload data count < data count needed for analysis!");
+                        Logger.Log(string.Format("ERROR: order id {0}, preload data count < data count needed for analysis!", order.Id));
                         return;
                     }
                     strategy.Initialize();
@@ -122,7 +125,10 @@ namespace Calculator.Calculation
             sw.Stop();
             Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
             order.Status = CalculationOrderStatus.Finished;
-            _finishedOrders.Add(order);
+            lock (_lock)
+            {
+                _finishedOrders.Add(order);
+            }
         }
     }
 }
