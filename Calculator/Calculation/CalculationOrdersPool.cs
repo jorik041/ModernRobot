@@ -78,7 +78,6 @@ namespace Calculator.Calculation
             order.Status = CalculationOrderStatus.Processing;
             Logger.Log(string.Format("Calculation order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
             var sw = new Stopwatch();
-            sw.Start();
             var datefrom = order.DateFrom.AddMonths(-3);
             if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
             {
@@ -86,12 +85,17 @@ namespace Calculator.Calculation
                 return;
             }
             var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
+            sw.Start();
             try
             {
                 var tickers = candles.Select(o => o.Ticker).Distinct()
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
                 var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
                 var outDatas = new List<object[]>();
+                var balances = new List<float>();
+                var lastResult = StrategyResult.Exit;
+                var lastEnterPrice = 0f;
+                var balance = 0f;
 
                 foreach (var ticker in tickers)
                 {
@@ -99,7 +103,7 @@ namespace Calculator.Calculation
                     var itemDateFrom = _reader.GetItemDateFrom(ticker);
                     if (order.DateFrom > itemDateFrom)
                         itemDateFrom = order.DateFrom;
-                    var startIndex = tc.FindIndex(o => o.DateTimeStamp >= itemDateFrom );
+                    var startIndex = tc.FindIndex(o => o.DateTimeStamp >= itemDateFrom);
                     if (startIndex == -1)
                         continue;
                     if (strategy.AnalysisDataLength > startIndex)
@@ -108,15 +112,33 @@ namespace Calculator.Calculation
                         return;
                     }
                     strategy.Initialize();
+
                     for (var i = startIndex; i < tc.Count; i++)
                     {
-                        var data = tc.GetRange(i - strategy.AnalysisDataLength, strategy.AnalysisDataLength).ToArray();
+                        var data = tc.GetRange(i - strategy.AnalysisDataLength+1, strategy.AnalysisDataLength).ToArray();
                         object[] outData;
                         var result = strategy.Analyze(data, out outData);
                         outDatas.Add(outData);
+                        if (i == tc.Count - 1)
+                            result = StrategyResult.Exit;
+                        if (lastResult != result)
+                        {
+                            if (lastResult == StrategyResult.Long)
+                            {
+                                balance = balance - (lastEnterPrice - tc[i].Close);
+                            }
+                            if (lastResult == StrategyResult.Short)
+                            {
+                                balance = balance + (lastEnterPrice - tc[i].Close);
+                            }
 
+                            lastResult = result;
+                            lastEnterPrice = tc[i].Close;
+                        }
+                        balances.Add(balance);
                     }
                 }
+                order.Result = new CalculationResult() { OutData = outDatas.ToArray(), Balances = balances.ToArray() };
             }
             catch (Exception ex)
             {
