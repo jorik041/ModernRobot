@@ -76,7 +76,7 @@ namespace Calculator.Calculation
         private void CalculateNextOrder(CalculationOrder order)
         {
             order.Status = CalculationOrderStatus.Processing;
-            Logger.Log(string.Format("Calculation order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
+            //Logger.Log(string.Format("Calculation order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
             var sw = new Stopwatch();
             var datefrom = order.DateFrom.AddMonths(-3);
             if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
@@ -91,6 +91,8 @@ namespace Calculator.Calculation
                 var tickers = candles.Select(o => o.Ticker).Distinct()
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
                 var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
+                for (var i = 0; i < order.Parameters.Count(); i++)
+                    strategy.Parameters[i].Value = order.Parameters[i];
                 var outDatas = new List<object[]>();
                 var balances = new List<float>();
                 var lastResult = StrategyResult.Exit;
@@ -134,8 +136,19 @@ namespace Calculator.Calculation
 
                             lastResult = result;
                             lastEnterPrice = tc[i].Close;
+                            balances.Add(balance);
                         }
-                        balances.Add(balance);
+                        else
+                        {
+                            if (lastResult == StrategyResult.Long)
+                            {
+                                balances.Add(balance - (lastEnterPrice - tc[i].Close));
+                            }
+                            if (lastResult == StrategyResult.Short)
+                            {
+                                balances.Add(balance + (lastEnterPrice - tc[i].Close));
+                            }
+                        }
                     }
                 }
                 order.Result = new CalculationResult() { OutData = outDatas.ToArray(), Balances = balances.ToArray() };
@@ -145,7 +158,7 @@ namespace Calculator.Calculation
                 Logger.Log(string.Format(" ERROR on calculation: {0}", ex));
             }
             sw.Stop();
-            Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
+            //Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
             order.Status = CalculationOrderStatus.Finished;
             lock (_lock)
             {

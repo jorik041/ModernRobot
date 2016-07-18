@@ -118,12 +118,11 @@ namespace DBAccess
                 {
                     try
                     {
-                        Log("Check if actualization needed.");
                         if (DateTime.Now.Subtract(_dbLastCheck).TotalHours > 1)
                             if ((DateTime.Now.Hour == DBCHECKHOUR) /*||  _dbLastCheck == DateTime.MinValue*/)
                             {
                                 _dbLastCheck = DateTime.Now;
-                                Log(string.Format("Started actualization at {0}", _dbLastCheck));
+                                Log(string.Format("Started DB actualization at {0}", _dbLastCheck));
                                 ActualizeDB();
                             }
                     }

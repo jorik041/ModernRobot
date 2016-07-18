@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using DBAccess;
 using DBAccess.Database;
+using System.ServiceModel;
 
 namespace ModernServer
 {
@@ -18,15 +19,12 @@ namespace ModernServer
 
         static void Main(string[] args)
         { 
-            Logger.Log(string.Format("Started server v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log(string.Format("Started server application v.{0}", Assembly.GetExecutingAssembly().GetName().Version));
             _dbActualizer = new DBActualizer();
             _dbActualizer.Start();
 
-            var calcPool = new Calculator.Calculation.CalculationOrdersPool(typeof(Calculator.Strategies.FortsBasic));
-            calcPool.AddNewOrderForCalculation("SI", new DateTime(2015,1,1), new DateTime(2015,2,1), TimePeriods.Hour, new float[5]);
-            calcPool.ProcessOrders();
-
             Console.ReadLine();
+
             _dbActualizer.Stop();
         }
     }
