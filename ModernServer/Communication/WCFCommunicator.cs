@@ -35,9 +35,9 @@ namespace ModernServer.Communication
             _reader.Dispose();
         }
 
-        public IStrategy[] GetAvaliableStrategies()
+        public string[] GetAvaliableStrategies()
         {
-            return _avaliableStrategies;    
+            return _avaliableStrategies.Select(o => o.Name).ToArray();    
         }
 
         public RemoteCalculationInfo[] GetRemoteCalculationsInfo()
@@ -45,8 +45,9 @@ namespace ModernServer.Communication
             return _remoteCalculators.ToArray();
         }
 
-        public RemoteCalculationInfo AddRemoteCalculation(string name, Type strategyType)
+        public RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName)
         {
+            var strategyType = _avaliableStrategies.Single(o => o.Name == strategyName).GetType();
             var rCalc = new RemoteCalculation(name, strategyType);
             _remoteCalculators.Add(rCalc);
             return rCalc;

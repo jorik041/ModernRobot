@@ -6,10 +6,8 @@
       <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" />
       <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
-      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Reflection" />
-      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/DBAccess" />
-      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Calculator.Calculation" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/DBAccess" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Calculator.Calculation" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IWCFCommunicator_GetActualizedInstruments_InputMessage">

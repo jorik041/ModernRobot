@@ -24,9 +24,7 @@
   </MetadataSources>
   <Metadata>
     <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="95b44ed0-9bb8-4191-b8ff-206f81a1eba4" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd0" />
-    <MetadataFile FileName="item3.xsd" MetadataType="Schema" ID="30649231-cd20-4e3e-ab40-887cd58ee800" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd6" />
     <MetadataFile FileName="item11.xsd" MetadataType="Schema" ID="3aa0d7e1-5c90-4909-a03c-9b738aa4f4b4" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd1" />
-    <MetadataFile FileName="item31.xsd" MetadataType="Schema" ID="f0a15794-f075-407d-b450-ecb54e3da103" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd7" />
     <MetadataFile FileName="item.disco" MetadataType="Disco" ID="caa6e6b6-4af7-4be8-b1c2-faba3afbd29b" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?disco" />
     <MetadataFile FileName="item32.xsd" MetadataType="Schema" ID="e55ad840-3e36-427f-a1c9-58d7976d0ab5" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd5" />
     <MetadataFile FileName="item33.xsd" MetadataType="Schema" ID="e1e2f258-eb05-43eb-bafd-d910ed0a5840" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd4" />

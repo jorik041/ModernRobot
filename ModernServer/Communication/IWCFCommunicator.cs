@@ -18,13 +18,13 @@ namespace ModernServer.Communication
         ActualizedInstrument[] GetActualizedInstruments();
 
         [OperationContract]
-        IStrategy[] GetAvaliableStrategies();
+        string[] GetAvaliableStrategies();
 
         [OperationContract]
         RemoteCalculationInfo[] GetRemoteCalculationsInfo();
 
         [OperationContract]
-        RemoteCalculationInfo AddRemoteCalculation(string name, Type strategyType);
+        RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName);
 
         [OperationContract]
         void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters);

@@ -10,6 +10,6 @@ namespace ModernServer.WCFEntities
     {
         public Guid Id { get; private set; }
         public string Name { get; set; }
-        public Type StrategyType { get; private set; }
+        public string StrategyName { get; private set; }
     }
 }

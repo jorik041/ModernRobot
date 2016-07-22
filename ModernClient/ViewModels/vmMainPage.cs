@@ -18,6 +18,8 @@ namespace ModernClient.ViewModels
     {
         private ObservableCollection<ActualizedInstrument> _actualizedInstruments;
         private WCFCommunicatorClient _client = new WCFCommunicatorClient();
+        private ObservableCollection<string> _avaliableStrategies;
+        private ObservableCollection<RemoteCalculationInfo> _calculators;
 
         public ObservableCollection<ActualizedInstrument> ActualizedInstruments
         {
@@ -32,6 +34,18 @@ namespace ModernClient.ViewModels
                 OnPropertyChanged("ActualizedInstruments");
             }
         }
+        public ObservableCollection<string> AvaliableStrategies
+        {
+            get
+            {
+                return _avaliableStrategies;
+            }
+            set
+            {
+                _avaliableStrategies = value;
+                OnPropertyChanged("AvaliableStrategies");
+            }
+        }
 
         public vmMainPage()
         {
@@ -40,12 +54,32 @@ namespace ModernClient.ViewModels
             {
                 ActualizedInstruments = obj.Result;
             };
+            _client.GetAvaliableStrategiesAsync();
+            _client.GetAvaliableStrategiesCompleted += (sender, obj) =>
+             {
+                 AvaliableStrategies = obj.Result;
+             };
+            _client.GetRemoteCalculationsInfoAsync();
+            _client.GetRemoteCalculationsInfoCompleted += (sender, obj) =>
+            {
+                _calculators = obj.Result;
+            };
         }
 
+        #region INotifyPropertyChanged Members
+
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+
+        public virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                var e = new PropertyChangedEventArgs(propertyName);
+                handler(this, e);
+            }
         }
+
+        #endregion INotifyPropertyChanged Members
     }
 }

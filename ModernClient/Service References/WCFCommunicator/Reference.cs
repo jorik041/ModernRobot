@@ -75,6 +75,36 @@ namespace ModernClient.WCFCommunicator {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RemoteCalculationInfo", Namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities")]
+    public partial class RemoteCalculationInfo : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string NameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="TimePeriods", Namespace="http://schemas.datacontract.org/2004/07/DBAccess")]
     public enum TimePeriods : int {
@@ -113,36 +143,6 @@ namespace ModernClient.WCFCommunicator {
         }
     }
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="RemoteCalculationInfo", Namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities")]
-    public partial class RemoteCalculationInfo : object, System.ComponentModel.INotifyPropertyChanged {
-        
-        private string NameField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
-            get {
-                return this.NameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="WCFCommunicator.IWCFCommunicator")]
     public interface IWCFCommunicator {
@@ -153,20 +153,9 @@ namespace ModernClient.WCFCommunicator {
         System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.ActualizedInstrument> EndGetActualizedInstruments(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetAvaliableStrategies", ReplyAction="http://tempuri.org/IWCFCommunicator/GetAvaliableStrategiesResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(ModernClient.WCFCommunicator.TimePeriods))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder>))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(ModernClient.WCFCommunicator.CalculationOrder))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Reflection.MemberInfo))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Type))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<object>))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<float>))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.ActualizedInstrument>))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(ModernClient.WCFCommunicator.ActualizedInstrument))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.RemoteCalculationInfo>))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(ModernClient.WCFCommunicator.RemoteCalculationInfo))]
         System.IAsyncResult BeginGetAvaliableStrategies(System.AsyncCallback callback, object asyncState);
         
-        System.Collections.ObjectModel.ObservableCollection<object> EndGetAvaliableStrategies(System.IAsyncResult result);
+        System.Collections.ObjectModel.ObservableCollection<string> EndGetAvaliableStrategies(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetRemoteCalculationsInfo", ReplyAction="http://tempuri.org/IWCFCommunicator/GetRemoteCalculationsInfoResponse")]
         System.IAsyncResult BeginGetRemoteCalculationsInfo(System.AsyncCallback callback, object asyncState);
@@ -174,7 +163,7 @@ namespace ModernClient.WCFCommunicator {
         System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.RemoteCalculationInfo> EndGetRemoteCalculationsInfo(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/AddRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/AddRemoteCalculationResponse")]
-        System.IAsyncResult BeginAddRemoteCalculation(string name, System.Type strategyType, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginAddRemoteCalculation(string name, string strategyName, System.AsyncCallback callback, object asyncState);
         
         ModernClient.WCFCommunicator.RemoteCalculationInfo EndAddRemoteCalculation(System.IAsyncResult result);
         
@@ -229,10 +218,10 @@ namespace ModernClient.WCFCommunicator {
             this.results = results;
         }
         
-        public System.Collections.ObjectModel.ObservableCollection<object> Result {
+        public System.Collections.ObjectModel.ObservableCollection<string> Result {
             get {
                 base.RaiseExceptionIfNecessary();
-                return ((System.Collections.ObjectModel.ObservableCollection<object>)(this.results[0]));
+                return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
             }
         }
     }
@@ -461,7 +450,7 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Collections.ObjectModel.ObservableCollection<object> ModernClient.WCFCommunicator.IWCFCommunicator.EndGetAvaliableStrategies(System.IAsyncResult result) {
+        System.Collections.ObjectModel.ObservableCollection<string> ModernClient.WCFCommunicator.IWCFCommunicator.EndGetAvaliableStrategies(System.IAsyncResult result) {
             return base.Channel.EndGetAvaliableStrategies(result);
         }
         
@@ -470,7 +459,7 @@ namespace ModernClient.WCFCommunicator {
         }
         
         private object[] OnEndGetAvaliableStrategies(System.IAsyncResult result) {
-            System.Collections.ObjectModel.ObservableCollection<object> retVal = ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndGetAvaliableStrategies(result);
+            System.Collections.ObjectModel.ObservableCollection<string> retVal = ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndGetAvaliableStrategies(result);
             return new object[] {
                     retVal};
         }
@@ -544,8 +533,8 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddRemoteCalculation(string name, System.Type strategyType, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddRemoteCalculation(name, strategyType, callback, asyncState);
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddRemoteCalculation(string name, string strategyName, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddRemoteCalculation(name, strategyName, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -555,8 +544,8 @@ namespace ModernClient.WCFCommunicator {
         
         private System.IAsyncResult OnBeginAddRemoteCalculation(object[] inValues, System.AsyncCallback callback, object asyncState) {
             string name = ((string)(inValues[0]));
-            System.Type strategyType = ((System.Type)(inValues[1]));
-            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddRemoteCalculation(name, strategyType, callback, asyncState);
+            string strategyName = ((string)(inValues[1]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddRemoteCalculation(name, strategyName, callback, asyncState);
         }
         
         private object[] OnEndAddRemoteCalculation(System.IAsyncResult result) {
@@ -572,11 +561,11 @@ namespace ModernClient.WCFCommunicator {
             }
         }
         
-        public void AddRemoteCalculationAsync(string name, System.Type strategyType) {
-            this.AddRemoteCalculationAsync(name, strategyType, null);
+        public void AddRemoteCalculationAsync(string name, string strategyName) {
+            this.AddRemoteCalculationAsync(name, strategyName, null);
         }
         
-        public void AddRemoteCalculationAsync(string name, System.Type strategyType, object userState) {
+        public void AddRemoteCalculationAsync(string name, string strategyName, object userState) {
             if ((this.onBeginAddRemoteCalculationDelegate == null)) {
                 this.onBeginAddRemoteCalculationDelegate = new BeginOperationDelegate(this.OnBeginAddRemoteCalculation);
             }
@@ -588,7 +577,7 @@ namespace ModernClient.WCFCommunicator {
             }
             base.InvokeAsync(this.onBeginAddRemoteCalculationDelegate, new object[] {
                         name,
-                        strategyType}, this.onEndAddRemoteCalculationDelegate, this.onAddRemoteCalculationCompletedDelegate, userState);
+                        strategyName}, this.onEndAddRemoteCalculationDelegate, this.onAddRemoteCalculationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -831,9 +820,9 @@ namespace ModernClient.WCFCommunicator {
                 return _result;
             }
             
-            public System.Collections.ObjectModel.ObservableCollection<object> EndGetAvaliableStrategies(System.IAsyncResult result) {
+            public System.Collections.ObjectModel.ObservableCollection<string> EndGetAvaliableStrategies(System.IAsyncResult result) {
                 object[] _args = new object[0];
-                System.Collections.ObjectModel.ObservableCollection<object> _result = ((System.Collections.ObjectModel.ObservableCollection<object>)(base.EndInvoke("GetAvaliableStrategies", _args, result)));
+                System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetAvaliableStrategies", _args, result)));
                 return _result;
             }
             
@@ -849,10 +838,10 @@ namespace ModernClient.WCFCommunicator {
                 return _result;
             }
             
-            public System.IAsyncResult BeginAddRemoteCalculation(string name, System.Type strategyType, System.AsyncCallback callback, object asyncState) {
+            public System.IAsyncResult BeginAddRemoteCalculation(string name, string strategyName, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[2];
                 _args[0] = name;
-                _args[1] = strategyType;
+                _args[1] = strategyName;
                 System.IAsyncResult _result = base.BeginInvoke("AddRemoteCalculation", _args, callback, asyncState);
                 return _result;
             }
