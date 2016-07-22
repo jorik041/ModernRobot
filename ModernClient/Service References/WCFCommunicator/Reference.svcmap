@@ -23,9 +23,16 @@
     <MetadataSource Address="http://localhost:777/ModernServer/" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="caa6e6b6-4af7-4be8-b1c2-faba3afbd29b" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?disco" />
-    <MetadataFile FileName="WCFCommunicator.wsdl" MetadataType="Wsdl" ID="e93785ce-5bfe-41af-8031-e70809b3b09e" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?wsdl" />
     <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="95b44ed0-9bb8-4191-b8ff-206f81a1eba4" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd0" />
+    <MetadataFile FileName="item3.xsd" MetadataType="Schema" ID="30649231-cd20-4e3e-ab40-887cd58ee800" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd6" />
+    <MetadataFile FileName="item11.xsd" MetadataType="Schema" ID="3aa0d7e1-5c90-4909-a03c-9b738aa4f4b4" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd1" />
+    <MetadataFile FileName="item31.xsd" MetadataType="Schema" ID="f0a15794-f075-407d-b450-ecb54e3da103" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd7" />
+    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="caa6e6b6-4af7-4be8-b1c2-faba3afbd29b" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?disco" />
+    <MetadataFile FileName="item32.xsd" MetadataType="Schema" ID="e55ad840-3e36-427f-a1c9-58d7976d0ab5" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd5" />
+    <MetadataFile FileName="item33.xsd" MetadataType="Schema" ID="e1e2f258-eb05-43eb-bafd-d910ed0a5840" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd4" />
+    <MetadataFile FileName="WCFCommunicator.wsdl" MetadataType="Wsdl" ID="e93785ce-5bfe-41af-8031-e70809b3b09e" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?wsdl" />
+    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="a4aa09eb-fd9a-4cfd-98e2-133d75a5d659" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd3" />
+    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="a1c85a29-5648-4e92-bca2-4c85b6880875" SourceId="1" SourceUrl="http://localhost:777/ModernServer/?xsd=xsd2" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

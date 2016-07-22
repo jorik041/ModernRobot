@@ -108,5 +108,19 @@ namespace DBAccess
                 return (DateTime)dataReader["DateFrom"];
             }
         }
+
+        public string[] GetAvaliableInstrumentNames()
+        {
+            var query = new SqlCommand(string.Format(" SELECT Name FROM InstrumentsSet;"), _connection);
+            var names = new List<string>();
+            using (var dataReader = query.ExecuteReader())
+            {
+                while (dataReader.Read())
+                {
+                    names.Add(dataReader["Name"].ToString());
+                }
+            }
+            return names.ToArray();
+        }
     }
 }

@@ -24,14 +24,6 @@ namespace Calculator.Calculation
             _strategyType = strategyType;
         }
 
-        public bool AllOrdersFinished
-        {
-            get
-            {
-                return _ordersQueue.Count == 0 && !_ordersQueue.Any();
-            }
-        }
-
         public CalculationOrder[] FinishedOrders
         {
             get

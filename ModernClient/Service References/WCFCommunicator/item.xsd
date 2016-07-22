@@ -1,13 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="Hello">
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" />
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/DBAccess" />
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Calculator.Calculation" />
+  <xs:element name="GetActualizedInstruments">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="HelloResponse">
+  <xs:element name="GetActualizedInstrumentsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" minOccurs="0" name="GetActualizedInstrumentsResult" nillable="true" type="q1:ArrayOfActualizedInstrument" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAvaliableStrategies">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAvaliableStrategiesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetAvaliableStrategiesResult" nillable="true" type="q2:ArrayOfanyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRemoteCalculationsInfo">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRemoteCalculationsInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" minOccurs="0" name="GetRemoteCalculationsInfoResult" nillable="true" type="q3:ArrayOfRemoteCalculationInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="strategyType" nillable="true" type="q4:Type" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" minOccurs="0" name="AddRemoteCalculationResult" nillable="true" type="q5:RemoteCalculationInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddOrderToRemoteCalulation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q6:guid" />
+        <xs:element minOccurs="0" name="insName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="dateFrom" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="dateTo" type="xs:dateTime" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/DBAccess" minOccurs="0" name="period" type="q7:TimePeriods" />
+        <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="parameters" nillable="true" type="q8:ArrayOffloat" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddOrderToRemoteCalulationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q9:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFinishedOrdersForRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q10:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFinishedOrdersForRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Calculator.Calculation" minOccurs="0" name="GetFinishedOrdersForRemoteCalculationResult" nillable="true" type="q11:ArrayOfCalculationOrder" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>

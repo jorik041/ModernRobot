@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfActualizedInstrument">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ActualizedInstrument" type="tns:ActualizedInstrument" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfActualizedInstrument" nillable="true" type="tns:ArrayOfActualizedInstrument" />
+  <xs:complexType name="ActualizedInstrument">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DateFrom" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="DateTo" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ActualizedInstrument" nillable="true" type="tns:ActualizedInstrument" />
+  <xs:complexType name="ArrayOfRemoteCalculationInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RemoteCalculationInfo" nillable="true" type="tns:RemoteCalculationInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRemoteCalculationInfo" nillable="true" type="tns:ArrayOfRemoteCalculationInfo" />
+  <xs:complexType name="RemoteCalculationInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RemoteCalculationInfo" nillable="true" type="tns:RemoteCalculationInfo" />
+</xs:schema>

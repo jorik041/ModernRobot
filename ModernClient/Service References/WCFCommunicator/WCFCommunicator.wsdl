@@ -3,24 +3,145 @@
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Reflection" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/DBAccess" />
+      <xsd:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Calculator.Calculation" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IWCFCommunicator_Hello_InputMessage">
-    <wsdl:part name="parameters" element="tns:Hello" />
+  <wsdl:message name="IWCFCommunicator_GetActualizedInstruments_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetActualizedInstruments" />
   </wsdl:message>
-  <wsdl:message name="IWCFCommunicator_Hello_OutputMessage">
-    <wsdl:part name="parameters" element="tns:HelloResponse" />
+  <wsdl:message name="IWCFCommunicator_GetActualizedInstruments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetActualizedInstrumentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetAvaliableStrategies_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAvaliableStrategies" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetAvaliableStrategies_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAvaliableStrategiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetRemoteCalculationsInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRemoteCalculationsInfo" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetRemoteCalculationsInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRemoteCalculationsInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_AddRemoteCalculation_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddRemoteCalculation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_AddRemoteCalculation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddRemoteCalculationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_AddOrderToRemoteCalulation_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrderToRemoteCalulation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_AddOrderToRemoteCalulation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrderToRemoteCalulationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_StartRemoteCalculation_InputMessage">
+    <wsdl:part name="parameters" element="tns:StartRemoteCalculation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_StartRemoteCalculation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StartRemoteCalculationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFinishedOrdersForRemoteCalculation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFinishedOrdersForRemoteCalculationResponse" />
   </wsdl:message>
   <wsdl:portType name="IWCFCommunicator">
-    <wsdl:operation name="Hello">
-      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/Hello" message="tns:IWCFCommunicator_Hello_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/HelloResponse" message="tns:IWCFCommunicator_Hello_OutputMessage" />
+    <wsdl:operation name="GetActualizedInstruments">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetActualizedInstruments" message="tns:IWCFCommunicator_GetActualizedInstruments_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetActualizedInstrumentsResponse" message="tns:IWCFCommunicator_GetActualizedInstruments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAvaliableStrategies">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetAvaliableStrategies" message="tns:IWCFCommunicator_GetAvaliableStrategies_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetAvaliableStrategiesResponse" message="tns:IWCFCommunicator_GetAvaliableStrategies_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRemoteCalculationsInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetRemoteCalculationsInfo" message="tns:IWCFCommunicator_GetRemoteCalculationsInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetRemoteCalculationsInfoResponse" message="tns:IWCFCommunicator_GetRemoteCalculationsInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddRemoteCalculation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/AddRemoteCalculation" message="tns:IWCFCommunicator_AddRemoteCalculation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/AddRemoteCalculationResponse" message="tns:IWCFCommunicator_AddRemoteCalculation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddOrderToRemoteCalulation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation" message="tns:IWCFCommunicator_AddOrderToRemoteCalulation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulationResponse" message="tns:IWCFCommunicator_AddOrderToRemoteCalulation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StartRemoteCalculation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/StartRemoteCalculation" message="tns:IWCFCommunicator_StartRemoteCalculation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/StartRemoteCalculationResponse" message="tns:IWCFCommunicator_StartRemoteCalculation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFinishedOrdersForRemoteCalculation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation" message="tns:IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculationResponse" message="tns:IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWCFCommunicator" type="tns:IWCFCommunicator">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="Hello">
-      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/Hello" style="document" />
+    <wsdl:operation name="GetActualizedInstruments">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetActualizedInstruments" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAvaliableStrategies">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetAvaliableStrategies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRemoteCalculationsInfo">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetRemoteCalculationsInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddRemoteCalculation">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/AddRemoteCalculation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddOrderToRemoteCalulation">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StartRemoteCalculation">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/StartRemoteCalculation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFinishedOrdersForRemoteCalculation">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

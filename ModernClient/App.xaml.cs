@@ -26,8 +26,8 @@ namespace ModernClient
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var c = new WCFCommunicator.WCFCommunicatorClient();
-            c.HelloAsync();
+            var rootPage = new MainPage();
+            rootPage.DataContext = new ViewModels.vmMainPage();
             this.RootVisual = new MainPage();
         }
 

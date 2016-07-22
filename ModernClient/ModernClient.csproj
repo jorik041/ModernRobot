@@ -85,6 +85,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\vmMainPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -100,6 +101,36 @@
     <None Include="Properties\AppManifest.xml" />
     <None Include="Service References\WCFCommunicator\item.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\item33.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFCommunicator\ModernClient.WCFCommunicator.ActualizedInstrument.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFCommunicator\ModernClient.WCFCommunicator.CalculationOrder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFCommunicator\ModernClient.WCFCommunicator.RemoteCalculationInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\WCFCommunicator\WCFCommunicator.wsdl" />
     <Content Include="ServiceReferences.ClientConfig" />
