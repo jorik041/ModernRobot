@@ -27,13 +27,22 @@ namespace ModernServer.Communication
         RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName);
 
         [OperationContract]
+        void RemoveRemoteCalculation(Guid id);
+
+        [OperationContract]
         void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters);
 
         [OperationContract]
         void StartRemoteCalculation(Guid idCalculation);
 
         [OperationContract]
+        void StopRemoteCalculation(Guid id);
+
+        [OperationContract]
         CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation);
+
+        [OperationContract]
+        int GetWaitingOrdersForRemoteCalculation(Guid idCalculation);
 
         [OperationContract]
         string[] GetStrategyParametersDescription(string strategyName);

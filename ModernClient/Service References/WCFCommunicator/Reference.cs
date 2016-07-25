@@ -80,7 +80,24 @@ namespace ModernClient.WCFCommunicator {
     [System.Runtime.Serialization.DataContractAttribute(Name="RemoteCalculationInfo", Namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities")]
     public partial class RemoteCalculationInfo : object, System.ComponentModel.INotifyPropertyChanged {
         
+        private System.Guid IdField;
+        
         private string NameField;
+        
+        private string StrategyNameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Name {
@@ -91,6 +108,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((object.ReferenceEquals(this.NameField, value) != true)) {
                     this.NameField = value;
                     this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StrategyName {
+            get {
+                return this.StrategyNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StrategyNameField, value) != true)) {
+                    this.StrategyNameField = value;
+                    this.RaisePropertyChanged("StrategyName");
                 }
             }
         }
@@ -167,6 +197,11 @@ namespace ModernClient.WCFCommunicator {
         
         ModernClient.WCFCommunicator.RemoteCalculationInfo EndAddRemoteCalculation(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/RemoveRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/RemoveRemoteCalculationResponse")]
+        System.IAsyncResult BeginRemoveRemoteCalculation(System.Guid id, System.AsyncCallback callback, object asyncState);
+        
+        void EndRemoveRemoteCalculation(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation", ReplyAction="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulationResponse")]
         System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, System.AsyncCallback callback, object asyncState);
         
@@ -177,11 +212,21 @@ namespace ModernClient.WCFCommunicator {
         
         void EndStartRemoteCalculation(System.IAsyncResult result);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/StopRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/StopRemoteCalculationResponse")]
+        System.IAsyncResult BeginStopRemoteCalculation(System.Guid id, System.AsyncCallback callback, object asyncState);
+        
+        void EndStopRemoteCalculation(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculationResponse" +
             "")]
         System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> EndGetFinishedOrdersForRemoteCalculation(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetWaitingOrdersForRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/GetWaitingOrdersForRemoteCalculationResponse")]
+        System.IAsyncResult BeginGetWaitingOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState);
+        
+        int EndGetWaitingOrdersForRemoteCalculation(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescription", ReplyAction="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescriptionResponse")]
         System.IAsyncResult BeginGetStrategyParametersDescription(string strategyName, System.AsyncCallback callback, object asyncState);
@@ -290,6 +335,25 @@ namespace ModernClient.WCFCommunicator {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetWaitingOrdersForRemoteCalculationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetWaitingOrdersForRemoteCalculationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public int Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class GetStrategyParametersDescriptionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
@@ -335,6 +399,12 @@ namespace ModernClient.WCFCommunicator {
         
         private System.Threading.SendOrPostCallback onAddRemoteCalculationCompletedDelegate;
         
+        private BeginOperationDelegate onBeginRemoveRemoteCalculationDelegate;
+        
+        private EndOperationDelegate onEndRemoveRemoteCalculationDelegate;
+        
+        private System.Threading.SendOrPostCallback onRemoveRemoteCalculationCompletedDelegate;
+        
         private BeginOperationDelegate onBeginAddOrderToRemoteCalulationDelegate;
         
         private EndOperationDelegate onEndAddOrderToRemoteCalulationDelegate;
@@ -347,11 +417,23 @@ namespace ModernClient.WCFCommunicator {
         
         private System.Threading.SendOrPostCallback onStartRemoteCalculationCompletedDelegate;
         
+        private BeginOperationDelegate onBeginStopRemoteCalculationDelegate;
+        
+        private EndOperationDelegate onEndStopRemoteCalculationDelegate;
+        
+        private System.Threading.SendOrPostCallback onStopRemoteCalculationCompletedDelegate;
+        
         private BeginOperationDelegate onBeginGetFinishedOrdersForRemoteCalculationDelegate;
         
         private EndOperationDelegate onEndGetFinishedOrdersForRemoteCalculationDelegate;
         
         private System.Threading.SendOrPostCallback onGetFinishedOrdersForRemoteCalculationCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetWaitingOrdersForRemoteCalculationDelegate;
+        
+        private EndOperationDelegate onEndGetWaitingOrdersForRemoteCalculationDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetWaitingOrdersForRemoteCalculationCompletedDelegate;
         
         private BeginOperationDelegate onBeginGetStrategyParametersDescriptionDelegate;
         
@@ -420,11 +502,17 @@ namespace ModernClient.WCFCommunicator {
         
         public event System.EventHandler<AddRemoteCalculationCompletedEventArgs> AddRemoteCalculationCompleted;
         
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> RemoveRemoteCalculationCompleted;
+        
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddOrderToRemoteCalulationCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> StartRemoteCalculationCompleted;
         
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> StopRemoteCalculationCompleted;
+        
         public event System.EventHandler<GetFinishedOrdersForRemoteCalculationCompletedEventArgs> GetFinishedOrdersForRemoteCalculationCompleted;
+        
+        public event System.EventHandler<GetWaitingOrdersForRemoteCalculationCompletedEventArgs> GetWaitingOrdersForRemoteCalculationCompleted;
         
         public event System.EventHandler<GetStrategyParametersDescriptionCompletedEventArgs> GetStrategyParametersDescriptionCompleted;
         
@@ -613,6 +701,51 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginRemoveRemoteCalculation(System.Guid id, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginRemoveRemoteCalculation(id, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        void ModernClient.WCFCommunicator.IWCFCommunicator.EndRemoveRemoteCalculation(System.IAsyncResult result) {
+            base.Channel.EndRemoveRemoteCalculation(result);
+        }
+        
+        private System.IAsyncResult OnBeginRemoveRemoteCalculation(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid id = ((System.Guid)(inValues[0]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginRemoveRemoteCalculation(id, callback, asyncState);
+        }
+        
+        private object[] OnEndRemoveRemoteCalculation(System.IAsyncResult result) {
+            ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndRemoveRemoteCalculation(result);
+            return null;
+        }
+        
+        private void OnRemoveRemoteCalculationCompleted(object state) {
+            if ((this.RemoveRemoteCalculationCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.RemoveRemoteCalculationCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void RemoveRemoteCalculationAsync(System.Guid id) {
+            this.RemoveRemoteCalculationAsync(id, null);
+        }
+        
+        public void RemoveRemoteCalculationAsync(System.Guid id, object userState) {
+            if ((this.onBeginRemoveRemoteCalculationDelegate == null)) {
+                this.onBeginRemoveRemoteCalculationDelegate = new BeginOperationDelegate(this.OnBeginRemoveRemoteCalculation);
+            }
+            if ((this.onEndRemoveRemoteCalculationDelegate == null)) {
+                this.onEndRemoveRemoteCalculationDelegate = new EndOperationDelegate(this.OnEndRemoveRemoteCalculation);
+            }
+            if ((this.onRemoveRemoteCalculationCompletedDelegate == null)) {
+                this.onRemoveRemoteCalculationCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnRemoveRemoteCalculationCompleted);
+            }
+            base.InvokeAsync(this.onBeginRemoveRemoteCalculationDelegate, new object[] {
+                        id}, this.onEndRemoveRemoteCalculationDelegate, this.onRemoveRemoteCalculationCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, System.AsyncCallback callback, object asyncState) {
             return base.Channel.BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, callback, asyncState);
         }
@@ -713,6 +846,51 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginStopRemoteCalculation(System.Guid id, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginStopRemoteCalculation(id, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        void ModernClient.WCFCommunicator.IWCFCommunicator.EndStopRemoteCalculation(System.IAsyncResult result) {
+            base.Channel.EndStopRemoteCalculation(result);
+        }
+        
+        private System.IAsyncResult OnBeginStopRemoteCalculation(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid id = ((System.Guid)(inValues[0]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginStopRemoteCalculation(id, callback, asyncState);
+        }
+        
+        private object[] OnEndStopRemoteCalculation(System.IAsyncResult result) {
+            ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndStopRemoteCalculation(result);
+            return null;
+        }
+        
+        private void OnStopRemoteCalculationCompleted(object state) {
+            if ((this.StopRemoteCalculationCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.StopRemoteCalculationCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void StopRemoteCalculationAsync(System.Guid id) {
+            this.StopRemoteCalculationAsync(id, null);
+        }
+        
+        public void StopRemoteCalculationAsync(System.Guid id, object userState) {
+            if ((this.onBeginStopRemoteCalculationDelegate == null)) {
+                this.onBeginStopRemoteCalculationDelegate = new BeginOperationDelegate(this.OnBeginStopRemoteCalculation);
+            }
+            if ((this.onEndStopRemoteCalculationDelegate == null)) {
+                this.onEndStopRemoteCalculationDelegate = new EndOperationDelegate(this.OnEndStopRemoteCalculation);
+            }
+            if ((this.onStopRemoteCalculationCompletedDelegate == null)) {
+                this.onStopRemoteCalculationCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnStopRemoteCalculationCompleted);
+            }
+            base.InvokeAsync(this.onBeginStopRemoteCalculationDelegate, new object[] {
+                        id}, this.onEndStopRemoteCalculationDelegate, this.onStopRemoteCalculationCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {
             return base.Channel.BeginGetFinishedOrdersForRemoteCalculation(idCalculation, callback, asyncState);
         }
@@ -756,6 +934,52 @@ namespace ModernClient.WCFCommunicator {
             }
             base.InvokeAsync(this.onBeginGetFinishedOrdersForRemoteCalculationDelegate, new object[] {
                         idCalculation}, this.onEndGetFinishedOrdersForRemoteCalculationDelegate, this.onGetFinishedOrdersForRemoteCalculationCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginGetWaitingOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetWaitingOrdersForRemoteCalculation(idCalculation, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        int ModernClient.WCFCommunicator.IWCFCommunicator.EndGetWaitingOrdersForRemoteCalculation(System.IAsyncResult result) {
+            return base.Channel.EndGetWaitingOrdersForRemoteCalculation(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetWaitingOrdersForRemoteCalculation(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid idCalculation = ((System.Guid)(inValues[0]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginGetWaitingOrdersForRemoteCalculation(idCalculation, callback, asyncState);
+        }
+        
+        private object[] OnEndGetWaitingOrdersForRemoteCalculation(System.IAsyncResult result) {
+            int retVal = ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndGetWaitingOrdersForRemoteCalculation(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetWaitingOrdersForRemoteCalculationCompleted(object state) {
+            if ((this.GetWaitingOrdersForRemoteCalculationCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetWaitingOrdersForRemoteCalculationCompleted(this, new GetWaitingOrdersForRemoteCalculationCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetWaitingOrdersForRemoteCalculationAsync(System.Guid idCalculation) {
+            this.GetWaitingOrdersForRemoteCalculationAsync(idCalculation, null);
+        }
+        
+        public void GetWaitingOrdersForRemoteCalculationAsync(System.Guid idCalculation, object userState) {
+            if ((this.onBeginGetWaitingOrdersForRemoteCalculationDelegate == null)) {
+                this.onBeginGetWaitingOrdersForRemoteCalculationDelegate = new BeginOperationDelegate(this.OnBeginGetWaitingOrdersForRemoteCalculation);
+            }
+            if ((this.onEndGetWaitingOrdersForRemoteCalculationDelegate == null)) {
+                this.onEndGetWaitingOrdersForRemoteCalculationDelegate = new EndOperationDelegate(this.OnEndGetWaitingOrdersForRemoteCalculation);
+            }
+            if ((this.onGetWaitingOrdersForRemoteCalculationCompletedDelegate == null)) {
+                this.onGetWaitingOrdersForRemoteCalculationCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetWaitingOrdersForRemoteCalculationCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetWaitingOrdersForRemoteCalculationDelegate, new object[] {
+                        idCalculation}, this.onEndGetWaitingOrdersForRemoteCalculationDelegate, this.onGetWaitingOrdersForRemoteCalculationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -930,6 +1154,18 @@ namespace ModernClient.WCFCommunicator {
                 return _result;
             }
             
+            public System.IAsyncResult BeginRemoveRemoteCalculation(System.Guid id, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = id;
+                System.IAsyncResult _result = base.BeginInvoke("RemoveRemoteCalculation", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public void EndRemoveRemoteCalculation(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                base.EndInvoke("RemoveRemoteCalculation", _args, result);
+            }
+            
             public System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[6];
                 _args[0] = idCalculation;
@@ -959,6 +1195,18 @@ namespace ModernClient.WCFCommunicator {
                 base.EndInvoke("StartRemoteCalculation", _args, result);
             }
             
+            public System.IAsyncResult BeginStopRemoteCalculation(System.Guid id, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = id;
+                System.IAsyncResult _result = base.BeginInvoke("StopRemoteCalculation", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public void EndStopRemoteCalculation(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                base.EndInvoke("StopRemoteCalculation", _args, result);
+            }
+            
             public System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {
                 object[] _args = new object[1];
                 _args[0] = idCalculation;
@@ -969,6 +1217,19 @@ namespace ModernClient.WCFCommunicator {
             public System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> EndGetFinishedOrdersForRemoteCalculation(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> _result = ((System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder>)(base.EndInvoke("GetFinishedOrdersForRemoteCalculation", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetWaitingOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = idCalculation;
+                System.IAsyncResult _result = base.BeginInvoke("GetWaitingOrdersForRemoteCalculation", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public int EndGetWaitingOrdersForRemoteCalculation(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                int _result = ((int)(base.EndInvoke("GetWaitingOrdersForRemoteCalculation", _args, result)));
                 return _result;
             }
             

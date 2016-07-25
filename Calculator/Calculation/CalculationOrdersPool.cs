@@ -24,6 +24,14 @@ namespace Calculator.Calculation
             _strategyType = strategyType;
         }
 
+        public int WaitingOrdersCount
+        {
+            get
+            {
+                return _ordersQueue.Count();
+            }
+        }
+
         public CalculationOrder[] FinishedOrders
         {
             get

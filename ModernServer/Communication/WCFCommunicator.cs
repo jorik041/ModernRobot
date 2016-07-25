@@ -50,7 +50,7 @@ namespace ModernServer.Communication
         }
         public RemoteCalculationInfo[] GetRemoteCalculationsInfo()
         {
-            return _remoteCalculators.ToArray();
+            return _remoteCalculators.Select(o => new RemoteCalculationInfo(o.Id, o.Name, o.StrategyName)).ToArray();
         }
 
         public RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName)
@@ -61,7 +61,14 @@ namespace ModernServer.Communication
             var strategyType = strategy.GetType();
             var rCalc = new RemoteCalculation(name, strategyType);
             _remoteCalculators.Add(rCalc);
-            return rCalc;
+            return new RemoteCalculationInfo(rCalc.Id, rCalc.Name, rCalc.StrategyName);
+        }
+
+        public void RemoveRemoteCalculation(Guid id)
+        {
+            var rCalc = _remoteCalculators.SingleOrDefault(o => o.Id == id);
+            if (rCalc != null)
+                _remoteCalculators.Remove(rCalc);
         }
 
         public void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
@@ -80,12 +87,28 @@ namespace ModernServer.Communication
             rc.OrdersPool.ProcessOrders();
         }
 
+        public void StopRemoteCalculation(Guid idCalculation)
+        {
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return;
+            rc.OrdersPool.Flush();
+        }
+
         public CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation)
         {
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
             if (rc == null)
                 return null;
             return rc.OrdersPool.FinishedOrders;
+        }
+
+        public int GetWaitingOrdersForRemoteCalculation(Guid idCalculation)
+        {
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return 0;
+            return rc.OrdersPool.WaitingOrdersCount;
         }
     }
 }

@@ -56,15 +56,27 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="RemoveRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="id" type="q5:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="AddOrderToRemoteCalulation">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q5:guid" />
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q6:guid" />
         <xs:element minOccurs="0" name="insName" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="dateFrom" type="xs:dateTime" />
         <xs:element minOccurs="0" name="dateTo" type="xs:dateTime" />
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/DBAccess" minOccurs="0" name="period" type="q6:TimePeriods" />
-        <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="parameters" nillable="true" type="q7:ArrayOffloat" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/DBAccess" minOccurs="0" name="period" type="q7:TimePeriods" />
+        <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="parameters" nillable="true" type="q8:ArrayOffloat" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -76,7 +88,7 @@
   <xs:element name="StartRemoteCalculation">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q8:guid" />
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q9:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -85,17 +97,43 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="StopRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="id" type="q10:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetFinishedOrdersForRemoteCalculation">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q9:guid" />
+        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q11:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetFinishedOrdersForRemoteCalculationResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Calculator.Calculation" minOccurs="0" name="GetFinishedOrdersForRemoteCalculationResult" nillable="true" type="q10:ArrayOfCalculationOrder" />
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Calculator.Calculation" minOccurs="0" name="GetFinishedOrdersForRemoteCalculationResult" nillable="true" type="q12:ArrayOfCalculationOrder" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetWaitingOrdersForRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q13:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetWaitingOrdersForRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetWaitingOrdersForRemoteCalculationResult" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -109,7 +147,7 @@
   <xs:element name="GetStrategyParametersDescriptionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetStrategyParametersDescriptionResult" nillable="true" type="q11:ArrayOfstring" />
+        <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetStrategyParametersDescriptionResult" nillable="true" type="q14:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

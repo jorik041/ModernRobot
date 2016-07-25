@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Calculator.Calculation;
+using Calculator.Strategies;
 
 namespace ModernServer.WCFEntities
 {
     public class RemoteCalculation : RemoteCalculationInfo
     {
-        public new Guid Id { get; private set; }
         public CalculationOrdersPool OrdersPool { get; private set; }
 
-        public RemoteCalculation(string name, Type strategyType)
+        public RemoteCalculation(string name, Type strategyType) : base(Guid.NewGuid(), name, string.Empty)
         {
-            Id = Guid.NewGuid();
-            Name = name;
             OrdersPool = new CalculationOrdersPool(strategyType);
+            var strategy = Activator.CreateInstance(strategyType);
+            StrategyName = ((IStrategy)strategy).Name;
         }
     }
 }

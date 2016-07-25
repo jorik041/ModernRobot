@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using ModernClient.WCFCommunicator;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ModernClient.ViewModels
 {
