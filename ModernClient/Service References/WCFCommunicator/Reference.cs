@@ -182,6 +182,11 @@ namespace ModernClient.WCFCommunicator {
         System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> EndGetFinishedOrdersForRemoteCalculation(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescription", ReplyAction="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescriptionResponse")]
+        System.IAsyncResult BeginGetStrategyParametersDescription(string strategyName, System.AsyncCallback callback, object asyncState);
+        
+        System.Collections.ObjectModel.ObservableCollection<string> EndGetStrategyParametersDescription(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -285,6 +290,25 @@ namespace ModernClient.WCFCommunicator {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetStrategyParametersDescriptionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStrategyParametersDescriptionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Collections.ObjectModel.ObservableCollection<string> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Collections.ObjectModel.ObservableCollection<string>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class WCFCommunicatorClient : System.ServiceModel.ClientBase<ModernClient.WCFCommunicator.IWCFCommunicator>, ModernClient.WCFCommunicator.IWCFCommunicator {
         
         private BeginOperationDelegate onBeginGetActualizedInstrumentsDelegate;
@@ -328,6 +352,12 @@ namespace ModernClient.WCFCommunicator {
         private EndOperationDelegate onEndGetFinishedOrdersForRemoteCalculationDelegate;
         
         private System.Threading.SendOrPostCallback onGetFinishedOrdersForRemoteCalculationCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStrategyParametersDescriptionDelegate;
+        
+        private EndOperationDelegate onEndGetStrategyParametersDescriptionDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStrategyParametersDescriptionCompletedDelegate;
         
         private BeginOperationDelegate onBeginOpenDelegate;
         
@@ -395,6 +425,8 @@ namespace ModernClient.WCFCommunicator {
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> StartRemoteCalculationCompleted;
         
         public event System.EventHandler<GetFinishedOrdersForRemoteCalculationCompletedEventArgs> GetFinishedOrdersForRemoteCalculationCompleted;
+        
+        public event System.EventHandler<GetStrategyParametersDescriptionCompletedEventArgs> GetStrategyParametersDescriptionCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> OpenCompleted;
         
@@ -726,6 +758,52 @@ namespace ModernClient.WCFCommunicator {
                         idCalculation}, this.onEndGetFinishedOrdersForRemoteCalculationDelegate, this.onGetFinishedOrdersForRemoteCalculationCompletedDelegate, userState);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginGetStrategyParametersDescription(string strategyName, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStrategyParametersDescription(strategyName, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Collections.ObjectModel.ObservableCollection<string> ModernClient.WCFCommunicator.IWCFCommunicator.EndGetStrategyParametersDescription(System.IAsyncResult result) {
+            return base.Channel.EndGetStrategyParametersDescription(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStrategyParametersDescription(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string strategyName = ((string)(inValues[0]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginGetStrategyParametersDescription(strategyName, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStrategyParametersDescription(System.IAsyncResult result) {
+            System.Collections.ObjectModel.ObservableCollection<string> retVal = ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndGetStrategyParametersDescription(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStrategyParametersDescriptionCompleted(object state) {
+            if ((this.GetStrategyParametersDescriptionCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStrategyParametersDescriptionCompleted(this, new GetStrategyParametersDescriptionCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStrategyParametersDescriptionAsync(string strategyName) {
+            this.GetStrategyParametersDescriptionAsync(strategyName, null);
+        }
+        
+        public void GetStrategyParametersDescriptionAsync(string strategyName, object userState) {
+            if ((this.onBeginGetStrategyParametersDescriptionDelegate == null)) {
+                this.onBeginGetStrategyParametersDescriptionDelegate = new BeginOperationDelegate(this.OnBeginGetStrategyParametersDescription);
+            }
+            if ((this.onEndGetStrategyParametersDescriptionDelegate == null)) {
+                this.onEndGetStrategyParametersDescriptionDelegate = new EndOperationDelegate(this.OnEndGetStrategyParametersDescription);
+            }
+            if ((this.onGetStrategyParametersDescriptionCompletedDelegate == null)) {
+                this.onGetStrategyParametersDescriptionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStrategyParametersDescriptionCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStrategyParametersDescriptionDelegate, new object[] {
+                        strategyName}, this.onEndGetStrategyParametersDescriptionDelegate, this.onGetStrategyParametersDescriptionCompletedDelegate, userState);
+        }
+        
         private System.IAsyncResult OnBeginOpen(object[] inValues, System.AsyncCallback callback, object asyncState) {
             return ((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(callback, asyncState);
         }
@@ -891,6 +969,19 @@ namespace ModernClient.WCFCommunicator {
             public System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> EndGetFinishedOrdersForRemoteCalculation(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> _result = ((System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder>)(base.EndInvoke("GetFinishedOrdersForRemoteCalculation", _args, result)));
+                return _result;
+            }
+            
+            public System.IAsyncResult BeginGetStrategyParametersDescription(string strategyName, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[1];
+                _args[0] = strategyName;
+                System.IAsyncResult _result = base.BeginInvoke("GetStrategyParametersDescription", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public System.Collections.ObjectModel.ObservableCollection<string> EndGetStrategyParametersDescription(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                System.Collections.ObjectModel.ObservableCollection<string> _result = ((System.Collections.ObjectModel.ObservableCollection<string>)(base.EndInvoke("GetStrategyParametersDescription", _args, result)));
                 return _result;
             }
         }

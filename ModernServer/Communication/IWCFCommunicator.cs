@@ -34,5 +34,8 @@ namespace ModernServer.Communication
 
         [OperationContract]
         CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation);
+
+        [OperationContract]
+        string[] GetStrategyParametersDescription(string strategyName);
     }
 }

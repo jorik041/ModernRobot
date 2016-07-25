@@ -52,6 +52,12 @@
   <wsdl:message name="IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetFinishedOrdersForRemoteCalculationResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetStrategyParametersDescription_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStrategyParametersDescription" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetStrategyParametersDescription_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStrategyParametersDescriptionResponse" />
+  </wsdl:message>
   <wsdl:portType name="IWCFCommunicator">
     <wsdl:operation name="GetActualizedInstruments">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetActualizedInstruments" message="tns:IWCFCommunicator_GetActualizedInstruments_InputMessage" />
@@ -80,6 +86,10 @@
     <wsdl:operation name="GetFinishedOrdersForRemoteCalculation">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation" message="tns:IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculationResponse" message="tns:IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStrategyParametersDescription">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescription" message="tns:IWCFCommunicator_GetStrategyParametersDescription_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescriptionResponse" message="tns:IWCFCommunicator_GetStrategyParametersDescription_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IWCFCommunicator" type="tns:IWCFCommunicator">
@@ -140,6 +150,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetFinishedOrdersForRemoteCalculation">
       <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStrategyParametersDescription">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescription" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

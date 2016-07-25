@@ -40,6 +40,14 @@ namespace ModernServer.Communication
             return _avaliableStrategies.Select(o => o.Name).ToArray();    
         }
 
+        public string[] GetStrategyParametersDescription(string strategyName)
+        {
+            var strategy = _avaliableStrategies.SingleOrDefault(o => o.Name==strategyName);
+            if (strategy != null)
+                return strategy.Parameters.Select(o => o.Description).ToArray();
+            return null;
+
+        }
         public RemoteCalculationInfo[] GetRemoteCalculationsInfo()
         {
             return _remoteCalculators.ToArray();
@@ -47,7 +55,10 @@ namespace ModernServer.Communication
 
         public RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName)
         {
-            var strategyType = _avaliableStrategies.Single(o => o.Name == strategyName).GetType();
+            var strategy = _avaliableStrategies.SingleOrDefault(o => o.Name == strategyName);
+            if (strategy == null)
+                return null;
+            var strategyType = strategy.GetType();
             var rCalc = new RemoteCalculation(name, strategyType);
             _remoteCalculators.Add(rCalc);
             return rCalc;
@@ -55,18 +66,26 @@ namespace ModernServer.Communication
 
         public void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
         {
-            _remoteCalculators.Single(o => o.Id == idCalculation)
-                .OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters);
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return;
+            rc.OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters);
         }
 
         public void StartRemoteCalculation(Guid idCalculation)
         {
-            _remoteCalculators.Single(o => o.Id == idCalculation).OrdersPool.ProcessOrders();
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return;
+            rc.OrdersPool.ProcessOrders();
         }
 
         public CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation)
         {
-            return _remoteCalculators.Single(o => o.Id == idCalculation).OrdersPool.FinishedOrders;
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return null;
+            return rc.OrdersPool.FinishedOrders;
         }
     }
 }
