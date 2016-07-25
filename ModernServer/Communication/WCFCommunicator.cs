@@ -50,7 +50,7 @@ namespace ModernServer.Communication
         }
         public RemoteCalculationInfo[] GetRemoteCalculationsInfo()
         {
-            return _remoteCalculators.Select(o => new RemoteCalculationInfo(o.Id, o.Name, o.StrategyName)).ToArray();
+            return _remoteCalculators.Select(o => new RemoteCalculationInfo(o.Id, o.Name, o.StrategyName) { WaitingOrdersCount = o.WaitingOrdersCount, FinishedOrdersCount = o.FinishedOrdersCount }).ToArray();
         }
 
         public RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName)
@@ -61,7 +61,7 @@ namespace ModernServer.Communication
             var strategyType = strategy.GetType();
             var rCalc = new RemoteCalculation(name, strategyType);
             _remoteCalculators.Add(rCalc);
-            return new RemoteCalculationInfo(rCalc.Id, rCalc.Name, rCalc.StrategyName);
+            return new RemoteCalculationInfo(rCalc.Id, rCalc.Name, rCalc.StrategyName) { WaitingOrdersCount = rCalc.WaitingOrdersCount, FinishedOrdersCount = rCalc.FinishedOrdersCount };
         }
 
         public void RemoveRemoteCalculation(Guid id)

@@ -11,6 +11,24 @@ namespace ModernServer.WCFEntities
     public class RemoteCalculation : RemoteCalculationInfo
     {
         public CalculationOrdersPool OrdersPool { get; private set; }
+        public new int WaitingOrdersCount
+        {
+            get
+            {
+                if (OrdersPool == null)
+                    return 0;
+                return OrdersPool.WaitingOrdersCount;
+            }
+        }
+        public new int FinishedOrdersCount
+        {
+            get
+            {
+                if (OrdersPool == null)
+                    return 0;
+                return OrdersPool.FinishedOrders.Count();
+            }
+        }
 
         public RemoteCalculation(string name, Type strategyType) : base(Guid.NewGuid(), name, string.Empty)
         {

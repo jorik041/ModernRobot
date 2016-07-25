@@ -16,6 +16,10 @@ namespace ModernServer.WCFEntities
         public string Name { get; set; }
         [DataMember]
         public string StrategyName { get; protected set; }
+        [DataMember]
+        public int WaitingOrdersCount { get; set; }
+        [DataMember]
+        public int FinishedOrdersCount { get; set; }
 
         public RemoteCalculationInfo(Guid id, string name, string strategyName)
         {

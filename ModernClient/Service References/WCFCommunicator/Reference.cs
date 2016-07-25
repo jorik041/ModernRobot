@@ -80,11 +80,28 @@ namespace ModernClient.WCFCommunicator {
     [System.Runtime.Serialization.DataContractAttribute(Name="RemoteCalculationInfo", Namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities")]
     public partial class RemoteCalculationInfo : object, System.ComponentModel.INotifyPropertyChanged {
         
+        private int FinishedOrdersCountField;
+        
         private System.Guid IdField;
         
         private string NameField;
         
         private string StrategyNameField;
+        
+        private int WaitingOrdersCountField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int FinishedOrdersCount {
+            get {
+                return this.FinishedOrdersCountField;
+            }
+            set {
+                if ((this.FinishedOrdersCountField.Equals(value) != true)) {
+                    this.FinishedOrdersCountField = value;
+                    this.RaisePropertyChanged("FinishedOrdersCount");
+                }
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Guid Id {
@@ -121,6 +138,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((object.ReferenceEquals(this.StrategyNameField, value) != true)) {
                     this.StrategyNameField = value;
                     this.RaisePropertyChanged("StrategyName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int WaitingOrdersCount {
+            get {
+                return this.WaitingOrdersCountField;
+            }
+            set {
+                if ((this.WaitingOrdersCountField.Equals(value) != true)) {
+                    this.WaitingOrdersCountField = value;
+                    this.RaisePropertyChanged("WaitingOrdersCount");
                 }
             }
         }
