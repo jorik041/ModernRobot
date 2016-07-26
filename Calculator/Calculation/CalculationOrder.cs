@@ -5,18 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Calculator.Strategies;
 using DBAccess;
+using System.Runtime.Serialization;
 
 namespace Calculator.Calculation
 {
+    [DataContract]
     public struct CalculationOrder
     {
+        [DataMember]
         public Guid Id { get; private set; }
+        [DataMember]
         public string InstrumentName { get; private set; }
+        [DataMember]
         public DateTime DateFrom { get; private set; }
+        [DataMember]
         public DateTime DateTo { get; private set; }
+        [DataMember]
         public TimePeriods Period { get; private set; }
+        [DataMember]
         public float[] Parameters { get; private set; }
+        [DataMember]
         public CalculationOrderStatus Status { get; internal set; }
+        [DataMember]
         public CalculationResult Result { get; internal set; }
 
         public static CalculationOrder CreateNew(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)

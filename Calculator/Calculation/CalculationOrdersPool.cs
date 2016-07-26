@@ -151,7 +151,7 @@ namespace Calculator.Calculation
                         }
                     }
                 }
-                order.Result = new CalculationResult() { OutData = outDatas.ToArray(), Balances = balances.ToArray() };
+                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray() };
             }
             catch (Exception ex)
             {

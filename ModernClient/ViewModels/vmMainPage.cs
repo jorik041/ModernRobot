@@ -47,6 +47,18 @@ namespace ModernClient.ViewModels
                 OnPropertyChanged("AvaliableStrategies");
             }
         }
+        public ObservableCollection<RemoteCalculationInfo> Calculators
+        {
+            get
+            {
+                return _calculators;
+            }
+            set
+            {
+                _calculators = value;
+                OnPropertyChanged("Calculators");
+            }
+        }
 
         public vmMainPage()
         {
@@ -63,7 +75,7 @@ namespace ModernClient.ViewModels
             _client.GetRemoteCalculationsInfoAsync();
             _client.GetRemoteCalculationsInfoCompleted += (sender, obj) =>
             {
-                _calculators = obj.Result;
+                Calculators = obj.Result;
             };
         }
 

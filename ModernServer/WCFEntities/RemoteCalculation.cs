@@ -5,12 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Calculator.Calculation;
 using Calculator.Strategies;
-
+using System.Runtime.Serialization;
 namespace ModernServer.WCFEntities
 {
+    [DataContract]
     public class RemoteCalculation : RemoteCalculationInfo
     {
+        [DataMember]
         public CalculationOrdersPool OrdersPool { get; private set; }
+        [DataMember]
         public new int WaitingOrdersCount
         {
             get
@@ -20,6 +23,7 @@ namespace ModernServer.WCFEntities
                 return OrdersPool.WaitingOrdersCount;
             }
         }
+        [DataMember]
         public new int FinishedOrdersCount
         {
             get
