@@ -64,11 +64,23 @@
   <wsdl:message name="IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetFinishedOrdersForRemoteCalculationResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetFinishedOrderResult_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFinishedOrderResult" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetFinishedOrderResult_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFinishedOrderResultResponse" />
+  </wsdl:message>
   <wsdl:message name="IWCFCommunicator_GetWaitingOrdersForRemoteCalculation_InputMessage">
     <wsdl:part name="parameters" element="tns:GetWaitingOrdersForRemoteCalculation" />
   </wsdl:message>
   <wsdl:message name="IWCFCommunicator_GetWaitingOrdersForRemoteCalculation_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetWaitingOrdersForRemoteCalculationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetFinishedOrdersCountForRemoteCalculation_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFinishedOrdersCountForRemoteCalculation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_GetFinishedOrdersCountForRemoteCalculation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFinishedOrdersCountForRemoteCalculationResponse" />
   </wsdl:message>
   <wsdl:message name="IWCFCommunicator_GetStrategyParametersDescription_InputMessage">
     <wsdl:part name="parameters" element="tns:GetStrategyParametersDescription" />
@@ -113,9 +125,17 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation" message="tns:IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculationResponse" message="tns:IWCFCommunicator_GetFinishedOrdersForRemoteCalculation_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetFinishedOrderResult">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrderResult" message="tns:IWCFCommunicator_GetFinishedOrderResult_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrderResultResponse" message="tns:IWCFCommunicator_GetFinishedOrderResult_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="GetWaitingOrdersForRemoteCalculation">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetWaitingOrdersForRemoteCalculation" message="tns:IWCFCommunicator_GetWaitingOrdersForRemoteCalculation_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetWaitingOrdersForRemoteCalculationResponse" message="tns:IWCFCommunicator_GetWaitingOrdersForRemoteCalculation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFinishedOrdersCountForRemoteCalculation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersCountForRemoteCalculation" message="tns:IWCFCommunicator_GetFinishedOrdersCountForRemoteCalculation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersCountForRemoteCalculationResponse" message="tns:IWCFCommunicator_GetFinishedOrdersCountForRemoteCalculation_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetStrategyParametersDescription">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/GetStrategyParametersDescription" message="tns:IWCFCommunicator_GetStrategyParametersDescription_InputMessage" />
@@ -205,8 +225,26 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetFinishedOrderResult">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetFinishedOrderResult" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetWaitingOrdersForRemoteCalculation">
       <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetWaitingOrdersForRemoteCalculation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFinishedOrdersCountForRemoteCalculation">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersCountForRemoteCalculation" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

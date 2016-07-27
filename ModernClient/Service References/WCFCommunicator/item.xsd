@@ -123,10 +123,25 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetWaitingOrdersForRemoteCalculation">
+  <xs:element name="GetFinishedOrderResult">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q13:guid" />
+        <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idOrder" type="q14:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFinishedOrderResultResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Calculator.Calculation" minOccurs="0" name="GetFinishedOrderResultResult" type="q15:CalculationResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetWaitingOrdersForRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q16:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -134,6 +149,20 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="GetWaitingOrdersForRemoteCalculationResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFinishedOrdersCountForRemoteCalculation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q17:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFinishedOrdersCountForRemoteCalculationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetFinishedOrdersCountForRemoteCalculationResult" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -147,7 +176,7 @@
   <xs:element name="GetStrategyParametersDescriptionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetStrategyParametersDescriptionResult" nillable="true" type="q14:ArrayOfstring" />
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetStrategyParametersDescriptionResult" nillable="true" type="q18:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

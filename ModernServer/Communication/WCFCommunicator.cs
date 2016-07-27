@@ -103,6 +103,22 @@ namespace ModernServer.Communication
             return rc.OrdersPool.FinishedOrders;
         }
 
+        public int GetFinishedOrdersCountForRemoteCalculation(Guid idCalculation)
+        {
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return 0;
+            return rc.OrdersPool.FinishedOrders.Count();
+        }
+
+        public CalculationResult GetFinishedOrderResult(Guid idCalculation, Guid idOrder)
+        {
+            var calc = _remoteCalculators.SingleOrDefault(o => o.Id == idCalculation);
+            if ((calc == null) || (!calc.OrdersPool.FinishedOrders.Any(o => o.Id == idOrder)))
+                return new CalculationResult();
+            return calc.OrdersPool.FinishedOrders.First(o => o.Id == idOrder).Result;
+        }
+
         public int GetWaitingOrdersForRemoteCalculation(Guid idCalculation)
         {
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);

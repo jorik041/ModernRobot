@@ -123,6 +123,9 @@
     <None Include="Service References\WCFCommunicator\ModernClient.WCFCommunicator.CalculationOrder.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\WCFCommunicator\ModernClient.WCFCommunicator.CalculationResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\WCFCommunicator\ModernClient.WCFCommunicator.RemoteCalculationInfo.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

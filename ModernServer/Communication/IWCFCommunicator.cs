@@ -42,7 +42,13 @@ namespace ModernServer.Communication
         CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation);
 
         [OperationContract]
+        CalculationResult GetFinishedOrderResult(Guid idCalculation, Guid idOrder);
+
+        [OperationContract]
         int GetWaitingOrdersForRemoteCalculation(Guid idCalculation);
+
+        [OperationContract]
+        int GetFinishedOrdersCountForRemoteCalculation(Guid idCalculation);
 
         [OperationContract]
         string[] GetStrategyParametersDescription(string strategyName);

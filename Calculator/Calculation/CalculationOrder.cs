@@ -26,7 +26,6 @@ namespace Calculator.Calculation
         public float[] Parameters { get; private set; }
         [DataMember]
         public CalculationOrderStatus Status { get; internal set; }
-        [DataMember]
         public CalculationResult Result { get; internal set; }
 
         public static CalculationOrder CreateNew(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
