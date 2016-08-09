@@ -84,6 +84,12 @@ namespace ModernClient.WCFCommunicator {
         
         private System.Guid IdField;
         
+        private bool IsDoneField;
+        
+        private bool IsRunningField;
+        
+        private bool IsWaitingField;
+        
         private string NameField;
         
         private string StrategyNameField;
@@ -112,6 +118,45 @@ namespace ModernClient.WCFCommunicator {
                 if ((this.IdField.Equals(value) != true)) {
                     this.IdField = value;
                     this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsDone {
+            get {
+                return this.IsDoneField;
+            }
+            set {
+                if ((this.IsDoneField.Equals(value) != true)) {
+                    this.IsDoneField = value;
+                    this.RaisePropertyChanged("IsDone");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsRunning {
+            get {
+                return this.IsRunningField;
+            }
+            set {
+                if ((this.IsRunningField.Equals(value) != true)) {
+                    this.IsRunningField = value;
+                    this.RaisePropertyChanged("IsRunning");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsWaiting {
+            get {
+                return this.IsWaitingField;
+            }
+            set {
+                if ((this.IsWaitingField.Equals(value) != true)) {
+                    this.IsWaitingField = value;
+                    this.RaisePropertyChanged("IsWaiting");
                 }
             }
         }
@@ -207,6 +252,8 @@ namespace ModernClient.WCFCommunicator {
         
         private ModernClient.WCFCommunicator.CalculationOrderStatus StatusField;
         
+        private float TotalBalanceField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.DateTime DateFrom {
             get {
@@ -294,6 +341,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((this.StatusField.Equals(value) != true)) {
                     this.StatusField = value;
                     this.RaisePropertyChanged("Status");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float TotalBalance {
+            get {
+                return this.TotalBalanceField;
+            }
+            set {
+                if ((this.TotalBalanceField.Equals(value) != true)) {
+                    this.TotalBalanceField = value;
+                    this.RaisePropertyChanged("TotalBalance");
                 }
             }
         }

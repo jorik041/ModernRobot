@@ -30,6 +30,9 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="FinishedOrdersCount" type="xs:int" />
       <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="IsDone" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsRunning" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsWaiting" type="xs:boolean" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="StrategyName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="WaitingOrdersCount" type="xs:int" />

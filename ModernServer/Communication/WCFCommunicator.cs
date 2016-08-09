@@ -18,6 +18,7 @@ namespace ModernServer.Communication
 
         private DBDataReader _reader = new DBDataReader();
         private readonly IStrategy[] _avaliableStrategies = { new FortsBasic() };
+        private List<Guid> _startedCalcIds = new List<Guid>();
 
         public ActualizedInstrument[] GetActualizedInstruments()
         {
@@ -50,7 +51,15 @@ namespace ModernServer.Communication
         }
         public RemoteCalculationInfo[] GetRemoteCalculationsInfo()
         {
-            return _remoteCalculators.Select(o => new RemoteCalculationInfo(o.Id, o.Name, o.StrategyName) { WaitingOrdersCount = o.WaitingOrdersCount, FinishedOrdersCount = o.FinishedOrdersCount }).ToArray();
+            return _remoteCalculators.Select(o =>
+            new RemoteCalculationInfo(o.Id, o.Name, o.StrategyName)
+            {
+                WaitingOrdersCount = o.WaitingOrdersCount,
+                FinishedOrdersCount = o.FinishedOrdersCount,
+                IsWaiting = o.FinishedOrdersCount == 0 && o.WaitingOrdersCount > 0,
+                IsDone = o.WaitingOrdersCount == 0 && o.FinishedOrdersCount > 0,
+                IsRunning = o.WaitingOrdersCount > 0 && o.FinishedOrdersCount > 0
+            }).ToArray();
         }
 
         public RemoteCalculationInfo AddRemoteCalculation(string name, string strategyName)
@@ -84,6 +93,9 @@ namespace ModernServer.Communication
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
             if (rc == null)
                 return;
+            if (_startedCalcIds.Contains(rc.Id))
+                return;
+            _startedCalcIds.Add(rc.Id);
             rc.OrdersPool.ProcessOrders();
         }
 

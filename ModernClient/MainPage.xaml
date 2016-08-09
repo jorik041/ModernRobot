@@ -1,12 +1,126 @@
-﻿<UserControl x:Class="ModernClient.MainPage"
+﻿<UserControl xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"  x:Class="ModernClient.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="400">
-
-    <Grid x:Name="LayoutRoot" Background="White">
-
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="700">
+    <Grid Margin="25" x:Name="LayoutRoot" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Grid.Column="0" Margin="5" Orientation="Horizontal">
+            <Button Margin="3" Content="Запустить" Command="{Binding RunCalculation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Margin="3" Content="Удалить" Command="{Binding DeleteCalculation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="0" Margin="5" VerticalAlignment="Center" Grid.Column="1" Orientation="Vertical">
+            <TextBlock Foreground="Gray" Text="Доступные инструменты:"/>
+            <ItemsControl ItemsSource="{Binding ActualizedInstruments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Foreground="Gray">
+                                <Run FontWeight="SemiBold" Text="{Binding Name}"/>
+                                <Run Text=" с "/>
+                                <Run Text="{Binding DateFrom, StringFormat=d}"/>
+                                <Run Text=" по "/>
+                                <Run Text="{Binding DateTo, StringFormat=d}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" Text="Выберите инструмент:" Grid.Column="0" Grid.Row="0"/>
+            <ComboBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding ActualizedInstruments}" MinWidth="50" Grid.Column="1" SelectedIndex="0" DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstrument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock VerticalAlignment="Center" Text="Выберите стратегию:" Grid.Column="0" Grid.Row="1"/>
+            <ComboBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvaliableStrategies}" SelectedItem="{Binding SelectedStrategy}" MinWidth="50" Grid.Column="1" Grid.Row="1" SelectedIndex="0"/>
+            <TextBlock VerticalAlignment="Center" Text="Название расчета:" Grid.Column="0" Grid.Row="2"/>
+            <TextBox HorizontalContentAlignment="Center" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="2" Text="{Binding NewCalculationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock VerticalAlignment="Center" Text="Период времени:" Grid.Column="0" Grid.Row="3"/>
+            <ComboBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="3" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding PeriodsList}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0"/>
+            <TextBlock VerticalAlignment="Center" Text="Дата от:" Grid.Column="0" Grid.Row="4"/>
+            <TextBlock VerticalAlignment="Center" Text="Дата до:" Grid.Column="0" Grid.Row="5"/>
+            <sdk:DatePicker IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="4" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <sdk:DatePicker IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="5" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <ItemsControl ItemsSource="{Binding SelectedStrategyParameters}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="3" Background="GhostWhite">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Grid.Column="0">
+                                <Run Text="{Binding Description}"/>
+                                <Run Text=": "/>
+                            </TextBlock>
+                            <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" >
+                                <TextBlock VerticalAlignment="Center" Text="от"/>
+                                <TextBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center" Margin="5" Width="30"/>
+                                <TextBlock VerticalAlignment="Center" Text="до"/>
+                                <TextBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center"  Margin="5" Width="30" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" >
+                <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Margin="3" Content="Очистить" Command="{Binding DeleteCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </Grid>
+        <ListBox MouseLeftButtonUp="ListBox_MouseLeftButtonUp" Margin="5" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Calculators, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedCalc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" FontSize="20" Grid.Row="0" Grid.Column="0" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="16" Foreground="Gray">
+                            <Run Text="Стратегия:" FontWeight="SemiBold"/>
+                            <Run Text="{Binding StrategyName}"/>
+                        </TextBlock>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="30,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Margin="3" FontSize="16" Foreground="Gray">
+                                <Run Text="Ожидает:  "/>
+                                <Run Text="{Binding WaitingOrdersCount}"/>
+                            </TextBlock>
+                            <TextBlock Margin="3" FontSize="16" Foreground="Gray">
+                                <Run Text="Завершено:"/>
+                                <Run Text="{Binding FinishedOrdersCount}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>    
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

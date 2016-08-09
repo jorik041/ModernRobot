@@ -68,26 +68,26 @@ namespace Calculator.Calculation
                 while (_ordersQueue.Any())
                 {
                     var order = _ordersQueue.Dequeue();
-                    ThreadPool.QueueUserWorkItem(o => { CalculateNextOrder(order); });
+                    CalculateNextOrder(order); 
                 }
             });
         }
 
         private void CalculateNextOrder(CalculationOrder order)
         {
-            order.Status = CalculationOrderStatus.Processing;
-            //Logger.Log(string.Format("Calculation order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
             var sw = new Stopwatch();
-            var datefrom = order.DateFrom.AddMonths(-3);
-            if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
-            {
-                Logger.Log(" ERROR: incorrect data in order DATE FROM.");
-                return;
-            }
-            var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
-            sw.Start();
             try
             {
+                order.Status = CalculationOrderStatus.Processing;
+                Logger.Log(string.Format("Calculating order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
+                var datefrom = order.DateFrom.AddMonths(-3);
+                if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
+                {
+                    Logger.Log(" ERROR: incorrect data in order DATE FROM.");
+                    return;
+                }
+                var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
+                sw.Start();
                 var tickers = candles.Select(o => o.Ticker).Distinct()
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
                 var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
@@ -117,7 +117,7 @@ namespace Calculator.Calculation
 
                     for (var i = startIndex; i < tc.Count; i++)
                     {
-                        var data = tc.GetRange(i - strategy.AnalysisDataLength+1, strategy.AnalysisDataLength).ToArray();
+                        var data = tc.GetRange(i - strategy.AnalysisDataLength + 1, strategy.AnalysisDataLength).ToArray();
                         object[] outData;
                         var result = strategy.Analyze(data, out outData);
                         outDatas.Add(outData);
@@ -151,7 +151,9 @@ namespace Calculator.Calculation
                         }
                     }
                 }
+
                 order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray() };
+                order.TotalBalance = balances.Last();
             }
             catch (Exception ex)
             {

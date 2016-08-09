@@ -26,9 +26,9 @@ namespace ModernClient
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var rootPage = new MainPage();
+            var rootPage = new dummy();
             rootPage.DataContext = new ViewModels.vmMainPage();
-            this.RootVisual = new MainPage();
+            this.RootVisual = rootPage;
         }
 
         private void Application_Exit(object sender, EventArgs e)

@@ -20,6 +20,12 @@ namespace ModernServer.WCFEntities
         public int WaitingOrdersCount { get; set; }
         [DataMember]
         public int FinishedOrdersCount { get; set; }
+        [DataMember]
+        public bool IsRunning { get; set; }
+        [DataMember]
+        public bool IsDone { get; set; }
+        [DataMember]
+        public bool IsWaiting { get; set; }
 
         public RemoteCalculationInfo(Guid id, string name, string strategyName)
         {
