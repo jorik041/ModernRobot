@@ -157,7 +157,7 @@ namespace Calculator.Calculation
                         }
                     }
                 }
-                var outDataDescription = new List<string>() { "Дата и время" };
+                var outDataDescription = new List<string>() { "Date Time" };
                 outDataDescription.AddRange(strategy.OutDataDescription);
                 order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
                 order.TotalBalance = balances.Last();

@@ -493,7 +493,8 @@ namespace ModernClient.ViewModels
             var dlg = new SaveFileDialog
             {
                 DefaultExt = ".csv",
-                Filter = "Текст (.csv)|*.csv"
+                Filter = "Текст (.csv)|*.csv",
+                DefaultFileName = SelectedResult.Parameters
             };
             if (dlg.ShowDialog() == true)
             {
@@ -523,8 +524,8 @@ namespace ModernClient.ViewModels
         private void GetFinishedResult(object sender, GetFinishedOrderResultCompletedEventArgs e)
         {
             var contents = new StringBuilder();
-            contents.AppendLine(ParseLine(e.Result.OutDataDescription, "Баланс"));  
-            for (var i=0; i < Math.Min(e.Result.OutData.Count(), e.Result.Balances.Count()); i++)
+            contents.AppendLine(ParseLine(e.Result.OutDataDescription, "Balance"));  
+            for (var i=0; i < e.Result.OutData.Count(); i++)
             {
                 contents.AppendLine(ParseLine(e.Result.OutData[i], e.Result.Balances[i]));
             }
