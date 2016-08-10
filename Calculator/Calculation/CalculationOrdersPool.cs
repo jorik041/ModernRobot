@@ -79,7 +79,7 @@ namespace Calculator.Calculation
             try
             {
                 order.Status = CalculationOrderStatus.Processing;
-                Logger.Log(string.Format("Calculating order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
+                //Logger.Log(string.Format("Calculating order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
                 var datefrom = order.DateFrom.AddMonths(-3);
                 if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
                 {
@@ -120,7 +120,9 @@ namespace Calculator.Calculation
                         var data = tc.GetRange(i - strategy.AnalysisDataLength + 1, strategy.AnalysisDataLength).ToArray();
                         object[] outData;
                         var result = strategy.Analyze(data, out outData);
-                        outDatas.Add(outData);
+                        var outList = new List<object>() { data.Last().DateTimeStamp };
+                        outList.AddRange(outData);
+                        outDatas.Add(outList.ToArray());
                         if (i == tc.Count - 1)
                             result = StrategyResult.Exit;
                         if (lastResult != result)
@@ -151,8 +153,9 @@ namespace Calculator.Calculation
                         }
                     }
                 }
-
-                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray() };
+                var outDataDescription = new List<string>() { "Дата и время" };
+                outDataDescription.AddRange(strategy.OutDataDescription);
+                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
                 order.TotalBalance = balances.Last();
             }
             catch (Exception ex)

@@ -391,6 +391,8 @@ namespace ModernClient.WCFCommunicator {
         
         private System.Collections.ObjectModel.ObservableCollection<System.Collections.ObjectModel.ObservableCollection<string>> OutDataField;
         
+        private System.Collections.ObjectModel.ObservableCollection<string> OutDataDescriptionField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Collections.ObjectModel.ObservableCollection<float> Balances {
             get {
@@ -413,6 +415,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((object.ReferenceEquals(this.OutDataField, value) != true)) {
                     this.OutDataField = value;
                     this.RaisePropertyChanged("OutData");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.ObjectModel.ObservableCollection<string> OutDataDescription {
+            get {
+                return this.OutDataDescriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OutDataDescriptionField, value) != true)) {
+                    this.OutDataDescriptionField = value;
+                    this.RaisePropertyChanged("OutDataDescription");
                 }
             }
         }

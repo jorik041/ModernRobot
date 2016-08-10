@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Threading;
 using ModernClient.Helpers;
+using System.Text;
 
 namespace ModernClient.ViewModels
 {
@@ -458,7 +459,7 @@ namespace ModernClient.ViewModels
             if (SelectedCalc != null)
             {
                 _selectedCalcId = SelectedCalc.Id;
-                SelectedContent = new Results();
+                SelectedContent = new PleaseWait();
                 Results = new ObservableCollection<ResultDescription>();
                 _client.GetFinishedOrdersForRemoteCalculationCompleted += GetResults;
                 _client.GetFinishedOrdersForRemoteCalculationAsync(_selectedCalcId);
@@ -484,11 +485,50 @@ namespace ModernClient.ViewModels
                     });
             }
             Results = new ObservableCollection<ResultDescription>(Results.OrderByDescending(o => o.Balance));
+            SelectedContent = new Results();
         }
 
         public void ExportSelectedResult()
         {
+            var dlg = new SaveFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "Текст (.csv)|*.csv"
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                _client.GetFinishedOrderResultCompleted += GetFinishedResult;
+                var saveFileContent = new Action<string> ((string contents) => 
+                {
+                    using (var stream = dlg.OpenFile())
+                    {
+                        using (var sw = new System.IO.StreamWriter(stream))
+                        {
+                            sw.Write(contents);
+                            sw.Flush();
+                            sw.Close();
+                        }
+                    }
+                });
+                _client.GetFinishedOrderResultAsync(_selectedCalcId, SelectedResult.Id, saveFileContent);
+            }
+        }
 
+        private string ParseLine(ObservableCollection<string> line, object balance)
+        {
+            line.Add(balance.ToString());
+            return string.Join(";", line);
+        }
+
+        private void GetFinishedResult(object sender, GetFinishedOrderResultCompletedEventArgs e)
+        {
+            var contents = new StringBuilder();
+            contents.AppendLine(ParseLine(e.Result.OutDataDescription, "Баланс"));  
+            for (var i=0; i < Math.Min(e.Result.OutData.Count(), e.Result.Balances.Count()); i++)
+            {
+                contents.AppendLine(ParseLine(e.Result.OutData[i], e.Result.Balances[i]));
+            }
+            ((Action<string>)e.UserState).Invoke(contents.ToString());                   
         }
 
         #region INotifyPropertyChanged Members

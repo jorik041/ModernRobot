@@ -9,5 +9,7 @@ namespace Calculator.Calculation
         public float[] Balances { get; set; }
         [DataMember]
         public string[][] OutData { get; set; }
+        [DataMember]
+        public string[] OutDataDescription { get; set; }
     }
 }

@@ -44,6 +44,7 @@
     <xs:sequence>
       <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Balances" nillable="true" type="q3:ArrayOffloat" />
       <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OutData" nillable="true" type="q4:ArrayOfArrayOfstring" />
+      <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OutDataDescription" nillable="true" type="q5:ArrayOfstring" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CalculationResult" nillable="true" type="tns:CalculationResult" />

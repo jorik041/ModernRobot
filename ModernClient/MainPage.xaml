@@ -88,7 +88,7 @@
             </ItemsControl>
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" >
                 <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Margin="3" Content="Очистить" Command="{Binding DeleteCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Margin="3" Content="Очистить" Command="{Binding ClearNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </Grid>
         <ListBox MouseLeftButtonUp="ListBox_MouseLeftButtonUp" Margin="5" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Calculators, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedCalc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
