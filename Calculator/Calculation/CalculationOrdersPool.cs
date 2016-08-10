@@ -150,6 +150,10 @@ namespace Calculator.Calculation
                             {
                                 balances.Add(balance + (lastEnterPrice - tc[i].Close));
                             }
+                            if (lastResult == StrategyResult.Exit)
+                            {
+                                balances.Add(balance);
+                            }
                         }
                     }
                 }

@@ -357,7 +357,7 @@ namespace ModernClient.ViewModels
 
             RunCalculation = new RelayCommand(o => RunCalc(), o => SelectedCalc != null && SelectedCalc.IsWaiting);
             DeleteCalculation = new RelayCommand(o => DeleteSelectedCalc(), o => SelectedCalc != null);
-            AddNewCalculation = new RelayCommand(o => AddCalc(), o => CanAddCalc && !((NewCalculationName == null) || (SelectedStrategyParameters.Any(p => p.From == null || p.To == null || p.To < p.From))));
+            AddNewCalculation = new RelayCommand(o => AddCalc(), o => CanAddCalc && !((NewCalculationName == null) || (SelectedStrategyParameters.Any(p => p.From == null || p.To == null || p.From > 0 || p.To > 0 || p.To < p.From))));
             ClearNewCalculation = new RelayCommand(o => ClearCalc());
             GoBackCommand = new RelayCommand(o => SelectedContent = new MainPage());
             GetDetailedResultsCommand = new RelayCommand(o => ExportSelectedResult(), o => SelectedResult != null);
