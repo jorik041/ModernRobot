@@ -170,6 +170,7 @@ namespace ModernClient.ViewModels
             {
                 _selectedCalc = value;
                 OnPropertyChanged("SelectedCalc");
+                DeleteCalculation.RaiseCanExecuteChanged();
             }
         }
 
@@ -357,7 +358,7 @@ namespace ModernClient.ViewModels
 
             RunCalculation = new RelayCommand(o => RunCalc(), o => SelectedCalc != null && SelectedCalc.IsWaiting);
             DeleteCalculation = new RelayCommand(o => DeleteSelectedCalc(), o => SelectedCalc != null);
-            AddNewCalculation = new RelayCommand(o => AddCalc(), o => CanAddCalc && !((NewCalculationName == null) || (SelectedStrategyParameters.Any(p => p.From == null || p.To == null || p.From > 0 || p.To > 0 || p.To < p.From))));
+            AddNewCalculation = new RelayCommand(o => AddCalc());
             ClearNewCalculation = new RelayCommand(o => ClearCalc());
             GoBackCommand = new RelayCommand(o => SelectedContent = new MainPage());
             GetDetailedResultsCommand = new RelayCommand(o => ExportSelectedResult(), o => SelectedResult != null);
@@ -368,14 +369,9 @@ namespace ModernClient.ViewModels
             {
                 _client.GetRemoteCalculationsInfoAsync();
                 OnPropertyChanged("CanAddCalc");
-                UpdateCommandBindings();
+                RunCalculation.RaiseCanExecuteChanged();
             };
             _timer.Start();
-        }
-
-        public void UpdateCalculators()
-        {
-            _client.GetRemoteCalculationsInfoAsync();
         }
 
         public void DeleteSelectedCalc()
@@ -393,6 +389,11 @@ namespace ModernClient.ViewModels
 
         public void AddCalc()
         {
+            if (!CanAddCalc || (string.IsNullOrWhiteSpace(NewCalculationName) || SelectedStrategyParameters.Any(p => p.From == null || p.To == null || p.From == 0 || p.To == 0 || p.To < p.From)))
+            {
+                MessageBox.Show("Некорректные данные для расчета!");
+                return;
+            }
             _client.AddRemoteCalculationCompleted += AddRemoteCalc;
             _client.AddRemoteCalculationAsync(NewCalculationName, SelectedStrategy);
         }

@@ -98,6 +98,9 @@ namespace Calculator.Calculation
                 var lastResult = StrategyResult.Exit;
                 var lastEnterPrice = 0f;
                 var balance = 0f;
+                var priceDiff = 0f;
+                var lotSize = 0;
+
 
                 foreach (var ticker in tickers)
                 {
@@ -120,44 +123,55 @@ namespace Calculator.Calculation
                         var data = tc.GetRange(i - strategy.AnalysisDataLength + 1, strategy.AnalysisDataLength).ToArray();
                         object[] outData;
                         var result = strategy.Analyze(data, out outData);
-                        var outList = new List<object>() { data.Last().DateTimeStamp };
-                        outList.AddRange(outData);
-                        outDatas.Add(outList.ToArray());
                         if (i == tc.Count - 1)
                             result = StrategyResult.Exit;
+
                         if (lastResult != result)
                         {
-                            if (lastResult == StrategyResult.Long)
+                            balance = balance + priceDiff + lotSize * tc[i].Close;
+                            if (result == StrategyResult.Long)
                             {
-                                balance = balance - (lastEnterPrice - tc[i].Close);
+                                priceDiff = -tc[i].Close;
+                                lotSize = 1;
                             }
-                            if (lastResult == StrategyResult.Short)
+                            if (result == StrategyResult.Short)
                             {
-                                balance = balance + (lastEnterPrice - tc[i].Close);
+                                priceDiff = tc[i].Close;
+                                lotSize = -1;
                             }
-
-                            lastResult = result;
-                            lastEnterPrice = tc[i].Close;
+                            if (result == StrategyResult.Exit)
+                            {
+                                priceDiff = 0;
+                                lotSize = 0;
+                            }
+                            balance = balance + priceDiff + lotSize * tc[i].Close;
                             balances.Add(balance);
                         }
                         else
                         {
-                            if (lastResult == StrategyResult.Long)
+                            if (!strategy.SingleLOT)
                             {
-                                balances.Add(balance - (lastEnterPrice - tc[i].Close));
+                                if (result == StrategyResult.Long)
+                                {
+                                    priceDiff = priceDiff-tc[i].Close;
+                                    lotSize++;
+                                }
+                                if (result == StrategyResult.Short)
+                                {
+                                    priceDiff = priceDiff + tc[i].Close;
+                                    lotSize--;
+                                }
                             }
-                            if (lastResult == StrategyResult.Short)
-                            {
-                                balances.Add(balance + (lastEnterPrice - tc[i].Close));
-                            }
-                            if (lastResult == StrategyResult.Exit)
-                            {
-                                balances.Add(balance);
-                            }
+                            balances.Add(balance + priceDiff + lotSize * tc[i].Close);    
                         }
+                        lastResult = result;
+
+                        var outList = new List<object>() { data.Last().DateTimeStamp, lotSize };
+                        outList.AddRange(outData);
+                        outDatas.Add(outList.ToArray());
                     }
                 }
-                var outDataDescription = new List<string>() { "Date Time" };
+                var outDataDescription = new List<string>() { "Date Time", "LOT size" };
                 outDataDescription.AddRange(strategy.OutDataDescription);
                 order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
                 order.TotalBalance = balances.Last();
