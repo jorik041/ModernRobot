@@ -43,9 +43,12 @@ namespace Calculator.Calculation
             }
         }
 
-        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
+        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, bool antiTrend = false, int entryLot = 0, int lotIncrement =0)
         {
             var order = CalculationOrder.CreateNew("SI", dateFrom, dateTo, period, parameters);
+            order.AntiTrend = antiTrend;
+            order.EntryLOT = entryLot;
+            order.LOTIncrement = lotIncrement;
             _ordersQueue.Enqueue(order);
             return order.Id;
         }
@@ -126,40 +129,55 @@ namespace Calculator.Calculation
                         if (i == tc.Count - 1)
                             result = StrategyResult.Exit;
 
-                        if (lastResult != result)
+                        if ((lastResult != result) || lotSize == 0)
                         {
                             balance = balance + priceDiff + lotSize * tc[i].Close;
                             if (result == StrategyResult.Long)
                             {
-                                priceDiff = -tc[i].Close;
-                                lotSize = 1;
+                                lotSize = order.AntiTrend ? order.EntryLOT : 1;
+                                priceDiff = -tc[i].Close * lotSize;
                             }
                             if (result == StrategyResult.Short)
                             {
-                                priceDiff = tc[i].Close;
-                                lotSize = -1;
+                                lotSize = order.AntiTrend ? -order.EntryLOT : -1;
+                                priceDiff = tc[i].Close * (-lotSize);
                             }
                             if (result == StrategyResult.Exit)
                             {
                                 priceDiff = 0;
                                 lotSize = 0;
                             }
-                            balance = balance + priceDiff + lotSize * tc[i].Close;
                             balances.Add(balance);
                         }
                         else
                         {
-                            if (!strategy.SingleLOT)
+                            if (order.AntiTrend)
                             {
                                 if (result == StrategyResult.Long)
                                 {
-                                    priceDiff = priceDiff-tc[i].Close;
-                                    lotSize++;
+                                    if (tc[i].Close > tc[i - 1].Close)
+                                    {
+                                        priceDiff = priceDiff + tc[i].Close * order.LOTIncrement;
+                                        lotSize = lotSize - order.LOTIncrement;
+                                    }
+                                    else
+                                    {
+                                        priceDiff = priceDiff - tc[i].Close * order.LOTIncrement;
+                                        lotSize = lotSize + order.LOTIncrement;
+                                    }
                                 }
                                 if (result == StrategyResult.Short)
                                 {
-                                    priceDiff = priceDiff + tc[i].Close;
-                                    lotSize--;
+                                    if (tc[i].Close < tc[i - 1].Close)
+                                    {
+                                        priceDiff = priceDiff + tc[i].Close * order.LOTIncrement;
+                                        lotSize = lotSize - order.LOTIncrement;
+                                    }
+                                    else
+                                    {
+                                        priceDiff = priceDiff - tc[i].Close * order.LOTIncrement;
+                                        lotSize = lotSize + order.LOTIncrement;
+                                    }
                                 }
                             }
                             balances.Add(balance + priceDiff + lotSize * tc[i].Close);    
