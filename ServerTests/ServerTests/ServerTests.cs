@@ -16,7 +16,7 @@ namespace ServerTests
         {
             using (var pool = new CalculationOrdersPool(typeof(FortsBasic)))
             {
-                pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.Hour, new float[] { 10, 5, 50, 1, 8 });
+                pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.Hour, new float[] { 10, 5, 50, 1, 8 }, true, 10, 5);
                 pool.ProcessOrders();
                 while (pool.FinishedOrders.Length != 1)
                 {

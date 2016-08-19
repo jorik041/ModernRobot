@@ -129,7 +129,7 @@ namespace Calculator.Calculation
                         if (i == tc.Count - 1)
                             result = StrategyResult.Exit;
 
-                        if ((lastResult != result) || lotSize == 0)
+                        if ((lastResult != result) || ((Math.Abs(lotSize) == 2 * order.EntryLOT) && order.AntiTrend))
                         {
                             balance = balance + priceDiff + lotSize * tc[i].Close;
                             if (result == StrategyResult.Long)
@@ -157,26 +157,38 @@ namespace Calculator.Calculation
                                 {
                                     if (tc[i].Close > tc[i - 1].Close)
                                     {
-                                        priceDiff = priceDiff + tc[i].Close * order.LOTIncrement;
-                                        lotSize = lotSize - order.LOTIncrement;
+                                        if (lotSize >= order.LOTIncrement)
+                                        {
+                                            priceDiff = priceDiff + tc[i].Close * order.LOTIncrement;
+                                            lotSize = lotSize - order.LOTIncrement;
+                                        }
                                     }
                                     else
                                     {
-                                        priceDiff = priceDiff - tc[i].Close * order.LOTIncrement;
-                                        lotSize = lotSize + order.LOTIncrement;
+                                        if (lotSize < order.EntryLOT * 2)
+                                        {
+                                            priceDiff = priceDiff - tc[i].Close * order.LOTIncrement;
+                                            lotSize = lotSize + order.LOTIncrement;
+                                        }
                                     }
                                 }
                                 if (result == StrategyResult.Short)
                                 {
                                     if (tc[i].Close < tc[i - 1].Close)
                                     {
-                                        priceDiff = priceDiff + tc[i].Close * order.LOTIncrement;
-                                        lotSize = lotSize - order.LOTIncrement;
+                                        if (lotSize > -order.EntryLOT * 2)
+                                        {
+                                            priceDiff = priceDiff + tc[i].Close * order.LOTIncrement;
+                                            lotSize = lotSize - order.LOTIncrement;
+                                        }
                                     }
                                     else
                                     {
-                                        priceDiff = priceDiff - tc[i].Close * order.LOTIncrement;
-                                        lotSize = lotSize + order.LOTIncrement;
+                                        if (lotSize <= -order.LOTIncrement)
+                                        {
+                                            priceDiff = priceDiff - tc[i].Close * order.LOTIncrement;
+                                            lotSize = lotSize + order.LOTIncrement;
+                                        }
                                     }
                                 }
                             }
