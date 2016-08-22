@@ -46,6 +46,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -86,7 +87,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" >
+            <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="2" >
                 <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Margin="3" Content="Очистить" Command="{Binding ClearNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
