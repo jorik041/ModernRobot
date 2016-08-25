@@ -21,6 +21,7 @@ namespace ModernClient.ViewModels
         public string DateTo { get; set; }
         public string Period { get; set; }
         public Guid Id { get; set; }
+        public float StopLoss { get; set; }
 
         private float _balance;
         public float Balance

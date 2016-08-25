@@ -252,6 +252,8 @@ namespace ModernClient.WCFCommunicator {
         
         private ModernClient.WCFCommunicator.CalculationOrderStatus StatusField;
         
+        private float StopLossField;
+        
         private float TotalBalanceField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
@@ -341,6 +343,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((this.StatusField.Equals(value) != true)) {
                     this.StatusField = value;
                     this.RaisePropertyChanged("Status");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float StopLoss {
+            get {
+                return this.StopLossField;
+            }
+            set {
+                if ((this.StopLossField.Equals(value) != true)) {
+                    this.StopLossField = value;
+                    this.RaisePropertyChanged("StopLoss");
                 }
             }
         }
@@ -472,7 +487,7 @@ namespace ModernClient.WCFCommunicator {
         void EndRemoveRemoteCalculation(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation", ReplyAction="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulationResponse")]
-        System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, System.AsyncCallback callback, object asyncState);
         
         void EndAddOrderToRemoteCalulation(System.IAsyncResult result);
         
@@ -1080,8 +1095,8 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, callback, asyncState);
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1096,7 +1111,8 @@ namespace ModernClient.WCFCommunicator {
             System.DateTime dateTo = ((System.DateTime)(inValues[3]));
             ModernClient.WCFCommunicator.TimePeriods period = ((ModernClient.WCFCommunicator.TimePeriods)(inValues[4]));
             System.Collections.ObjectModel.ObservableCollection<float> parameters = ((System.Collections.ObjectModel.ObservableCollection<float>)(inValues[5]));
-            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, callback, asyncState);
+            float stopLoss = ((float)(inValues[6]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, callback, asyncState);
         }
         
         private object[] OnEndAddOrderToRemoteCalulation(System.IAsyncResult result) {
@@ -1111,11 +1127,11 @@ namespace ModernClient.WCFCommunicator {
             }
         }
         
-        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters) {
-            this.AddOrderToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, null);
+        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss) {
+            this.AddOrderToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, null);
         }
         
-        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, object userState) {
+        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, object userState) {
             if ((this.onBeginAddOrderToRemoteCalulationDelegate == null)) {
                 this.onBeginAddOrderToRemoteCalulationDelegate = new BeginOperationDelegate(this.OnBeginAddOrderToRemoteCalulation);
             }
@@ -1131,7 +1147,8 @@ namespace ModernClient.WCFCommunicator {
                         dateFrom,
                         dateTo,
                         period,
-                        parameters}, this.onEndAddOrderToRemoteCalulationDelegate, this.onAddOrderToRemoteCalulationCompletedDelegate, userState);
+                        parameters,
+                        stopLoss}, this.onEndAddOrderToRemoteCalulationDelegate, this.onAddOrderToRemoteCalulationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1594,14 +1611,15 @@ namespace ModernClient.WCFCommunicator {
                 base.EndInvoke("RemoveRemoteCalculation", _args, result);
             }
             
-            public System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[6];
+            public System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[7];
                 _args[0] = idCalculation;
                 _args[1] = insName;
                 _args[2] = dateFrom;
                 _args[3] = dateTo;
                 _args[4] = period;
                 _args[5] = parameters;
+                _args[6] = stopLoss;
                 System.IAsyncResult _result = base.BeginInvoke("AddOrderToRemoteCalulation", _args, callback, asyncState);
                 return _result;
             }

@@ -45,6 +45,7 @@
                 <sdk:DataGridTextColumn Header="Период" Binding="{Binding Period}" Width="Auto"/>
                 <sdk:DataGridTextColumn Header="Дата от" Binding="{Binding DateFrom}" Width="Auto"/>
                 <sdk:DataGridTextColumn Header="Дата до" Binding="{Binding DateTo}" Width="Auto"/>
+                <sdk:DataGridTextColumn Header="Stop Loss" Binding="{Binding StopLoss}" Width="Auto"/>
                 <sdk:DataGridTextColumn Header="Баланс" Binding="{Binding Balance}" Width="Auto"/>
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>

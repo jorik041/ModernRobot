@@ -80,12 +80,12 @@ namespace ModernServer.Communication
                 _remoteCalculators.Remove(rCalc);
         }
 
-        public void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters)
+        public void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss)
         {
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
             if (rc == null)
                 return;
-            rc.OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters);
+            rc.OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters, stopLoss);
         }
 
         public void StartRemoteCalculation(Guid idCalculation)

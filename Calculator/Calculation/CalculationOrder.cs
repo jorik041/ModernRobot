@@ -28,6 +28,8 @@ namespace Calculator.Calculation
         public CalculationOrderStatus Status { get; internal set; }
         [DataMember]
         public float TotalBalance { get; internal set; }
+        [DataMember]
+        public float StopLoss { get; set; }
 
         public CalculationResult Result { get; internal set; }
         

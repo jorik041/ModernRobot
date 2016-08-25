@@ -30,7 +30,7 @@ namespace ModernServer.Communication
         void RemoveRemoteCalculation(Guid id);
 
         [OperationContract]
-        void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters);
+        void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss);
 
         [OperationContract]
         void StartRemoteCalculation(Guid idCalculation);

@@ -1,5 +1,6 @@
 ﻿using DBAccess.Database;
 using DBAccess.Entities;
+using System;
 
 namespace Calculator.Strategies
 {
@@ -11,5 +12,8 @@ namespace Calculator.Strategies
         StrategyParameter[] Parameters { get; }
         StrategyResult Analyze(Candle[] candles, out object[] outData);
         string[] OutDataDescription { get; }
+
+        event EventHandler<float> OnStopLossChanged;
+        float StopLossValue { get; set; }
     }
 }

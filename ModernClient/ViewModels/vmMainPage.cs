@@ -48,12 +48,54 @@ namespace ModernClient.ViewModels
         private DateTime _displayDateTo;
         private object _lockObj= new object();
         private DispatcherTimer _timer;
-        private bool _canAddCalc = true;
         private UserControl _selectedContent;
         private Guid _selectedCalcId;
         private ObservableCollection<ResultDescription> _results;
         private ResultDescription _selectedResult;
-        
+        private float _stopLossLow=100;
+        private float _stopLossHigh=1000;
+        private float _stopLossIncrement=50;
+        private bool _useStopLoss;
+
+        public float StopLossLow
+        {
+            get
+            {
+                return _stopLossLow;
+            }
+            set
+            {
+                _stopLossLow = value;
+                OnPropertyChanged("StopLossLow");
+            }
+        }
+
+        public float StopLossHigh
+        {
+            get
+            {
+                return _stopLossHigh;
+            }
+            set
+            {
+                _stopLossHigh = value;
+                OnPropertyChanged("StopLossHigh");
+            }
+        }
+
+        public float StopLossIncrement
+        {
+            get
+            {
+                return _stopLossIncrement;
+            }
+            set
+            {
+                _stopLossIncrement = value;
+                OnPropertyChanged("StopLossIncrement");
+            }
+        }
+
         public UserControl SelectedContent
         {
             get
@@ -264,19 +306,6 @@ namespace ModernClient.ViewModels
             }
         }
 
-        public bool CanAddCalc
-        {
-            get
-            {
-                return _canAddCalc;
-            }
-            set
-            {
-                _canAddCalc = value;
-                OnPropertyChanged("CanAddCalc");
-            }
-        }
-
         public ObservableCollection<ResultDescription> Results
         {
             get
@@ -300,6 +329,19 @@ namespace ModernClient.ViewModels
                 _selectedResult = value;
                 OnPropertyChanged("SelectedResult");
                 UpdateCommandBindings();
+            }
+        }
+
+        public bool UseStopLoss
+        {
+            get
+            {
+                return _useStopLoss;
+            }
+            set
+            {
+                _useStopLoss = value;
+                OnPropertyChanged("UseStopLoss");
             }
         }
 
@@ -389,13 +431,17 @@ namespace ModernClient.ViewModels
 
         public void AddCalc()
         {
-            if (!CanAddCalc || (string.IsNullOrWhiteSpace(NewCalculationName) || SelectedStrategyParameters.Any(p => p.From == null || p.To == null || p.From == 0 || p.To == 0 || p.To < p.From)))
+            if (StopLossIncrement<1 || StopLossLow > StopLossHigh || StopLossHigh<1 ||  
+                (string.IsNullOrWhiteSpace(NewCalculationName) || 
+                SelectedStrategyParameters.Any(p => p.From == null || p.To == null || 
+                p.From == 0 || p.To == 0 || p.To < p.From)))
             {
                 MessageBox.Show("Некорректные данные для расчета!");
                 return;
             }
             _client.AddRemoteCalculationCompleted += AddRemoteCalc;
             _client.AddRemoteCalculationAsync(NewCalculationName, SelectedStrategy);
+            SelectedContent = new PleaseWait();
         }
 
         private void CollectParams(int num = 0)
@@ -417,24 +463,24 @@ namespace ModernClient.ViewModels
         private void AddRemoteCalc(object sender, AddRemoteCalculationCompletedEventArgs e)
         {
             _client.AddRemoteCalculationCompleted -= AddRemoteCalc;
-            CanAddCalc = false;
-            ThreadPool.QueueUserWorkItem((obj) =>
+            _combinations = new List<float[]>();
+            _collector = new int[SelectedStrategyParameters.Count];
+            for (var i = 0; i < _collector.Count(); i++)
+                _collector[i] = (int)SelectedStrategyParameters[i].From;
+            CollectParams();
+            foreach (var comb in _combinations)
             {
-                lock (_lockObj)
+                if (UseStopLoss)
                 {
-                    _combinations = new List<float[]>();
-                    _collector = new int[SelectedStrategyParameters.Count];
-                    for (var i = 0; i < _collector.Count(); i++)
-                        _collector[i] = (int)SelectedStrategyParameters[i].From;
-                    CollectParams();
-                    foreach (var comb in _combinations)
-                    {
-                        _client.AddOrderToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<float>(comb));
-                    }         
-                              
-                    _canAddCalc = true;
+                    for (var i = StopLossLow; i < StopLossHigh; i = i + StopLossIncrement)
+                        _client.AddOrderToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<float>(comb), i);
                 }
-            });
+                else
+                {
+                    _client.AddOrderToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<float>(comb), 0);
+                }
+            }
+            SelectedContent = new MainPage();
         }
 
         public void ClearCalc()
@@ -482,6 +528,7 @@ namespace ModernClient.ViewModels
                         Period = PeriodsList[res.Period],
                         StrategyName = Calculators.Single(o => o.Id == _selectedCalcId).StrategyName,
                         Parameters = string.Join("-", res.Parameters),
+                        StopLoss = res.StopLoss,
                         Balance = res.TotalBalance
                     });
             }

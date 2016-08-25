@@ -47,6 +47,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -54,17 +58,17 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center" Text="Выберите инструмент:" Grid.Column="0" Grid.Row="0"/>
-            <ComboBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding ActualizedInstruments}" MinWidth="50" Grid.Column="1" SelectedIndex="0" DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstrument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <ComboBox HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding ActualizedInstruments}" MinWidth="50" Grid.Column="1" SelectedIndex="0" DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstrument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock VerticalAlignment="Center" Text="Выберите стратегию:" Grid.Column="0" Grid.Row="1"/>
-            <ComboBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvaliableStrategies}" SelectedItem="{Binding SelectedStrategy}" MinWidth="50" Grid.Column="1" Grid.Row="1" SelectedIndex="0"/>
+            <ComboBox HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvaliableStrategies}" SelectedItem="{Binding SelectedStrategy}" MinWidth="50" Grid.Column="1" Grid.Row="1" SelectedIndex="0"/>
             <TextBlock VerticalAlignment="Center" Text="Название расчета:" Grid.Column="0" Grid.Row="2"/>
             <TextBox HorizontalContentAlignment="Center" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="2" Text="{Binding NewCalculationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock VerticalAlignment="Center" Text="Период времени:" Grid.Column="0" Grid.Row="3"/>
-            <ComboBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="3" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding PeriodsList}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0"/>
+            <ComboBox Margin="3" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding PeriodsList}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0"/>
             <TextBlock VerticalAlignment="Center" Text="Дата от:" Grid.Column="0" Grid.Row="4"/>
             <TextBlock VerticalAlignment="Center" Text="Дата до:" Grid.Column="0" Grid.Row="5"/>
-            <sdk:DatePicker IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="4" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <sdk:DatePicker IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="5" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <sdk:DatePicker Grid.Column="1" Grid.Row="4" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <sdk:DatePicker Grid.Column="1" Grid.Row="5" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <ItemsControl ItemsSource="{Binding SelectedStrategyParameters}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -79,15 +83,22 @@
                             </TextBlock>
                             <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" >
                                 <TextBlock VerticalAlignment="Center" Text="от"/>
-                                <TextBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center" Margin="5" Width="30"/>
+                                <TextBox KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center" Margin="5" Width="30"/>
                                 <TextBlock VerticalAlignment="Center" Text="до"/>
-                                <TextBox IsEnabled="{Binding CanAddCalc, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center"  Margin="5" Width="30" />
+                                <TextBox KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center"  Margin="5" Width="30" />
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="2" >
+            <CheckBox Margin="3" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Content="Учитывать Stop Loss" IsChecked="{Binding UseStopLoss, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock  Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Text="Мин. Stop Loss:"/>
+            <TextBlock Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Text="Шаг Stop Loss:"/>
+            <TextBlock Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" Text="Макс. Stop Loss:"/>
+            <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="8" Text="{Binding StopLossLow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="9" Text="{Binding StopLossIncrement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="10" Text="{Binding StopLossHigh, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.ColumnSpan="2" >
                 <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Margin="3" Content="Очистить" Command="{Binding ClearNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>

@@ -8,6 +8,7 @@ using CommonLib.Helpers;
 using Calculator.Strategies;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 namespace Calculator.Calculation
 {
@@ -43,9 +44,10 @@ namespace Calculator.Calculation
             }
         }
 
-        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, bool antiTrend = false, int entryLot = 0, int lotIncrement =0)
+        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss)
         {
             var order = CalculationOrder.CreateNew("SI", dateFrom, dateTo, period, parameters);
+            order.StopLoss = stopLoss;
             _ordersQueue.Enqueue(order);
             return order.Id;
         }
@@ -99,11 +101,13 @@ namespace Calculator.Calculation
                 var balance = 0f;
                 var priceDiff = 0f;
                 var lotSize = 0;
-
+                var lastPrice = 0f;
+                var stopPrice = 0f;
 
                 foreach (var ticker in tickers)
                 {
                     var tc = candles.Where(o => o.Ticker == ticker).OrderBy(o => o.DateTimeStamp).ToList();
+                    lastResult = StrategyResult.Exit;
                     var itemDateFrom = _reader.GetItemDateFrom(ticker);
                     if (order.DateFrom > itemDateFrom)
                         itemDateFrom = order.DateFrom;
@@ -116,6 +120,23 @@ namespace Calculator.Calculation
                         return;
                     }
                     strategy.Initialize();
+                    var currentSL = 0f;
+                    strategy.StopLossValue = order.StopLoss;
+
+                    EventHandler<float> stopLossChanged = (sender, newVal) =>
+                    {
+                        if (currentSL != 0)
+                        {
+                            if (lastResult == StrategyResult.Long)
+                                if (newVal > lastPrice - order.StopLoss)
+                                    currentSL = newVal;
+                            if (lastResult == StrategyResult.Short)
+                                if (newVal < lastPrice + order.StopLoss)
+                                    currentSL = newVal;
+                        }
+                    };
+
+                    strategy.OnStopLossChanged += stopLossChanged;
 
                     for (var i = startIndex; i < tc.Count; i++)
                     {
@@ -132,32 +153,81 @@ namespace Calculator.Calculation
                             {
                                 lotSize = 1;
                                 priceDiff = -tc[i].Close * lotSize;
+                                if (order.StopLoss == 0)
+                                    currentSL = 0;
+                                else
+                                    currentSL = tc[i].Close - order.StopLoss;
                             }
                             if (result == StrategyResult.Short)
                             {
                                 lotSize = -1;
                                 priceDiff = tc[i].Close * (-lotSize);
+                                if (order.StopLoss == 0)
+                                    currentSL = 0;
+                                else 
+                                    currentSL = tc[i].Close + order.StopLoss;
                             }
                             if (result == StrategyResult.Exit)
                             {
                                 priceDiff = 0;
                                 lotSize = 0;
+                                currentSL = 0;
                             }
                             balances.Add(balance);
+                            lastPrice = tc[i].Close;
+                            stopPrice = 0;
                         }
                         else
                         {
-                            balances.Add(balance + priceDiff + lotSize * tc[i].Close);    
+                            balances.Add(balance + priceDiff + lotSize * tc[i].Close);
+                            if (currentSL != 0)
+                            {
+                                if (result == StrategyResult.Long)
+                                    if (tc[i].Close <= currentSL)
+                                    {
+                                        balance = balance + priceDiff + lotSize * tc[i].Close;
+                                        currentSL = 0;
+                                        priceDiff = 0;
+                                        lotSize = 0;
+                                        stopPrice = tc[i].Close;
+                                    }
+                                if (result == StrategyResult.Short)
+                                    if (tc[i].Close >= currentSL)
+                                    {
+                                        balance = balance + priceDiff + lotSize * tc[i].Close;
+                                        currentSL = 0;
+                                        priceDiff = 0;
+                                        lotSize = 0;
+                                        stopPrice = tc[i].Close;
+                                    }
+                            }
                         }
                         lastResult = result;
 
-                        var outList = new List<object>() { data.Last().DateTimeStamp };
+                        var outList = new List<object>() { data.Last().DateTimeStamp, tc[i].Ticker, tc[i].Open, tc[i].High, tc[i].Low, tc[i].Close };
                         outList.AddRange(outData);
+                        outList.Add(lotSize);
+                        if (result == StrategyResult.Long)
+                            outList.Add(currentSL);
+                        if (result == StrategyResult.Short)
+                            outList.Add(currentSL);
+                        if (result == StrategyResult.Exit)
+                            outList.Add(0);
+                        if (stopPrice == 0)
+                            outList.Add("No");
+                        else
+                            outList.Add(string.Format("Yes ({0})",stopPrice));
+                        outList.Add(balance);
                         outDatas.Add(outList.ToArray());
                     }
+                    strategy.OnStopLossChanged -= stopLossChanged;
                 }
-                var outDataDescription = new List<string>() { "Date Time" };
+                var outDataDescription = new List<string>() { "Date Time", "Ticker", "Open", "High", "Low", "Close" };
                 outDataDescription.AddRange(strategy.OutDataDescription);
+                outDataDescription.Add("LOT Size");
+                outDataDescription.Add("STOP price");
+                outDataDescription.Add("STOPPED");
+                outDataDescription.Add("Balance per deal");
                 order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
                 order.TotalBalance = balances.Last();
             }
