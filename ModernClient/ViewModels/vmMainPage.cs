@@ -549,6 +549,7 @@ namespace ModernClient.ViewModels
                 _client.GetFinishedOrderResultCompleted += GetFinishedResult;
                 var saveFileContent = new Action<string> ((string contents) => 
                 {
+                    SelectedContent = new PleaseWait();
                     using (var stream = dlg.OpenFile())
                     {
                         using (var sw = new System.IO.StreamWriter(stream))
@@ -558,6 +559,7 @@ namespace ModernClient.ViewModels
                             sw.Close();
                         }
                     }
+                    SelectedContent = new Results();
                 });
                 _client.GetFinishedOrderResultAsync(_selectedCalcId, SelectedResult.Id, saveFileContent);
             }

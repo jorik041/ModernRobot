@@ -128,6 +128,7 @@ namespace ModernServer.Communication
             var calc = _remoteCalculators.SingleOrDefault(o => o.Id == idCalculation);
             if ((calc == null) || (!calc.OrdersPool.FinishedOrders.Any(o => o.Id == idOrder)))
                 return new CalculationResult();
+            calc.OrdersPool.GetFinishedOrderResults(idOrder);
             return calc.OrdersPool.FinishedOrders.First(o => o.Id == idOrder).Result;
         }
 

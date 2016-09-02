@@ -3,7 +3,7 @@
 namespace Calculator.Calculation
 {
     [DataContract]
-    public struct CalculationResult
+    public class CalculationResult
     {
         [DataMember]
         public float[] Balances { get; set; }

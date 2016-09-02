@@ -9,7 +9,7 @@
             </basicHttpBinding>
         </bindings>
         <client>
-            <endpoint address="http://136.243.88.208:777/ModernServer/" binding="basicHttpBinding"
+            <endpoint address="http://localhost:777/ModernServer/" binding="basicHttpBinding"
                 bindingConfiguration="BasicHttpBinding_IWCFCommunicator" contract="WCFCommunicator.IWCFCommunicator"
                 name="BasicHttpBinding_IWCFCommunicator" />
         </client>

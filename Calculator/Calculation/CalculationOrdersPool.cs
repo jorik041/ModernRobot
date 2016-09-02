@@ -75,9 +75,15 @@ namespace Calculator.Calculation
             });
         }
 
-        private void CalculateNextOrder(CalculationOrder order)
+        public void GetFinishedOrderResults(Guid orderId)
         {
-            var sw = new Stopwatch();
+            var order = FinishedOrders.SingleOrDefault(o => o.Id == orderId);
+            if (order != null)
+                CalculateNextOrder(order, true);
+        }
+
+        private void CalculateNextOrder(CalculationOrder order, bool saveResults = false)
+        {
             try
             {
                 order.Status = CalculationOrderStatus.Processing;
@@ -89,7 +95,6 @@ namespace Calculator.Calculation
                     return;
                 }
                 var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
-                sw.Start();
                 var tickers = candles.Select(o => o.Ticker).Distinct()
                     .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
                 var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
@@ -173,13 +178,15 @@ namespace Calculator.Calculation
                                 lotSize = 0;
                                 currentSL = 0;
                             }
-                            balances.Add(balance);
+                            if (saveResults)
+                                balances.Add(balance);
                             lastPrice = tc[i].Close;
                             stopPrice = 0;
                         }
                         else
                         {
-                            balances.Add(balance + priceDiff + lotSize * tc[i].Close);
+                            if (saveResults)
+                                balances.Add(balance + priceDiff + lotSize * tc[i].Close);
                             if (currentSL != 0)
                             {
                                 if (result == StrategyResult.Long)
@@ -218,29 +225,34 @@ namespace Calculator.Calculation
                         else
                             outList.Add(string.Format("Yes ({0})",stopPrice));
                         outList.Add(balance);
-                        outDatas.Add(outList.ToArray());
+                        if (saveResults)
+                            outDatas.Add(outList.ToArray());
                     }
                     strategy.OnStopLossChanged -= stopLossChanged;
                 }
-                var outDataDescription = new List<string>() { "Date Time", "Ticker", "Open", "High", "Low", "Close" };
-                outDataDescription.AddRange(strategy.OutDataDescription);
-                outDataDescription.Add("LOT Size");
-                outDataDescription.Add("STOP price");
-                outDataDescription.Add("STOPPED");
-                outDataDescription.Add("Balance per deal");
-                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
-                order.TotalBalance = balances.Last();
+                var outDataDescription = new List<string>();
+                if (saveResults)
+                {
+                    outDataDescription.AddRange(new string[6] { "Date Time", "Ticker", "Open", "High", "Low", "Close" });
+                    outDataDescription.AddRange(strategy.OutDataDescription);
+                    outDataDescription.Add("LOT Size");
+                    outDataDescription.Add("STOP price");
+                    outDataDescription.Add("STOPPED");
+                    outDataDescription.Add("Balance per deal");
+                }
+                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray()};
+                order.TotalBalance = balance;
             }
             catch (Exception ex)
             {
                 Logger.Log(string.Format(" ERROR on calculation: {0}", ex));
             }
-            sw.Stop();
             //Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
             order.Status = CalculationOrderStatus.Finished;
             lock (_lock)
             {
-                _finishedOrders.Add(order);
+                if (!saveResults)
+                    _finishedOrders.Add(order);
             }
         }
     }

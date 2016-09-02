@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 namespace Calculator.Calculation
 {
     [DataContract]
-    public struct CalculationOrder
+    public class CalculationOrder
     {
         [DataMember]
         public Guid Id { get; private set; }
