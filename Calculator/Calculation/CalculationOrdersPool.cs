@@ -72,8 +72,21 @@ namespace Calculator.Calculation
                 IsProcessingOrders = true;
                 while (_ordersQueue.Any())
                 {
-                    var order = _ordersQueue.Dequeue();
-                    CalculateNextOrder(order); 
+                    try
+                    {
+                        var order = _ordersQueue.Dequeue();
+                        CalculateNextOrder(order);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Logger.Log(ex.ToString());
+                        continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.ToString());
+                        break;
+                    }
                 }
                 IsProcessingOrders = false;
             });
