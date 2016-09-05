@@ -404,7 +404,7 @@ namespace ModernClient.ViewModels
             GetDetailedResultsCommand = new RelayCommand(o => ExportSelectedResult(), o => SelectedResult != null);
 
             _timer = new DispatcherTimer();
-            _timer.Interval = new TimeSpan(0, 0, 1);
+            _timer.Interval = TimeSpan.FromMilliseconds(200);
             _timer.Tick += (sender, obj) => 
             {
                 _client.GetRemoteCalculationsInfoAsync();
@@ -444,7 +444,6 @@ namespace ModernClient.ViewModels
         private void OnAddRemoteCalc(object sender, AddRemoteCalculationCompletedEventArgs e)
         {
             _client.AddRemoteCalculationCompleted -= OnAddRemoteCalc;
-            _client.AddOrdersToRemoteCalulationCompleted += OnAddOrdersCompleted;
             if (UseStopLoss)
             {
                 for (var i = StopLossLow; i < StopLossHigh; i = i + StopLossIncrement)
@@ -453,12 +452,7 @@ namespace ModernClient.ViewModels
             else
             {
                 _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), 0);
-            }           
-        }
-
-        private void OnAddOrdersCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            _client.AddOrdersToRemoteCalulationCompleted -= OnAddOrdersCompleted;
+            }
             SelectedContent = new MainPage();
         }
 

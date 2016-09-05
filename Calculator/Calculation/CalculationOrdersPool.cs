@@ -22,6 +22,16 @@ namespace Calculator.Calculation
 
         public bool IsProcessingOrders { get; private set; }
 
+        public void Lock()
+        {
+            IsProcessingOrders = true;
+        }
+
+        public void UnLock()
+        {
+            IsProcessingOrders = false;
+        }
+
         public CalculationOrdersPool(Type strategyType)
         {
             _strategyType = strategyType;

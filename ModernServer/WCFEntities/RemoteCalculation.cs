@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Calculator.Calculation;
 using Calculator.Strategies;
 using System.Runtime.Serialization;
+
 namespace ModernServer.WCFEntities
 {
     public class RemoteCalculation : RemoteCalculationInfo

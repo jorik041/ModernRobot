@@ -109,14 +109,22 @@ namespace ModernServer.Communication
 
         public void AddOrdersToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss)
         {
-            _collector = new int[parameters.Count()];
+            var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
+            if (rc == null)
+                return;
             try
             {
+                _collector = new int[parameters.Count()];
+                rc.OrdersPool.Lock();
                 CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss);
             }
-            catch (OutOfMemoryException ex)
+            catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
+            }
+            finally
+            {
+                rc.OrdersPool.UnLock();
             }
         }
 
