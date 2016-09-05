@@ -5,16 +5,11 @@
   <xs:import schemaLocation="http://localhost:777/ModernServer/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/DBAccess" />
   <xs:complexType name="ArrayOfCalculationOrder">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="CalculationOrder" type="tns:CalculationOrder" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CalculationOrder" nillable="true" type="tns:CalculationOrder" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfCalculationOrder" nillable="true" type="tns:ArrayOfCalculationOrder" />
   <xs:complexType name="CalculationOrder">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
     <xs:sequence>
       <xs:element minOccurs="0" name="DateFrom" type="xs:dateTime" />
       <xs:element minOccurs="0" name="DateTo" type="xs:dateTime" />
@@ -31,17 +26,11 @@
   <xs:simpleType name="CalculationOrderStatus">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Waiting" />
-      <xs:enumeration value="Processing" />
       <xs:enumeration value="Finished" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="CalculationOrderStatus" nillable="true" type="tns:CalculationOrderStatus" />
   <xs:complexType name="CalculationResult">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
     <xs:sequence>
       <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Balances" nillable="true" type="q3:ArrayOffloat" />
       <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OutData" nillable="true" type="q4:ArrayOfArrayOfstring" />

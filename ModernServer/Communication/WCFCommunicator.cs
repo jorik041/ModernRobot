@@ -17,8 +17,9 @@ namespace ModernServer.Communication
         private static List<RemoteCalculation> _remoteCalculators = new List<RemoteCalculation>();
 
         private DBDataReader _reader = new DBDataReader();
-        private readonly IStrategy[] _avaliableStrategies = { new FortsBasic() };
+        private readonly IStrategy[] _avaliableStrategies = { new FortsBasic(), new FortsMultiplied() };
         private List<Guid> _startedCalcIds = new List<Guid>();
+        private int[] _collector;
 
         public ActualizedInstrument[] GetActualizedInstruments()
         {
@@ -56,9 +57,9 @@ namespace ModernServer.Communication
             {
                 WaitingOrdersCount = o.WaitingOrdersCount,
                 FinishedOrdersCount = o.FinishedOrdersCount,
-                IsWaiting = o.FinishedOrdersCount == 0 && o.WaitingOrdersCount > 0,
-                IsDone = o.WaitingOrdersCount == 0 && o.FinishedOrdersCount > 0,
-                IsRunning = o.WaitingOrdersCount > 0 && o.FinishedOrdersCount > 0
+                IsWaiting = o.IsWaiting,
+                IsDone = o.IsDone,
+                IsRunning = o.IsRunning
             }).ToArray();
         }
 
@@ -87,6 +88,38 @@ namespace ModernServer.Communication
                 return;
             rc.OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters, stopLoss);
         }
+
+        private void CreateOrdersForMultipleParams(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss, int num = 0)
+        {
+            _collector[num] = (int)parameters[num].From - 1;
+            while (_collector[num] < parameters[num].To)
+            {
+                _collector[num]++;
+                var newVal = new float[parameters.Count()];
+                for (var i = 0; i < _collector.Count(); i++)
+                    newVal[i] = _collector[i];
+                if (num == _collector.Count() - 1)
+                {
+                    AddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, newVal, stopLoss);
+                }
+                if (num < _collector.Count() - 1)
+                    CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, num + 1);
+            }
+        }
+
+        public void AddOrdersToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss)
+        {
+            _collector = new int[parameters.Count()];
+            try
+            {
+                CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss);
+            }
+            catch (OutOfMemoryException ex)
+            {
+                Logger.Log(ex.ToString());
+            }
+        }
+
 
         public void StartRemoteCalculation(Guid idCalculation)
         {

@@ -20,6 +20,8 @@ namespace Calculator.Calculation
         private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
         private object _lock = new object();
 
+        public bool IsProcessingOrders { get; private set; }
+
         public CalculationOrdersPool(Type strategyType)
         {
             _strategyType = strategyType;
@@ -67,11 +69,13 @@ namespace Calculator.Calculation
         {
             ThreadPool.QueueUserWorkItem(obj =>
             {
+                IsProcessingOrders = true;
                 while (_ordersQueue.Any())
                 {
                     var order = _ordersQueue.Dequeue();
                     CalculateNextOrder(order); 
                 }
+                IsProcessingOrders = false;
             });
         }
 
@@ -86,7 +90,6 @@ namespace Calculator.Calculation
         {
             try
             {
-                order.Status = CalculationOrderStatus.Processing;
                 //Logger.Log(string.Format("Calculating order {0} from {1} to {2}", order.Id, order.DateFrom, order.DateTo));
                 var datefrom = order.DateFrom.AddMonths(-3);
                 if (_reader.GetMinDateTimeStamp(order.InstrumentName) > datefrom)
@@ -169,7 +172,7 @@ namespace Calculator.Calculation
                                 priceDiff = tc[i].Close * (-lotSize);
                                 if (order.StopLoss == 0)
                                     currentSL = 0;
-                                else 
+                                else
                                     currentSL = tc[i].Close + order.StopLoss;
                             }
                             if (result == StrategyResult.Exit)
@@ -223,7 +226,7 @@ namespace Calculator.Calculation
                         if (stopPrice == 0)
                             outList.Add("No");
                         else
-                            outList.Add(string.Format("Yes ({0})",stopPrice));
+                            outList.Add(string.Format("Yes ({0})", stopPrice));
                         outList.Add(balance);
                         if (saveResults)
                             outDatas.Add(outList.ToArray());
@@ -240,7 +243,7 @@ namespace Calculator.Calculation
                     outDataDescription.Add("STOPPED");
                     outDataDescription.Add("Balance per deal");
                 }
-                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray()};
+                order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
                 order.TotalBalance = balance;
             }
             catch (Exception ex)
@@ -249,11 +252,8 @@ namespace Calculator.Calculation
             }
             //Logger.Log(string.Format("Order {0} calculation finished in [{1} ms]", order.Id, sw.ElapsedMilliseconds));
             order.Status = CalculationOrderStatus.Finished;
-            lock (_lock)
-            {
-                if (!saveResults)
-                    _finishedOrders.Add(order);
-            }
+            if (!saveResults)
+                _finishedOrders.Add(order);
         }
     }
 }

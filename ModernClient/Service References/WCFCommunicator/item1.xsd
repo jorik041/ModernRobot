@@ -39,4 +39,17 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="RemoteCalculationInfo" nillable="true" type="tns:RemoteCalculationInfo" />
+  <xs:complexType name="ArrayOfFromToValue">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FromToValue" nillable="true" type="tns:FromToValue" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFromToValue" nillable="true" type="tns:ArrayOfFromToValue" />
+  <xs:complexType name="FromToValue">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="From" type="xs:float" />
+      <xs:element minOccurs="0" name="To" type="xs:float" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FromToValue" nillable="true" type="tns:FromToValue" />
 </xs:schema>

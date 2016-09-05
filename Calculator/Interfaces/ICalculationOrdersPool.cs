@@ -10,6 +10,7 @@ namespace Calculator.Calculation
         int WaitingOrdersCount { get; }
         Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss);
         void ProcessOrders();
+        bool IsProcessingOrders { get; }
         void GetFinishedOrderResults(Guid orderId);
         void Flush();
     }

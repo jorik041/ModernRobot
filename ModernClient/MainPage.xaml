@@ -36,7 +36,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
-        <Grid Grid.Row="1" Grid.Column="1" >
+        <Grid Grid.Row="1" Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -60,7 +60,7 @@
             <TextBlock VerticalAlignment="Center" Text="Выберите инструмент:" Grid.Column="0" Grid.Row="0"/>
             <ComboBox HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding ActualizedInstruments}" MinWidth="50" Grid.Column="1" SelectedIndex="0" DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstrument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock VerticalAlignment="Center" Text="Выберите стратегию:" Grid.Column="0" Grid.Row="1"/>
-            <ComboBox HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvaliableStrategies}" SelectedItem="{Binding SelectedStrategy}" MinWidth="50" Grid.Column="1" Grid.Row="1" SelectedIndex="0"/>
+            <ComboBox HorizontalContentAlignment="Center" Margin="3" ItemsSource="{Binding AvaliableStrategies}" SelectedItem="{Binding SelectedStrategy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" Grid.Column="1" Grid.Row="1" SelectedIndex="0"/>
             <TextBlock VerticalAlignment="Center" Text="Название расчета:" Grid.Column="0" Grid.Row="2"/>
             <TextBox HorizontalContentAlignment="Center" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="2" Text="{Binding NewCalculationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock VerticalAlignment="Center" Text="Период времени:" Grid.Column="0" Grid.Row="3"/>
@@ -69,28 +69,30 @@
             <TextBlock VerticalAlignment="Center" Text="Дата до:" Grid.Column="0" Grid.Row="5"/>
             <sdk:DatePicker Grid.Column="1" Grid.Row="4" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <sdk:DatePicker Grid.Column="1" Grid.Row="5" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <ItemsControl ItemsSource="{Binding SelectedStrategyParameters}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="3" Background="GhostWhite">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Grid.Column="0">
+            <ScrollViewer Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding SelectedStrategyParameters, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="3" Background="GhostWhite">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Grid.Column="0">
                                 <Run Text="{Binding Description}"/>
                                 <Run Text=": "/>
-                            </TextBlock>
-                            <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" >
-                                <TextBlock VerticalAlignment="Center" Text="от"/>
-                                <TextBox KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center" Margin="5" Width="30"/>
-                                <TextBlock VerticalAlignment="Center" Text="до"/>
-                                <TextBox KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center"  Margin="5" Width="30" />
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                </TextBlock>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" >
+                                    <TextBlock VerticalAlignment="Center" Text="от"/>
+                                    <TextBox KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center" Margin="5" Width="30"/>
+                                    <TextBlock VerticalAlignment="Center" Text="до"/>
+                                    <TextBox KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Text="{Binding To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center"  Margin="5" Width="30" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
             <CheckBox Margin="3" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Content="Учитывать Stop Loss" IsChecked="{Binding UseStopLoss, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock  Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Text="Мин. Stop Loss:"/>
             <TextBlock Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Text="Шаг Stop Loss:"/>

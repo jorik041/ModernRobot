@@ -8,12 +8,9 @@ using Calculator.Strategies;
 using System.Runtime.Serialization;
 namespace ModernServer.WCFEntities
 {
-    [DataContract]
     public class RemoteCalculation : RemoteCalculationInfo
     {
-        [DataMember]
         public CalculationOrdersPool OrdersPool { get; private set; }
-        [DataMember]
         public new int WaitingOrdersCount
         {
             get
@@ -23,7 +20,6 @@ namespace ModernServer.WCFEntities
                 return OrdersPool.WaitingOrdersCount;
             }
         }
-        [DataMember]
         public new int FinishedOrdersCount
         {
             get
@@ -31,6 +27,30 @@ namespace ModernServer.WCFEntities
                 if (OrdersPool == null)
                     return 0;
                 return OrdersPool.FinishedOrders.Count();
+            }
+        }
+
+        public new bool IsWaiting
+        {
+            get
+            {
+                return !OrdersPool.IsProcessingOrders && OrdersPool.WaitingOrdersCount > 0;
+            }
+        }
+
+        public new bool IsDone
+        {
+            get
+            {
+                return !OrdersPool.IsProcessingOrders && OrdersPool.FinishedOrders.Count() > 0;
+            }
+        }
+
+        public new bool IsRunning
+        {
+            get
+            {
+                return OrdersPool.IsProcessingOrders;
             }
         }
 

@@ -235,8 +235,53 @@ namespace ModernClient.WCFCommunicator {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="FromToValue", Namespace="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities")]
+    public partial class FromToValue : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private float FromField;
+        
+        private float ToField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float From {
+            get {
+                return this.FromField;
+            }
+            set {
+                if ((this.FromField.Equals(value) != true)) {
+                    this.FromField = value;
+                    this.RaisePropertyChanged("From");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float To {
+            get {
+                return this.ToField;
+            }
+            set {
+                if ((this.ToField.Equals(value) != true)) {
+                    this.ToField = value;
+                    this.RaisePropertyChanged("To");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CalculationOrder", Namespace="http://schemas.datacontract.org/2004/07/Calculator.Calculation")]
-    public partial struct CalculationOrder : System.ComponentModel.INotifyPropertyChanged {
+    public partial class CalculationOrder : object, System.ComponentModel.INotifyPropertyChanged {
         
         private System.DateTime DateFromField;
         
@@ -375,7 +420,7 @@ namespace ModernClient.WCFCommunicator {
         
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
-        void RaisePropertyChanged(string propertyName) {
+        protected void RaisePropertyChanged(string propertyName) {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -391,16 +436,13 @@ namespace ModernClient.WCFCommunicator {
         Waiting = 0,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Processing = 1,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Finished = 2,
+        Finished = 1,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CalculationResult", Namespace="http://schemas.datacontract.org/2004/07/Calculator.Calculation")]
-    public partial struct CalculationResult : System.ComponentModel.INotifyPropertyChanged {
+    public partial class CalculationResult : object, System.ComponentModel.INotifyPropertyChanged {
         
         private System.Collections.ObjectModel.ObservableCollection<float> BalancesField;
         
@@ -449,7 +491,7 @@ namespace ModernClient.WCFCommunicator {
         
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
-        void RaisePropertyChanged(string propertyName) {
+        protected void RaisePropertyChanged(string propertyName) {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
@@ -490,6 +532,11 @@ namespace ModernClient.WCFCommunicator {
         System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, System.AsyncCallback callback, object asyncState);
         
         void EndAddOrderToRemoteCalulation(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulation", ReplyAction="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulationResponse")]
+        System.IAsyncResult BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, System.AsyncCallback callback, object asyncState);
+        
+        void EndAddOrdersToRemoteCalulation(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/StartRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/StartRemoteCalculationResponse")]
         System.IAsyncResult BeginStartRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState);
@@ -744,6 +791,12 @@ namespace ModernClient.WCFCommunicator {
         
         private System.Threading.SendOrPostCallback onAddOrderToRemoteCalulationCompletedDelegate;
         
+        private BeginOperationDelegate onBeginAddOrdersToRemoteCalulationDelegate;
+        
+        private EndOperationDelegate onEndAddOrdersToRemoteCalulationDelegate;
+        
+        private System.Threading.SendOrPostCallback onAddOrdersToRemoteCalulationCompletedDelegate;
+        
         private BeginOperationDelegate onBeginStartRemoteCalculationDelegate;
         
         private EndOperationDelegate onEndStartRemoteCalculationDelegate;
@@ -850,6 +903,8 @@ namespace ModernClient.WCFCommunicator {
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> RemoveRemoteCalculationCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddOrderToRemoteCalulationCompleted;
+        
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddOrdersToRemoteCalulationCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> StartRemoteCalculationCompleted;
         
@@ -1149,6 +1204,63 @@ namespace ModernClient.WCFCommunicator {
                         period,
                         parameters,
                         stopLoss}, this.onEndAddOrderToRemoteCalulationDelegate, this.onAddOrderToRemoteCalulationCompletedDelegate, userState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddOrdersToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        void ModernClient.WCFCommunicator.IWCFCommunicator.EndAddOrdersToRemoteCalulation(System.IAsyncResult result) {
+            base.Channel.EndAddOrdersToRemoteCalulation(result);
+        }
+        
+        private System.IAsyncResult OnBeginAddOrdersToRemoteCalulation(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid idCalculation = ((System.Guid)(inValues[0]));
+            string insName = ((string)(inValues[1]));
+            System.DateTime dateFrom = ((System.DateTime)(inValues[2]));
+            System.DateTime dateTo = ((System.DateTime)(inValues[3]));
+            ModernClient.WCFCommunicator.TimePeriods period = ((ModernClient.WCFCommunicator.TimePeriods)(inValues[4]));
+            System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters = ((System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue>)(inValues[5]));
+            float stopLoss = ((float)(inValues[6]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrdersToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, callback, asyncState);
+        }
+        
+        private object[] OnEndAddOrdersToRemoteCalulation(System.IAsyncResult result) {
+            ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).EndAddOrdersToRemoteCalulation(result);
+            return null;
+        }
+        
+        private void OnAddOrdersToRemoteCalulationCompleted(object state) {
+            if ((this.AddOrdersToRemoteCalulationCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.AddOrdersToRemoteCalulationCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void AddOrdersToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss) {
+            this.AddOrdersToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, null);
+        }
+        
+        public void AddOrdersToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, object userState) {
+            if ((this.onBeginAddOrdersToRemoteCalulationDelegate == null)) {
+                this.onBeginAddOrdersToRemoteCalulationDelegate = new BeginOperationDelegate(this.OnBeginAddOrdersToRemoteCalulation);
+            }
+            if ((this.onEndAddOrdersToRemoteCalulationDelegate == null)) {
+                this.onEndAddOrdersToRemoteCalulationDelegate = new EndOperationDelegate(this.OnEndAddOrdersToRemoteCalulation);
+            }
+            if ((this.onAddOrdersToRemoteCalulationCompletedDelegate == null)) {
+                this.onAddOrdersToRemoteCalulationCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddOrdersToRemoteCalulationCompleted);
+            }
+            base.InvokeAsync(this.onBeginAddOrdersToRemoteCalulationDelegate, new object[] {
+                        idCalculation,
+                        insName,
+                        dateFrom,
+                        dateTo,
+                        period,
+                        parameters,
+                        stopLoss}, this.onEndAddOrdersToRemoteCalulationDelegate, this.onAddOrdersToRemoteCalulationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1627,6 +1739,24 @@ namespace ModernClient.WCFCommunicator {
             public void EndAddOrderToRemoteCalulation(System.IAsyncResult result) {
                 object[] _args = new object[0];
                 base.EndInvoke("AddOrderToRemoteCalulation", _args, result);
+            }
+            
+            public System.IAsyncResult BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[7];
+                _args[0] = idCalculation;
+                _args[1] = insName;
+                _args[2] = dateFrom;
+                _args[3] = dateTo;
+                _args[4] = period;
+                _args[5] = parameters;
+                _args[6] = stopLoss;
+                System.IAsyncResult _result = base.BeginInvoke("AddOrdersToRemoteCalulation", _args, callback, asyncState);
+                return _result;
+            }
+            
+            public void EndAddOrdersToRemoteCalulation(System.IAsyncResult result) {
+                object[] _args = new object[0];
+                base.EndInvoke("AddOrdersToRemoteCalulation", _args, result);
             }
             
             public System.IAsyncResult BeginStartRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {

@@ -55,6 +55,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WCFEntities\ActualizedInstrument.cs" />
+    <Compile Include="WCFEntities\FromToValue.cs" />
     <Compile Include="WCFEntities\RemoteCalculation.cs" />
     <Compile Include="WCFEntities\RemoteCalculationInfo.cs" />
   </ItemGroup>

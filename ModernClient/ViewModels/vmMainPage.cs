@@ -39,8 +39,6 @@ namespace ModernClient.ViewModels
         private ObservableCollection<ParametersDescription> _selectedStrategyParameters;
         private string _newCalculationName;
         private TimePeriods _selectedPeriod;
-        private int[] _collector;
-        private List<float[]> _combinations;
         private ActualizedInstrument _selectedInstrument;
         private DateTime _dateFrom;
         private DateTime _dateTo;
@@ -410,7 +408,6 @@ namespace ModernClient.ViewModels
             _timer.Tick += (sender, obj) => 
             {
                 _client.GetRemoteCalculationsInfoAsync();
-                OnPropertyChanged("CanAddCalc");
                 RunCalculation.RaiseCanExecuteChanged();
             };
             _timer.Start();
@@ -439,47 +436,29 @@ namespace ModernClient.ViewModels
                 MessageBox.Show("Некорректные данные для расчета!");
                 return;
             }
-            _client.AddRemoteCalculationCompleted += AddRemoteCalc;
+            _client.AddRemoteCalculationCompleted += OnAddRemoteCalc;
             _client.AddRemoteCalculationAsync(NewCalculationName, SelectedStrategy);
             SelectedContent = new PleaseWait();
         }
 
-        private void CollectParams(int num = 0)
+        private void OnAddRemoteCalc(object sender, AddRemoteCalculationCompletedEventArgs e)
         {
-            _collector[num] = (int)SelectedStrategyParameters[num].From - 1;
-            while (_collector[num] < SelectedStrategyParameters[num].To)
+            _client.AddRemoteCalculationCompleted -= OnAddRemoteCalc;
+            _client.AddOrdersToRemoteCalulationCompleted += OnAddOrdersCompleted;
+            if (UseStopLoss)
             {
-                _collector[num]++;
-                var newVal = new float[SelectedStrategyParameters.Count];
-                for (var i = 0; i < _collector.Count(); i++)
-                    newVal[i] = _collector[i];
-                if (num == _collector.Count() - 1)
-                    _combinations.Add(newVal);
-                if (num < _collector.Count() - 1)
-                    CollectParams(num + 1);
+                for (var i = StopLossLow; i < StopLossHigh; i = i + StopLossIncrement)
+                    _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), i);
             }
+            else
+            {
+                _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), 0);
+            }           
         }
 
-        private void AddRemoteCalc(object sender, AddRemoteCalculationCompletedEventArgs e)
+        private void OnAddOrdersCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            _client.AddRemoteCalculationCompleted -= AddRemoteCalc;
-            _combinations = new List<float[]>();
-            _collector = new int[SelectedStrategyParameters.Count];
-            for (var i = 0; i < _collector.Count(); i++)
-                _collector[i] = (int)SelectedStrategyParameters[i].From;
-            CollectParams();
-            foreach (var comb in _combinations)
-            {
-                if (UseStopLoss)
-                {
-                    for (var i = StopLossLow; i < StopLossHigh; i = i + StopLossIncrement)
-                        _client.AddOrderToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<float>(comb), i);
-                }
-                else
-                {
-                    _client.AddOrderToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<float>(comb), 0);
-                }
-            }
+            _client.AddOrdersToRemoteCalulationCompleted -= OnAddOrdersCompleted;
             SelectedContent = new MainPage();
         }
 

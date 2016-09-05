@@ -51,6 +51,7 @@
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategies\FortsBasic.cs" />
+    <Compile Include="Strategies\FORTSMultiplied.cs" />
     <Compile Include="Strategies\StrategyParameter.cs" />
     <Compile Include="Strategies\StrategyResult.cs" />
   </ItemGroup>

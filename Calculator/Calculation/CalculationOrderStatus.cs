@@ -9,7 +9,6 @@ namespace Calculator.Calculation
     public enum CalculationOrderStatus
     {
         Waiting,
-        Processing,
         Finished
     }
 }

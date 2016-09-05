@@ -46,6 +46,12 @@
   <wsdl:message name="IWCFCommunicator_AddOrderToRemoteCalulation_OutputMessage">
     <wsdl:part name="parameters" element="tns:AddOrderToRemoteCalulationResponse" />
   </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_AddOrdersToRemoteCalulation_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrdersToRemoteCalulation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFCommunicator_AddOrdersToRemoteCalulation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrdersToRemoteCalulationResponse" />
+  </wsdl:message>
   <wsdl:message name="IWCFCommunicator_StartRemoteCalculation_InputMessage">
     <wsdl:part name="parameters" element="tns:StartRemoteCalculation" />
   </wsdl:message>
@@ -112,6 +118,10 @@
     <wsdl:operation name="AddOrderToRemoteCalulation">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation" message="tns:IWCFCommunicator_AddOrderToRemoteCalulation_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulationResponse" message="tns:IWCFCommunicator_AddOrderToRemoteCalulation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddOrdersToRemoteCalulation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulation" message="tns:IWCFCommunicator_AddOrdersToRemoteCalulation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulationResponse" message="tns:IWCFCommunicator_AddOrdersToRemoteCalulation_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="StartRemoteCalculation">
       <wsdl:input wsaw:Action="http://tempuri.org/IWCFCommunicator/StartRemoteCalculation" message="tns:IWCFCommunicator_StartRemoteCalculation_InputMessage" />
@@ -191,6 +201,15 @@
     </wsdl:operation>
     <wsdl:operation name="AddOrderToRemoteCalulation">
       <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddOrdersToRemoteCalulation">
+      <soap:operation soapAction="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulation" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
