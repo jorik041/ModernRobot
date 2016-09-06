@@ -21,6 +21,8 @@ namespace ModernServer.Communication
         private List<Guid> _startedCalcIds = new List<Guid>();
         private int[] _collector;
 
+        private const int _maxResultsCount = 1000;
+
         public ActualizedInstrument[] GetActualizedInstruments()
         {
             return
@@ -153,7 +155,7 @@ namespace ModernServer.Communication
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
             if (rc == null)
                 return null;
-            return rc.OrdersPool.FinishedOrders;
+            return rc.OrdersPool.FinishedOrders.OrderByDescending(o => o.TotalBalance).Take(_maxResultsCount).ToArray();
         }
 
         public int GetFinishedOrdersCountForRemoteCalculation(Guid idCalculation)

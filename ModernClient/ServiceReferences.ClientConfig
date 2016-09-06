@@ -2,14 +2,14 @@
     <system.serviceModel>
         <bindings>
             <basicHttpBinding>
-                <binding name="BasicHttpBinding_IWCFCommunicator" maxBufferSize="2147483647"
+                <binding name="BasicHttpBinding_IWCFCommunicator" maxBufferSize="2147483647" receiveTimeout="10:00:00" sendTimeout="10:00:00"
                     maxReceivedMessageSize="2147483647">
                     <security mode="None" />
                 </binding>
             </basicHttpBinding>
         </bindings>
         <client>
-            <endpoint address="http://localhost:777/ModernServer/" binding="basicHttpBinding"
+            <endpoint address="http://136.243.88.208:777/ModernServer/" binding="basicHttpBinding"
                 bindingConfiguration="BasicHttpBinding_IWCFCommunicator" contract="WCFCommunicator.IWCFCommunicator"
                 name="BasicHttpBinding_IWCFCommunicator" />
         </client>

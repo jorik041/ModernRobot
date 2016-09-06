@@ -404,7 +404,7 @@ namespace ModernClient.ViewModels
             GetDetailedResultsCommand = new RelayCommand(o => ExportSelectedResult(), o => SelectedResult != null);
 
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
+            _timer.Interval = TimeSpan.FromMilliseconds(250);
             _timer.Tick += (sender, obj) => 
             {
                 _client.GetRemoteCalculationsInfoAsync();
