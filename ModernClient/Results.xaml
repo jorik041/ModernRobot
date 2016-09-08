@@ -35,7 +35,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Margin="5" Orientation="Horizontal">
             <Button Content="Назад" Width="100" HorizontalAlignment="Left" Margin="3" Command="{Binding GoBackCommand, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Content="Получить результаты.." Width="150" HorizontalAlignment="Left" Margin="3" Command="{Binding GetDetailedResultsCommand, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Подробные результаты.." Width="150" HorizontalAlignment="Left" Margin="3" Command="{Binding GetDetailedResultsCommand, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Сохранить список.." Width="150" HorizontalAlignment="Left" Margin="3" Command="{Binding SaveResultsCommand, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
         <sdk:DataGrid Name="DataContainer" Grid.Row="1" Margin="5" HeadersVisibility="Column" GridLinesVisibility="None" AutoGenerateColumns="False" ItemsSource="{Binding Results}" IsReadOnly="True" SelectionMode="Single" CellStyle="{StaticResource DataGridCellStyle}" SelectedItem="{Binding SelectedResult, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <sdk:DataGrid.Columns>
@@ -47,6 +48,8 @@
                 <sdk:DataGridTextColumn Header="Дата до" Binding="{Binding DateTo}" Width="Auto"/>
                 <sdk:DataGridTextColumn Header="Stop Loss" Binding="{Binding StopLoss}" Width="Auto"/>
                 <sdk:DataGridTextColumn Header="Баланс" Binding="{Binding Balance}" Width="Auto"/>
+                <sdk:DataGridTextColumn Header="Просадка" Binding="{Binding Gap}" Width="Auto"/>
+                <sdk:DataGridTextColumn Header="Коэф. выбора" Binding="{Binding SelectCoeff}" Width="Auto"/>
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>
     </Grid>

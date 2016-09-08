@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace ModernClient.ViewModels
 {
-    public class ResultDescription : INotifyPropertyChanged
+    public class ResultDescription
     {
         public string Parameters { get; set; }
         public string StrategyName { get; set; }
@@ -22,35 +22,8 @@ namespace ModernClient.ViewModels
         public string Period { get; set; }
         public Guid Id { get; set; }
         public float StopLoss { get; set; }
-
-        private float _balance;
-        public float Balance
-        {
-            get
-            {
-                return _balance;
-            }
-            set
-            {
-                _balance = value;
-                OnPropertyChanged("Balance");
-            }
-        } 
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                handler(this, e);
-            }
-        }
-
-        #endregion INotifyPropertyChanged Members
+        public float Balance { get; set; }
+        public float Gap { get; set; }
+        public float SelectCoeff { get; set; }
     }
 }

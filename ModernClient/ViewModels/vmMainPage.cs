@@ -29,6 +29,7 @@ namespace ModernClient.ViewModels
         public RelayCommand ClearNewCalculation { get; set; }
         public RelayCommand GoBackCommand { get; set; }
         public RelayCommand GetDetailedResultsCommand { get; set; }
+        public RelayCommand SaveResultsCommand { get; set; }
 
         private ObservableCollection<ActualizedInstrument> _actualizedInstruments;
         private WCFCommunicatorClient _client = new WCFCommunicatorClient();
@@ -402,6 +403,7 @@ namespace ModernClient.ViewModels
             ClearNewCalculation = new RelayCommand(o => ClearCalc());
             GoBackCommand = new RelayCommand(o => SelectedContent = new MainPage());
             GetDetailedResultsCommand = new RelayCommand(o => ExportSelectedResult(), o => SelectedResult != null);
+            SaveResultsCommand = new RelayCommand(o => SaveResults(), o => Results.Count() > 0);
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(250);
@@ -411,6 +413,36 @@ namespace ModernClient.ViewModels
                 RunCalculation.RaiseCanExecuteChanged();
             };
             _timer.Start();
+        }
+
+        public void SaveResults()
+        {
+            var dlg = new SaveFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "Текст (.csv)|*.csv",
+                DefaultFileName = "Список результатов"
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                SelectedContent = new PleaseWait();
+                using (var stream = dlg.OpenFile())
+                {
+                    var contents = new StringBuilder();
+                    contents.AppendLine("Параметры;Стратегия;Инструмент;Период;Дата от;Дата до;Stop Loss;Баланс;Просадка;Коэф. выбора;");
+                    foreach (var r in Results)
+                        contents.AppendLine(string.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8};{9}",
+                            r.Parameters, r.StrategyName, r.InstrumentName, r.Period, 
+                            r.DateFrom, r.DateTo, r.StopLoss, r.Balance, r.Gap, r.SelectCoeff));
+                    using (var sw = new System.IO.StreamWriter(stream))
+                    {
+                        sw.Write(contents.ToString());
+                        sw.Flush();
+                        sw.Close();
+                    }
+                }
+                SelectedContent = new Results();
+            }
         }
 
         public void DeleteSelectedCalc()
@@ -482,7 +514,7 @@ namespace ModernClient.ViewModels
                 SelectedContent = new PleaseWait();
                 Results = new ObservableCollection<ResultDescription>();
                 _client.GetFinishedOrdersForRemoteCalculationCompleted += GetResults;
-                _client.GetFinishedOrdersForRemoteCalculationAsync(_selectedCalcId);
+                _client.GetFinishedOrdersForRemoteCalculationAsync(_selectedCalcId, 1000);
             }
         }
 
@@ -502,10 +534,12 @@ namespace ModernClient.ViewModels
                         StrategyName = Calculators.Single(o => o.Id == _selectedCalcId).StrategyName,
                         Parameters = string.Join("-", res.Parameters),
                         StopLoss = res.StopLoss,
-                        Balance = res.TotalBalance
+                        Balance = res.TotalBalance,
+                        Gap = res.Gap, 
+                        SelectCoeff = res.TotalBalance * res.TotalBalance / res.Gap
                     });
             }
-            Results = new ObservableCollection<ResultDescription>(Results.OrderByDescending(o => o.Balance));
+            Results = new ObservableCollection<ResultDescription>(Results.OrderByDescending(o => o.SelectCoeff));
             SelectedContent = new Results();
         }
 
@@ -522,7 +556,6 @@ namespace ModernClient.ViewModels
                 _client.GetFinishedOrderResultCompleted += GetFinishedResult;
                 var saveFileContent = new Action<string> ((string contents) => 
                 {
-                    SelectedContent = new PleaseWait();
                     using (var stream = dlg.OpenFile())
                     {
                         using (var sw = new System.IO.StreamWriter(stream))
@@ -534,6 +567,7 @@ namespace ModernClient.ViewModels
                     }
                     SelectedContent = new Results();
                 });
+                SelectedContent = new PleaseWait();
                 _client.GetFinishedOrderResultAsync(_selectedCalcId, SelectedResult.Id, saveFileContent);
             }
         }

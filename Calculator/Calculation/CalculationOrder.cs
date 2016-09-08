@@ -30,6 +30,8 @@ namespace Calculator.Calculation
         public float TotalBalance { get; internal set; }
         [DataMember]
         public float StopLoss { get; set; }
+        [DataMember]
+        public float Gap { get; set; }
 
         public CalculationResult Result { get; internal set; }
         

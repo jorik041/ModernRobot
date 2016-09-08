@@ -42,7 +42,7 @@ namespace ModernServer.Communication
         void StopRemoteCalculation(Guid id);
 
         [OperationContract]
-        CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation);
+        CalculationOrder[] GetFinishedOrdersForRemoteCalculation(Guid idCalculation, int pointsCount);
 
         [OperationContract]
         CalculationResult GetFinishedOrderResult(Guid idCalculation, Guid idOrder);

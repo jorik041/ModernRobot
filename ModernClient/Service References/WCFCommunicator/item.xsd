@@ -132,6 +132,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idCalculation" type="q14:guid" />
+        <xs:element minOccurs="0" name="pointsCount" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

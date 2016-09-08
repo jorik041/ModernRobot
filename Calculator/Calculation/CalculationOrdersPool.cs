@@ -20,8 +20,6 @@ namespace Calculator.Calculation
         private ConcurrentQueue<CalculationOrder> _ordersQueue = new ConcurrentQueue<CalculationOrder>();
         private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
 
-        private object _lockObj = new object();
-
         public bool IsProcessingOrders { get; private set; }
 
         public void Lock()
@@ -51,10 +49,7 @@ namespace Calculator.Calculation
         {
             get
             {
-                lock (_lockObj)
-                {
-                    return _finishedOrders.ToArray();
-                }
+                return _finishedOrders.ToArray();
             }
         }
 
@@ -207,15 +202,13 @@ namespace Calculator.Calculation
                             lotSize = 0;
                             currentSL = 0;
                         }
-                        if (saveResults)
-                            balances.Add(balance);
+                        balances.Add(balance);
                         lastPrice = tc[i].Close;
                         stopPrice = 0;
                     }
                     else
                     {
-                        if (saveResults)
-                            balances.Add(balance + priceDiff + lotSize * tc[i].Close);
+                        balances.Add(balance + priceDiff + lotSize * tc[i].Close);
                         if (currentSL != 0)
                         {
                             if (result == StrategyResult.Long)
@@ -269,14 +262,26 @@ namespace Calculator.Calculation
                 outDataDescription.Add("STOPPED");
                 outDataDescription.Add("Balance per deal");
             }
+
+            var gapValue = float.MinValue;
+
+            for (var i=1; i< balances.Count() - 1; i++)
+            {
+                var max = balances.Take(i).Max();
+                var min = balances.Skip(i).Min();
+                gapValue = gapValue < max - min ? max - min : gapValue;
+            }
+
+            if (!saveResults)
+                balances.Clear();
+
             order.Result = new CalculationResult() { OutData = outDatas.Select(o => o.Select(obj => obj.ToString()).ToArray()).ToArray(), Balances = balances.ToArray(), OutDataDescription = outDataDescription.ToArray() };
             order.TotalBalance = balance;
+            order.Gap = gapValue;
+            
             order.Status = CalculationOrderStatus.Finished;
-            lock (_lockObj)
-            {
-                if (!saveResults)
-                    _finishedOrders.Add(order);
-            }
+            if (!saveResults)
+                _finishedOrders.Add(order);
         }
     }
 }

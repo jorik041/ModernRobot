@@ -287,6 +287,8 @@ namespace ModernClient.WCFCommunicator {
         
         private System.DateTime DateToField;
         
+        private float GapField;
+        
         private System.Guid IdField;
         
         private string InstrumentNameField;
@@ -323,6 +325,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((this.DateToField.Equals(value) != true)) {
                     this.DateToField = value;
                     this.RaisePropertyChanged("DateTo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float Gap {
+            get {
+                return this.GapField;
+            }
+            set {
+                if ((this.GapField.Equals(value) != true)) {
+                    this.GapField = value;
+                    this.RaisePropertyChanged("Gap");
                 }
             }
         }
@@ -550,7 +565,7 @@ namespace ModernClient.WCFCommunicator {
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculation", ReplyAction="http://tempuri.org/IWCFCommunicator/GetFinishedOrdersForRemoteCalculationResponse" +
             "")]
-        System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, int pointsCount, System.AsyncCallback callback, object asyncState);
         
         System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.CalculationOrder> EndGetFinishedOrdersForRemoteCalculation(System.IAsyncResult result);
         
@@ -1354,8 +1369,8 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetFinishedOrdersForRemoteCalculation(idCalculation, callback, asyncState);
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, int pointsCount, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetFinishedOrdersForRemoteCalculation(idCalculation, pointsCount, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1365,7 +1380,8 @@ namespace ModernClient.WCFCommunicator {
         
         private System.IAsyncResult OnBeginGetFinishedOrdersForRemoteCalculation(object[] inValues, System.AsyncCallback callback, object asyncState) {
             System.Guid idCalculation = ((System.Guid)(inValues[0]));
-            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginGetFinishedOrdersForRemoteCalculation(idCalculation, callback, asyncState);
+            int pointsCount = ((int)(inValues[1]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginGetFinishedOrdersForRemoteCalculation(idCalculation, pointsCount, callback, asyncState);
         }
         
         private object[] OnEndGetFinishedOrdersForRemoteCalculation(System.IAsyncResult result) {
@@ -1381,11 +1397,11 @@ namespace ModernClient.WCFCommunicator {
             }
         }
         
-        public void GetFinishedOrdersForRemoteCalculationAsync(System.Guid idCalculation) {
-            this.GetFinishedOrdersForRemoteCalculationAsync(idCalculation, null);
+        public void GetFinishedOrdersForRemoteCalculationAsync(System.Guid idCalculation, int pointsCount) {
+            this.GetFinishedOrdersForRemoteCalculationAsync(idCalculation, pointsCount, null);
         }
         
-        public void GetFinishedOrdersForRemoteCalculationAsync(System.Guid idCalculation, object userState) {
+        public void GetFinishedOrdersForRemoteCalculationAsync(System.Guid idCalculation, int pointsCount, object userState) {
             if ((this.onBeginGetFinishedOrdersForRemoteCalculationDelegate == null)) {
                 this.onBeginGetFinishedOrdersForRemoteCalculationDelegate = new BeginOperationDelegate(this.OnBeginGetFinishedOrdersForRemoteCalculation);
             }
@@ -1396,7 +1412,8 @@ namespace ModernClient.WCFCommunicator {
                 this.onGetFinishedOrdersForRemoteCalculationCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetFinishedOrdersForRemoteCalculationCompleted);
             }
             base.InvokeAsync(this.onBeginGetFinishedOrdersForRemoteCalculationDelegate, new object[] {
-                        idCalculation}, this.onEndGetFinishedOrdersForRemoteCalculationDelegate, this.onGetFinishedOrdersForRemoteCalculationCompletedDelegate, userState);
+                        idCalculation,
+                        pointsCount}, this.onEndGetFinishedOrdersForRemoteCalculationDelegate, this.onGetFinishedOrdersForRemoteCalculationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1783,9 +1800,10 @@ namespace ModernClient.WCFCommunicator {
                 base.EndInvoke("StopRemoteCalculation", _args, result);
             }
             
-            public System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[1];
+            public System.IAsyncResult BeginGetFinishedOrdersForRemoteCalculation(System.Guid idCalculation, int pointsCount, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[2];
                 _args[0] = idCalculation;
+                _args[1] = pointsCount;
                 System.IAsyncResult _result = base.BeginInvoke("GetFinishedOrdersForRemoteCalculation", _args, callback, asyncState);
                 return _result;
             }
