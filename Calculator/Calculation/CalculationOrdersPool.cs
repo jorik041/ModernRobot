@@ -133,7 +133,6 @@ namespace Calculator.Calculation
             var lotSize = 0;
             var lastPrice = 0f;
             var stopPrice = 0f;
-            var perDealBalanceDiff = 0f;
 
             foreach (var ticker in tickers)
             {
@@ -207,10 +206,6 @@ namespace Calculator.Calculation
                         balances.Add(balance);
                         lastPrice = tc[i].Close;
                         stopPrice = 0;
-                        if (balancesPerDeal.Any())
-                            perDealBalanceDiff = balance - balancesPerDeal.Last();
-                        else
-                            perDealBalanceDiff = 0;
                         balancesPerDeal.Add(balance);
                     }
                     else
@@ -253,7 +248,7 @@ namespace Calculator.Calculation
                         outList.Add("No");
                     else
                         outList.Add(string.Format("Yes ({0})", stopPrice));
-                    outList.Add(perDealBalanceDiff);
+                    outList.Add(balance);
                     if (saveResults)
                         outDatas.Add(outList.ToArray());
                 }
