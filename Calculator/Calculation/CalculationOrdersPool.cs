@@ -126,12 +126,14 @@ namespace Calculator.Calculation
                 strategy.Parameters[i].Value = order.Parameters[i];
             var outDatas = new List<object[]>();
             var balances = new List<float>();
+            var balancesPerDeal = new List<float>();
             var lastResult = StrategyResult.Exit;
             var balance = 0f;
             var priceDiff = 0f;
             var lotSize = 0;
             var lastPrice = 0f;
             var stopPrice = 0f;
+            var perDealBalanceDiff = 0f;
 
             foreach (var ticker in tickers)
             {
@@ -205,6 +207,11 @@ namespace Calculator.Calculation
                         balances.Add(balance);
                         lastPrice = tc[i].Close;
                         stopPrice = 0;
+                        if (balancesPerDeal.Any())
+                            perDealBalanceDiff = balance - balancesPerDeal.Last();
+                        else
+                            perDealBalanceDiff = 0;
+                        balancesPerDeal.Add(balance);
                     }
                     else
                     {
@@ -246,7 +253,7 @@ namespace Calculator.Calculation
                         outList.Add("No");
                     else
                         outList.Add(string.Format("Yes ({0})", stopPrice));
-                    outList.Add(balance);
+                    outList.Add(perDealBalanceDiff);
                     if (saveResults)
                         outDatas.Add(outList.ToArray());
                 }
@@ -265,12 +272,18 @@ namespace Calculator.Calculation
 
             var gapValue = float.MinValue;
 
-            for (var i=1; i< balances.Count() - 1; i++)
+            var sw = new Stopwatch();
+            sw.Start();
+
+            for (var i=1; i< balancesPerDeal.Count() - 1; i++)
             {
-                var max = balances.Take(i).Max();
-                var min = balances.Skip(i).Min();
+                var max = balancesPerDeal.Take(i).Max();
+                var min = balancesPerDeal.Skip(i).Min();
                 gapValue = gapValue < max - min ? max - min : gapValue;
             }
+
+            sw.Stop();
+            var el = sw.Elapsed;
 
             if (!saveResults)
                 balances.Clear();
