@@ -4,7 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" 
-    d:DesignHeight="300" d:DesignWidth="700">
+    d:DesignHeight="700" d:DesignWidth="700">
     <Grid Margin="25" x:Name="LayoutRoot" Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -69,7 +69,9 @@
             <TextBlock VerticalAlignment="Center" Text="Дата до:" Grid.Column="0" Grid.Row="5"/>
             <sdk:DatePicker Grid.Column="1" Grid.Row="4" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <sdk:DatePicker Grid.Column="1" Grid.Row="5" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <ScrollViewer Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="300" VerticalScrollBarVisibility="Auto">
+            <sdk:TabControl Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="300">
+            <sdk:TabItem Header="Параметры">
+            <ScrollViewer BorderThickness="0" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding SelectedStrategyParameters, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -93,14 +95,31 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <CheckBox Margin="3" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Content="Учитывать Stop Loss" IsChecked="{Binding UseStopLoss, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock  Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Text="Мин. Stop Loss:"/>
-            <TextBlock Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Text="Шаг Stop Loss:"/>
-            <TextBlock Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" Text="Макс. Stop Loss:"/>
-            <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="8" Text="{Binding StopLossLow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="9" Text="{Binding StopLossIncrement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="10" Text="{Binding StopLossHigh, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.ColumnSpan="2" >
+                </sdk:TabItem>
+                <sdk:TabItem Header="STOP LOSS">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Margin="3" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Учитывать Stop Loss" IsChecked="{Binding UseStopLoss, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock  Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="Мин. Stop Loss:"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="Шаг Stop Loss:"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Text="Макс. Stop Loss:"/>
+                        <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="1" Text="{Binding StopLossLow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="2" Text="{Binding StopLossIncrement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" HorizontalContentAlignment="Center" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="3" Text="{Binding StopLossHigh, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </sdk:TabItem>
+            </sdk:TabControl>
+            <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" >
                 <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Margin="3" Content="Очистить" Command="{Binding ClearNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
