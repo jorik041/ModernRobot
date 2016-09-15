@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModernClient.Web", "ModernC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTests", "ServerTests\ServerTests\ServerTests.csproj", "{F63E1481-505B-48FA-BAF6-18B7851E61D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBInstrumentEditor", "DBInstrumentEditor\DBInstrumentEditor.csproj", "{64399311-DC7A-4388-A776-6071A13BCCA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{B9466E26-A334-45AE-866A-368E5F49D268}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,10 @@ Global
 		{F63E1481-505B-48FA-BAF6-18B7851E61D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F63E1481-505B-48FA-BAF6-18B7851E61D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F63E1481-505B-48FA-BAF6-18B7851E61D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64399311-DC7A-4388-A776-6071A13BCCA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64399311-DC7A-4388-A776-6071A13BCCA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64399311-DC7A-4388-A776-6071A13BCCA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64399311-DC7A-4388-A776-6071A13BCCA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +75,6 @@ Global
 		{205B0BEB-482C-4097-AFDD-22A0C3D003BA} = {0F88B353-A1FC-4310-B3C0-1F9C91AD88CD}
 		{AC149F2A-2428-4FEE-BA9D-31F054A704FF} = {0F88B353-A1FC-4310-B3C0-1F9C91AD88CD}
 		{F63E1481-505B-48FA-BAF6-18B7851E61D2} = {B5481974-A453-434A-B055-DA1A0A159563}
+		{64399311-DC7A-4388-A776-6071A13BCCA4} = {B9466E26-A334-45AE-866A-368E5F49D268}
 	EndGlobalSection
 EndGlobal
