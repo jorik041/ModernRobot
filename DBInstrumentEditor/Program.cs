@@ -35,7 +35,7 @@ namespace DBInstrumentEditor
                     if (!DateTime.TryParse(Console.ReadLine(), out dateFrom))
                     {
                         Console.WriteLine(" Error parsing date.");
-                        return;
+                        continue;
                     }
                     else
                     {
@@ -46,7 +46,7 @@ namespace DBInstrumentEditor
                     if (!DateTime.TryParse(Console.ReadLine(), out dateTo))
                     {
                         Console.WriteLine(" Error parsing date.");
-                        return;
+                        continue;
                     }
                     else
                     {
@@ -56,14 +56,14 @@ namespace DBInstrumentEditor
                     if (dateFrom > dateTo)
                     {
                         Console.WriteLine(" Invalid dates.");
-                        return;
+                        continue;
                     }
                     var data = (new FuturesDownloader()).LoadFinamData(ticker, 5, marketCode, insCode, dateFrom, dateFrom.AddDays(14));
                     if (!data.Any())
                     {
                         Console.WriteLine(" No data avaliable.");
                         Console.ReadLine();
-                        return;
+                        continue;
                     }
 
                     foreach (var str in data)
@@ -89,8 +89,9 @@ namespace DBInstrumentEditor
                         currIns.Items.Add(new Items() { DateFrom = dateFrom, DateTo = dateTo, MarketCode = marketCode, Ticker = ticker, InstrumentCode = insCode, Period = i });
                     Console.WriteLine(string.Format(" Are you sure you want to add {0} to instrument {1} from {2} to {3}? [y/n]", ticker, instrumentToEdit, dateFrom, dateTo));
                     var ans = Console.ReadKey();
+                    Console.WriteLine();
                     if ((ans.KeyChar != 'Y') && (ans.KeyChar != 'y'))
-                        return;
+                        continue;
                     try
                     {
                         context.SaveChanges();
@@ -99,10 +100,9 @@ namespace DBInstrumentEditor
                     {
                         Console.WriteLine(ex);
                     }
-
-                    new DBActualizer().ActualizeDB();
+                    
                     Console.WriteLine();
-                    Console.WriteLine("Success. ");
+                    Console.WriteLine(" Success. ");
                     Console.ReadLine();
                 }
             }

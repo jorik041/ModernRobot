@@ -55,7 +55,7 @@ namespace Calculator.Calculation
 
         public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss)
         {
-            var order = CalculationOrder.CreateNew("SI", dateFrom, dateTo, period, parameters);
+            var order = CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters);
             order.StopLoss = stopLoss;
             _ordersQueue.Enqueue(order);
             return order.Id;
