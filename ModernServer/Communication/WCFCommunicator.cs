@@ -17,7 +17,7 @@ namespace ModernServer.Communication
         private static List<RemoteCalculation> _remoteCalculators = new List<RemoteCalculation>();
 
         private DBDataReader _reader = new DBDataReader();
-        private readonly IStrategy[] _avaliableStrategies = { new FortsBasic(), new FortsMultiplied() };
+        private readonly IStrategy[] _avaliableStrategies = { new FortsBasic(), new FortsMultiplied(), new FortsMultipliedInverted() };
         private List<Guid> _startedCalcIds = new List<Guid>();
         private int[] _collector;
 

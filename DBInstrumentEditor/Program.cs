@@ -16,6 +16,7 @@ namespace DBInstrumentEditor
             Console.Title = "DB Instruments editor";
             Console.WriteLine(string.Format(" DB Instruments editor v. {0}", Assembly.GetExecutingAssembly().GetName().Version));
             Console.WriteLine();
+            //new DBActualizer().ActualizeDB();
             using (var context = new DatabaseContainer())
             {
                 Console.WriteLine(string.Format(" Connected to database {0}.", context.Database.Connection.Database));

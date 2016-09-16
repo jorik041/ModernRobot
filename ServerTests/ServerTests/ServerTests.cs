@@ -22,7 +22,7 @@ namespace ServerTests
                 {
                     Thread.Sleep(100);
                 }
-                Assert.AreEqual(24897, pool.FinishedOrders[0].TotalBalance);
+                Assert.AreEqual(25056, pool.FinishedOrders[0].TotalBalance);
                 pool.GetFinishedOrderResults(pool.FinishedOrders[0].Id);
                 Assert.AreEqual(pool.FinishedOrders[0].Result.Balances.Count(), pool.FinishedOrders[0].Result.OutData.Count());
                 pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.FifteenMinutes, new float[] { 10, 5, 50, 1, 8 }, 0);
@@ -31,7 +31,7 @@ namespace ServerTests
                 {
                     Thread.Sleep(100);
                 }
-                Assert.AreEqual(4882, pool.FinishedOrders[1].TotalBalance);
+                Assert.AreEqual(4227, pool.FinishedOrders[1].TotalBalance);
                 Assert.AreEqual(pool.FinishedOrders[1].Result.Balances.Count(), pool.FinishedOrders[1].Result.OutData.Count());
                 pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.Minute, new float[] { 10, 5, 50, 1, 8 }, 0);
                 pool.ProcessOrders();
@@ -39,7 +39,7 @@ namespace ServerTests
                 {
                     Thread.Sleep(100);
                 }
-                Assert.AreEqual(27730, pool.FinishedOrders[2].TotalBalance);
+                Assert.AreEqual(28535, pool.FinishedOrders[2].TotalBalance);
                 Assert.AreEqual(pool.FinishedOrders[2].Result.Balances.Count(), pool.FinishedOrders[2].Result.OutData.Count());
             }
         }

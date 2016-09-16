@@ -18,24 +18,10 @@
             <Button Margin="3" Content="Запустить" Command="{Binding RunCalculation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Margin="3" Content="Удалить" Command="{Binding DeleteCalculation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
-        <StackPanel Grid.Row="0" Margin="5" VerticalAlignment="Center" Grid.Column="1" Orientation="Vertical">
-            <TextBlock Foreground="Gray" Text="Доступные инструменты:"/>
-            <ItemsControl ItemsSource="{Binding ActualizedInstruments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Foreground="Gray">
-                                <Run FontWeight="SemiBold" Text="{Binding Name}"/>
-                                <Run Text=" с "/>
-                                <Run Text="{Binding DateFrom, StringFormat=d}"/>
-                                <Run Text=" по "/>
-                                <Run Text="{Binding DateTo, StringFormat=d}"/>
-                            </TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+        <TextBlock Grid.Row="0" Grid.Column="1" FontSize="25" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Run Text="Modern" Foreground="LightGray"/>
+            <Run Text=" ROBOT" FontStyle="Italic" FontWeight="SemiBold" Foreground="SteelBlue"/>
+        </TextBlock>
         <Grid Grid.Row="1" Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -122,6 +108,24 @@
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" >
                 <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Margin="3" Content="Очистить" Command="{Binding ClearNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="8" Margin="5" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical">
+                <TextBlock Foreground="Gray" Text="Доступные инструменты:"/>
+                <ItemsControl ItemsSource="{Binding ActualizedInstruments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Foreground="Gray">
+                                <Run FontWeight="SemiBold" Text="{Binding Name}"/>
+                                <Run Text=" с "/>
+                                <Run Text="{Binding DateFrom, StringFormat=d}"/>
+                                <Run Text=" по "/>
+                                <Run Text="{Binding DateTo, StringFormat=d}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </Grid>
         <ListBox MouseLeftButtonUp="ListBox_MouseLeftButtonUp" Margin="5" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Calculators, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedCalc, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
