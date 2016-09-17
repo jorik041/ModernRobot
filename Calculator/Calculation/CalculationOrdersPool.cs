@@ -173,7 +173,8 @@ namespace Calculator.Calculation
                     var data = tc.GetRange(i - strategy.AnalysisDataLength + 1, strategy.AnalysisDataLength).ToArray();
                     object[] outData;
                     var result = strategy.Analyze(data, out outData);
-                    if (i == tc.Count - 1)
+
+                    if ((i == tc.Count - 1) || ((tc[i].DateTimeStamp.Hour > 0) && (tc[i].DateTimeStamp.Hour < 9)))
                         result = StrategyResult.Exit;
 
                     if (lastResult != result)

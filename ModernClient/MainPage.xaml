@@ -20,7 +20,7 @@
         </StackPanel>
         <TextBlock Grid.Row="0" Grid.Column="1" FontSize="25" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Run Text="Modern" Foreground="LightGray"/>
-            <Run Text=" ROBOT" FontStyle="Italic" FontWeight="SemiBold" Foreground="SteelBlue"/>
+            <Run Text="ROBOT" FontStyle="Italic" FontWeight="SemiBold" Foreground="SteelBlue"/>
         </TextBlock>
         <Grid Grid.Row="1" Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>
