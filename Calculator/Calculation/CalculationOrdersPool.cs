@@ -20,6 +20,9 @@ namespace Calculator.Calculation
         private ConcurrentQueue<CalculationOrder> _ordersQueue = new ConcurrentQueue<CalculationOrder>();
         private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
 
+        private const int nightHoursStart = 23;
+        private const int nightHoursEnd = 9;
+
         public bool IsProcessingOrders { get; private set; }
 
         public void Lock()
@@ -53,10 +56,11 @@ namespace Calculator.Calculation
             }
         }
 
-        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss)
+        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss, bool ignoreNightCandles)
         {
             var order = CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters);
             order.StopLoss = stopLoss;
+            order.IgnoreNightCandles = ignoreNightCandles;
             _ordersQueue.Enqueue(order);
             return order.Id;
         }
@@ -119,6 +123,10 @@ namespace Calculator.Calculation
                 return;
             }
             var candles = _reader.GetCandles(order.InstrumentName, order.Period, datefrom, order.DateTo);
+
+            if (order.IgnoreNightCandles)
+                candles = candles.Where(o => o.DateTimeStamp.Hour <= nightHoursStart && o.DateTimeStamp.Hour >= nightHoursEnd).ToArray();
+
             var tickers = candles.Select(o => o.Ticker).Distinct()
                 .OrderBy(o => candles.Where(c => c.Ticker == o).Max(d => d.DateTimeStamp)).ToArray();
             var strategy = (IStrategy)Activator.CreateInstance(_strategyType);
@@ -174,7 +182,7 @@ namespace Calculator.Calculation
                     object[] outData;
                     var result = strategy.Analyze(data, out outData);
 
-                    if ((i == tc.Count - 1) || ((tc[i].DateTimeStamp.Hour > 0) && (tc[i].DateTimeStamp.Hour < 9)))
+                    if ((i == tc.Count - 1) || ((tc[i].DateTimeStamp.Hour == nightHoursStart) && (order.IgnoreNightCandles)))
                         result = StrategyResult.Exit;
 
                     if (lastResult != result)

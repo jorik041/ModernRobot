@@ -78,6 +78,7 @@
         <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/DBAccess" minOccurs="0" name="period" type="q7:TimePeriods" />
         <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="parameters" nillable="true" type="q8:ArrayOffloat" />
         <xs:element minOccurs="0" name="stopLoss" type="xs:float" />
+        <xs:element minOccurs="0" name="ignoreNightCandles" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -96,6 +97,7 @@
         <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/DBAccess" minOccurs="0" name="period" type="q10:TimePeriods" />
         <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" minOccurs="0" name="parameters" nillable="true" type="q11:ArrayOfFromToValue" />
         <xs:element minOccurs="0" name="stopLoss" type="xs:float" />
+        <xs:element minOccurs="0" name="ignoreNightCandles" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

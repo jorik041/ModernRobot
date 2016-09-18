@@ -47,7 +47,7 @@ namespace ModernClient
             {
                 if (e.Key < Key.NumPad0 || e.Key > Key.NumPad9)
                 {
-                    if (e.Key != Key.Back)
+                    if ((e.Key != Key.Back))
                     {
                         e.Handled = true;
                     }
@@ -67,5 +67,6 @@ namespace ModernClient
             _lastClickTime = DateTime.Now;
             _lastSelectedIndex = ((ListBox)sender).SelectedIndex;
         }
+
     }
 }

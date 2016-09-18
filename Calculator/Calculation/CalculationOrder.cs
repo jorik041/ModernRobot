@@ -33,6 +33,9 @@ namespace Calculator.Calculation
         [DataMember]
         public float Gap { get; set; }
 
+        [DataMember]
+        public bool IgnoreNightCandles { get; set; }
+
         public CalculationResult Result { get; internal set; }
         
 

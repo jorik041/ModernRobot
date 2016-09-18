@@ -55,6 +55,20 @@ namespace ModernClient.ViewModels
         private float _stopLossHigh=1000;
         private float _stopLossIncrement=50;
         private bool _useStopLoss;
+        private bool _ignoreNightCandles;
+
+        public bool IgnoreNightCandles
+        {
+            get
+            {
+                return _ignoreNightCandles;
+            }
+            set
+            {
+                _ignoreNightCandles = value;
+                OnPropertyChanged("IgnoreNightCandles");
+            }
+        }
 
         public float StopLossLow
         {
@@ -460,7 +474,7 @@ namespace ModernClient.ViewModels
 
         public void AddCalc()
         {
-            if (StopLossIncrement<1 || StopLossLow > StopLossHigh || StopLossHigh<1 ||  
+            if (StopLossIncrement < 0 || StopLossLow > StopLossHigh || StopLossHigh<1 ||  
                 (string.IsNullOrWhiteSpace(NewCalculationName) || 
                 SelectedStrategyParameters.Any(p => p.From == null || p.To == null || 
                 p.From == 0 || p.To == 0 || p.To < p.From)))
@@ -479,11 +493,11 @@ namespace ModernClient.ViewModels
             if (UseStopLoss)
             {
                 for (var i = StopLossLow; i < StopLossHigh; i = i + StopLossIncrement)
-                    _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), i);
+                    _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), i, IgnoreNightCandles);
             }
             else
             {
-                _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), 0);
+                _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), 0, IgnoreNightCandles);
             }
             SelectedContent = new MainPage();
         }

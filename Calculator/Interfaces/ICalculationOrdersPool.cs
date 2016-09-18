@@ -8,7 +8,7 @@ namespace Calculator.Calculation
     {
         CalculationOrder[] FinishedOrders { get; }
         int WaitingOrdersCount { get; }
-        Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss);
+        Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss, bool ignoreNightCandles);
         void ProcessOrders();
         bool IsProcessingOrders { get; }
         void GetFinishedOrderResults(Guid orderId);

@@ -81,15 +81,15 @@ namespace ModernServer.Communication
                 _remoteCalculators.Remove(rCalc);
         }
 
-        public void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss)
+        public void AddOrderToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss, bool ignoreNightCandles)
         {
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
             if (rc == null)
                 return;
-            rc.OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters, stopLoss);
+            rc.OrdersPool.AddNewOrderForCalculation(insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles);
         }
 
-        private void CreateOrdersForMultipleParams(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss, int num = 0)
+        private void CreateOrdersForMultipleParams(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss, bool ignoreNightCandles, int num = 0)
         {
             _collector[num] = (int)parameters[num].From - 1;
             while (_collector[num] < parameters[num].To)
@@ -100,14 +100,14 @@ namespace ModernServer.Communication
                     newVal[i] = _collector[i];
                 if (num == _collector.Count() - 1)
                 {
-                    AddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, newVal, stopLoss);
+                    AddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, newVal, stopLoss, ignoreNightCandles);
                 }
                 if (num < _collector.Count() - 1)
-                    CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, num + 1);
+                    CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, num + 1);
             }
         }
 
-        public void AddOrdersToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss)
+        public void AddOrdersToRemoteCalulation(Guid idCalculation, string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, FromToValue[] parameters, float stopLoss, bool ignoreNightCandles)
         {
             var rc = _remoteCalculators.Single(o => o.Id == idCalculation);
             if (rc == null)
@@ -116,7 +116,7 @@ namespace ModernServer.Communication
             {
                 _collector = new int[parameters.Count()];
                 rc.OrdersPool.Lock();
-                CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss);
+                CreateOrdersForMultipleParams(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles);
             }
             catch (Exception ex)
             {
