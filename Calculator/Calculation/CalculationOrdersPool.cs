@@ -21,7 +21,7 @@ namespace Calculator.Calculation
         private List<CalculationOrder> _finishedOrders = new List<CalculationOrder>();
 
         private const int nightHoursStart = 23;
-        private const int nightHoursEnd = 9;
+        private const int nightHoursEnd = 10;
 
         public bool IsProcessingOrders { get; private set; }
 

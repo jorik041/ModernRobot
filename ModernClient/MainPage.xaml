@@ -56,7 +56,7 @@
             <TextBlock VerticalAlignment="Center" Text="Дата до:" Grid.Column="0" Grid.Row="5"/>
             <sdk:DatePicker Grid.Column="1" Grid.Row="4" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <sdk:DatePicker Grid.Column="1" Grid.Row="5" Margin="3" DisplayDateStart="{Binding DisplayDateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDateEnd="{Binding DisplayDateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDate="{Binding DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Content="Только дневные свечи (9:00 - 23:00)" Margin="3" IsChecked="{Binding IgnoreNightCandles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Content="Только дневные свечи" Margin="3" IsChecked="{Binding IgnoreNightCandles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <sdk:TabControl Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="250">
             <sdk:TabItem Header="Параметры">
             <ScrollViewer BorderThickness="0" VerticalScrollBarVisibility="Auto">
