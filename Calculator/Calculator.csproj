@@ -52,8 +52,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategies\FortsBasicInv.cs" />
     <Compile Include="Strategies\FortsBasic.cs" />
-    <Compile Include="Strategies\FORTSMultipliedInv.cs" />
-    <Compile Include="Strategies\FORTSMultiplied.cs" />
     <Compile Include="Strategies\StrategyParameter.cs" />
     <Compile Include="Strategies\StrategyResult.cs" />
   </ItemGroup>

@@ -141,6 +141,7 @@ namespace Calculator.Calculation
             var lotSize = 0;
             var lastPrice = 0f;
             var stopPrice = 0f;
+            var gapValue = float.MinValue;
 
             foreach (var ticker in tickers)
             {
@@ -260,6 +261,9 @@ namespace Calculator.Calculation
                     outList.Add(balance);
                     if (saveResults)
                         outDatas.Add(outList.ToArray());
+                    var maxBalance = balancesPerDeal.Max();
+                    if (gapValue < maxBalance - balancesPerDeal.Last())
+                        gapValue = maxBalance - balancesPerDeal.Last();
                 }
                 strategy.OnStopLossChanged -= stopLossChanged;
             }
@@ -273,21 +277,7 @@ namespace Calculator.Calculation
                 outDataDescription.Add("STOPPED");
                 outDataDescription.Add("Balance per deal");
             }
-
-            var gapValue = float.MinValue;
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            for (var i=1; i< balancesPerDeal.Count() - 1; i++)
-            {
-                var max = balancesPerDeal.Take(i).Max();
-                var min = balancesPerDeal.Skip(i).Min();
-                gapValue = gapValue < max - min ? max - min : gapValue;
-            }
-
-            sw.Stop();
-            var el = sw.Elapsed;
+            
 
             if (!saveResults)
                 balances.Clear();
