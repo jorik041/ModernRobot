@@ -56,11 +56,13 @@ namespace Calculator.Calculation
             }
         }
 
-        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss, bool ignoreNightCandles)
+        public Guid AddNewOrderForCalculation(string insName, DateTime dateFrom, DateTime dateTo, TimePeriods period, float[] parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread)
         {
             var order = CalculationOrder.CreateNew(insName, dateFrom, dateTo, period, parameters);
             order.StopLoss = stopLoss;
             order.IgnoreNightCandles = ignoreNightCandles;
+            order.DaySpread = daySpread;
+            order.NightSpread = nightSpread;
             _ordersQueue.Enqueue(order);
             return order.Id;
         }
@@ -114,6 +116,11 @@ namespace Calculator.Calculation
             }
         }
 
+        private bool IsInDay(DateTime dateTimeStamp)
+        {
+            return (dateTimeStamp.Hour < nightHoursStart) && (dateTimeStamp.Hour >= nightHoursEnd);
+        }
+
         private void CalculateNextOrder(CalculationOrder order, bool saveResults = false)
         {
             var datefrom = order.DateFrom.AddMonths(-3);
@@ -142,6 +149,7 @@ namespace Calculator.Calculation
             var lastPrice = 0f;
             var stopPrice = 0f;
             var gapValue = float.MinValue;
+            float maxBalancePerDeal = float.MinValue;
 
             foreach (var ticker in tickers)
             {
@@ -188,11 +196,18 @@ namespace Calculator.Calculation
 
                     if (lastResult != result)
                     {
-                        balance = balance + priceDiff + lotSize * tc[i].Close;
+                        var closePrice = tc[i].Close;
+                        if (lastResult == StrategyResult.Long)
+                            closePrice = closePrice - (IsInDay(tc[i].DateTimeStamp) ? order.DaySpread : order.NightSpread);
+                        if (lastResult == StrategyResult.Short)
+                            closePrice = closePrice + (IsInDay(tc[i].DateTimeStamp) ? order.DaySpread : order.NightSpread);
+
+                        balance = balance + priceDiff + lotSize * closePrice;
+
                         if (result == StrategyResult.Long)
                         {
                             lotSize = 1;
-                            priceDiff = -tc[i].Close * lotSize;
+                            priceDiff = -(tc[i].Close + (IsInDay(tc[i].DateTimeStamp) ? order.DaySpread : order.NightSpread)) * lotSize;
                             if (order.StopLoss == 0)
                                 currentSL = 0;
                             else
@@ -201,7 +216,7 @@ namespace Calculator.Calculation
                         if (result == StrategyResult.Short)
                         {
                             lotSize = -1;
-                            priceDiff = tc[i].Close * (-lotSize);
+                            priceDiff = (tc[i].Close - (IsInDay(tc[i].DateTimeStamp) ? order.DaySpread : order.NightSpread)) * (-lotSize);
                             if (order.StopLoss == 0)
                                 currentSL = 0;
                             else
@@ -261,9 +276,10 @@ namespace Calculator.Calculation
                     outList.Add(balance);
                     if (saveResults)
                         outDatas.Add(outList.ToArray());
-                    var maxBalance = balancesPerDeal.Max();
-                    if (gapValue < maxBalance - balancesPerDeal.Last())
-                        gapValue = maxBalance - balancesPerDeal.Last();
+                    if (maxBalancePerDeal < balancesPerDeal.Last())
+                        maxBalancePerDeal = balancesPerDeal.Last();
+                    if (gapValue < maxBalancePerDeal - balancesPerDeal.Last())
+                        gapValue = maxBalancePerDeal - balancesPerDeal.Last();
                 }
                 strategy.OnStopLossChanged -= stopLossChanged;
             }

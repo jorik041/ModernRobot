@@ -16,7 +16,7 @@ namespace ServerTests
         {
             using (var pool = new CalculationOrdersPool(typeof(FortsBasic)))
             {
-                pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.Hour, new float[] { 10, 5, 1, 8}, 0, false);
+                pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.Hour, new float[] { 10, 5, 1, 8}, 0, false, 0, 0);
                 pool.ProcessOrders();
                 while (pool.FinishedOrders.Length != 1)
                 {
@@ -26,7 +26,7 @@ namespace ServerTests
                 Assert.AreEqual(5249, pool.FinishedOrders[0].Gap);
                 pool.GetFinishedOrderResults(pool.FinishedOrders[0].Id);
                 Assert.AreEqual(pool.FinishedOrders[0].Result.Balances.Count(), pool.FinishedOrders[0].Result.OutData.Count());
-                pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.FifteenMinutes, new float[] { 10, 5, 1, 8 }, 0, false);
+                pool.AddNewOrderForCalculation("SI", new DateTime(2015, 1, 1), new DateTime(2015, 6, 1), TimePeriods.FifteenMinutes, new float[] { 10, 5, 1, 8 }, 0, false, 0, 0);
                 pool.ProcessOrders();
                 while (pool.FinishedOrders.Length != 2)
                 {

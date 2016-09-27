@@ -32,9 +32,12 @@ namespace Calculator.Calculation
         public float StopLoss { get; set; }
         [DataMember]
         public float Gap { get; set; }
-
         [DataMember]
         public bool IgnoreNightCandles { get; set; }
+        [DataMember]
+        public float NightSpread { get; set; }
+        [DataMember]
+        public float DaySpread { get; set; }
 
         public CalculationResult Result { get; internal set; }
         

@@ -287,6 +287,8 @@ namespace ModernClient.WCFCommunicator {
         
         private System.DateTime DateToField;
         
+        private float DaySpreadField;
+        
         private float GapField;
         
         private System.Guid IdField;
@@ -294,6 +296,8 @@ namespace ModernClient.WCFCommunicator {
         private bool IgnoreNightCandlesField;
         
         private string InstrumentNameField;
+        
+        private float NightSpreadField;
         
         private System.Collections.ObjectModel.ObservableCollection<float> ParametersField;
         
@@ -327,6 +331,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((this.DateToField.Equals(value) != true)) {
                     this.DateToField = value;
                     this.RaisePropertyChanged("DateTo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float DaySpread {
+            get {
+                return this.DaySpreadField;
+            }
+            set {
+                if ((this.DaySpreadField.Equals(value) != true)) {
+                    this.DaySpreadField = value;
+                    this.RaisePropertyChanged("DaySpread");
                 }
             }
         }
@@ -379,6 +396,19 @@ namespace ModernClient.WCFCommunicator {
                 if ((object.ReferenceEquals(this.InstrumentNameField, value) != true)) {
                     this.InstrumentNameField = value;
                     this.RaisePropertyChanged("InstrumentName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public float NightSpread {
+            get {
+                return this.NightSpreadField;
+            }
+            set {
+                if ((this.NightSpreadField.Equals(value) != true)) {
+                    this.NightSpreadField = value;
+                    this.RaisePropertyChanged("NightSpread");
                 }
             }
         }
@@ -559,12 +589,12 @@ namespace ModernClient.WCFCommunicator {
         void EndRemoveRemoteCalculation(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulation", ReplyAction="http://tempuri.org/IWCFCommunicator/AddOrderToRemoteCalulationResponse")]
-        System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, System.AsyncCallback callback, object asyncState);
         
         void EndAddOrderToRemoteCalulation(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulation", ReplyAction="http://tempuri.org/IWCFCommunicator/AddOrdersToRemoteCalulationResponse")]
-        System.IAsyncResult BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, System.AsyncCallback callback, object asyncState);
         
         void EndAddOrdersToRemoteCalulation(System.IAsyncResult result);
         
@@ -1180,8 +1210,8 @@ namespace ModernClient.WCFCommunicator {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, callback, asyncState);
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, daySpread, nightSpread, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1198,7 +1228,9 @@ namespace ModernClient.WCFCommunicator {
             System.Collections.ObjectModel.ObservableCollection<float> parameters = ((System.Collections.ObjectModel.ObservableCollection<float>)(inValues[5]));
             float stopLoss = ((float)(inValues[6]));
             bool ignoreNightCandles = ((bool)(inValues[7]));
-            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, callback, asyncState);
+            float daySpread = ((float)(inValues[8]));
+            float nightSpread = ((float)(inValues[9]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrderToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, daySpread, nightSpread, callback, asyncState);
         }
         
         private object[] OnEndAddOrderToRemoteCalulation(System.IAsyncResult result) {
@@ -1213,11 +1245,11 @@ namespace ModernClient.WCFCommunicator {
             }
         }
         
-        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles) {
-            this.AddOrderToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, null);
+        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread) {
+            this.AddOrderToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, daySpread, nightSpread, null);
         }
         
-        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, object userState) {
+        public void AddOrderToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, object userState) {
             if ((this.onBeginAddOrderToRemoteCalulationDelegate == null)) {
                 this.onBeginAddOrderToRemoteCalulationDelegate = new BeginOperationDelegate(this.OnBeginAddOrderToRemoteCalulation);
             }
@@ -1235,12 +1267,14 @@ namespace ModernClient.WCFCommunicator {
                         period,
                         parameters,
                         stopLoss,
-                        ignoreNightCandles}, this.onEndAddOrderToRemoteCalulationDelegate, this.onAddOrderToRemoteCalulationCompletedDelegate, userState);
+                        ignoreNightCandles,
+                        daySpread,
+                        nightSpread}, this.onEndAddOrderToRemoteCalulationDelegate, this.onAddOrderToRemoteCalulationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddOrdersToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, callback, asyncState);
+        System.IAsyncResult ModernClient.WCFCommunicator.IWCFCommunicator.BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddOrdersToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, daySpread, nightSpread, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1257,7 +1291,9 @@ namespace ModernClient.WCFCommunicator {
             System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters = ((System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue>)(inValues[5]));
             float stopLoss = ((float)(inValues[6]));
             bool ignoreNightCandles = ((bool)(inValues[7]));
-            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrdersToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, callback, asyncState);
+            float daySpread = ((float)(inValues[8]));
+            float nightSpread = ((float)(inValues[9]));
+            return ((ModernClient.WCFCommunicator.IWCFCommunicator)(this)).BeginAddOrdersToRemoteCalulation(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, daySpread, nightSpread, callback, asyncState);
         }
         
         private object[] OnEndAddOrdersToRemoteCalulation(System.IAsyncResult result) {
@@ -1272,11 +1308,11 @@ namespace ModernClient.WCFCommunicator {
             }
         }
         
-        public void AddOrdersToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles) {
-            this.AddOrdersToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, null);
+        public void AddOrdersToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread) {
+            this.AddOrdersToRemoteCalulationAsync(idCalculation, insName, dateFrom, dateTo, period, parameters, stopLoss, ignoreNightCandles, daySpread, nightSpread, null);
         }
         
-        public void AddOrdersToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, object userState) {
+        public void AddOrdersToRemoteCalulationAsync(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, object userState) {
             if ((this.onBeginAddOrdersToRemoteCalulationDelegate == null)) {
                 this.onBeginAddOrdersToRemoteCalulationDelegate = new BeginOperationDelegate(this.OnBeginAddOrdersToRemoteCalulation);
             }
@@ -1294,7 +1330,9 @@ namespace ModernClient.WCFCommunicator {
                         period,
                         parameters,
                         stopLoss,
-                        ignoreNightCandles}, this.onEndAddOrdersToRemoteCalulationDelegate, this.onAddOrdersToRemoteCalulationCompletedDelegate, userState);
+                        ignoreNightCandles,
+                        daySpread,
+                        nightSpread}, this.onEndAddOrdersToRemoteCalulationDelegate, this.onAddOrdersToRemoteCalulationCompletedDelegate, userState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1759,8 +1797,8 @@ namespace ModernClient.WCFCommunicator {
                 base.EndInvoke("RemoveRemoteCalculation", _args, result);
             }
             
-            public System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[8];
+            public System.IAsyncResult BeginAddOrderToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<float> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[10];
                 _args[0] = idCalculation;
                 _args[1] = insName;
                 _args[2] = dateFrom;
@@ -1769,6 +1807,8 @@ namespace ModernClient.WCFCommunicator {
                 _args[5] = parameters;
                 _args[6] = stopLoss;
                 _args[7] = ignoreNightCandles;
+                _args[8] = daySpread;
+                _args[9] = nightSpread;
                 System.IAsyncResult _result = base.BeginInvoke("AddOrderToRemoteCalulation", _args, callback, asyncState);
                 return _result;
             }
@@ -1778,8 +1818,8 @@ namespace ModernClient.WCFCommunicator {
                 base.EndInvoke("AddOrderToRemoteCalulation", _args, result);
             }
             
-            public System.IAsyncResult BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, System.AsyncCallback callback, object asyncState) {
-                object[] _args = new object[8];
+            public System.IAsyncResult BeginAddOrdersToRemoteCalulation(System.Guid idCalculation, string insName, System.DateTime dateFrom, System.DateTime dateTo, ModernClient.WCFCommunicator.TimePeriods period, System.Collections.ObjectModel.ObservableCollection<ModernClient.WCFCommunicator.FromToValue> parameters, float stopLoss, bool ignoreNightCandles, float daySpread, float nightSpread, System.AsyncCallback callback, object asyncState) {
+                object[] _args = new object[10];
                 _args[0] = idCalculation;
                 _args[1] = insName;
                 _args[2] = dateFrom;
@@ -1788,6 +1828,8 @@ namespace ModernClient.WCFCommunicator {
                 _args[5] = parameters;
                 _args[6] = stopLoss;
                 _args[7] = ignoreNightCandles;
+                _args[8] = daySpread;
+                _args[9] = nightSpread;
                 System.IAsyncResult _result = base.BeginInvoke("AddOrdersToRemoteCalulation", _args, callback, asyncState);
                 return _result;
             }

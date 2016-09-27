@@ -79,6 +79,8 @@
         <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="parameters" nillable="true" type="q8:ArrayOffloat" />
         <xs:element minOccurs="0" name="stopLoss" type="xs:float" />
         <xs:element minOccurs="0" name="ignoreNightCandles" type="xs:boolean" />
+        <xs:element minOccurs="0" name="daySpread" type="xs:float" />
+        <xs:element minOccurs="0" name="nightSpread" type="xs:float" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -98,6 +100,8 @@
         <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/ModernServer.WCFEntities" minOccurs="0" name="parameters" nillable="true" type="q11:ArrayOfFromToValue" />
         <xs:element minOccurs="0" name="stopLoss" type="xs:float" />
         <xs:element minOccurs="0" name="ignoreNightCandles" type="xs:boolean" />
+        <xs:element minOccurs="0" name="daySpread" type="xs:float" />
+        <xs:element minOccurs="0" name="nightSpread" type="xs:float" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

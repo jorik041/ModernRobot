@@ -56,6 +56,9 @@ namespace ModernClient.ViewModels
         private float _stopLossIncrement=50;
         private bool _useStopLoss;
         private bool _ignoreNightCandles;
+        private bool _useSpreads;
+        private float _nightSpread = 0.1f;
+        private float _daySpread = 0.014f;
 
         public bool IgnoreNightCandles
         {
@@ -358,6 +361,45 @@ namespace ModernClient.ViewModels
             }
         }
 
+        public bool UseSpreads
+        {
+            get
+            {
+                return _useSpreads;
+            }
+            set
+            {
+                _useSpreads = value;
+                OnPropertyChanged("UseSpreads");
+            }
+        }
+
+        public float DaySpread
+        {
+            get
+            {
+                return _daySpread;
+            }
+            set
+            {
+                _daySpread = value;
+                OnPropertyChanged("DaySpread");
+            }
+        }
+
+        public float NightSpread
+        {
+            get
+            {
+                return _nightSpread;
+            }
+            set
+            {
+                _nightSpread = value;
+                OnPropertyChanged("NightSpread");
+            }
+        }
+
         public void UpdateCommandBindings()
         {
             RunCalculation.RaiseCanExecuteChanged();
@@ -493,11 +535,11 @@ namespace ModernClient.ViewModels
             if (UseStopLoss)
             {
                 for (var i = StopLossLow; i < StopLossHigh; i = i + StopLossIncrement)
-                    _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), i, IgnoreNightCandles);
+                    _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), i, IgnoreNightCandles, UseSpreads ? DaySpread : 0, UseSpreads ? NightSpread : 0);
             }
             else
             {
-                _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), 0, IgnoreNightCandles);
+                _client.AddOrdersToRemoteCalulationAsync(e.Result.Id, SelectedInstrument.Name, DateFrom, DateTo, SelectedPeriod, new ObservableCollection<FromToValue>(SelectedStrategyParameters.Select(o => new FromToValue() { From = (float)o.From, To = (float)o.To })), 0, IgnoreNightCandles, UseSpreads ? DaySpread : 0, UseSpreads ? NightSpread : 0);
             }
             SelectedContent = new MainPage();
         }

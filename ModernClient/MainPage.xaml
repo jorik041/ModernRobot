@@ -107,6 +107,24 @@
                         <TextBox IsEnabled="{Binding UseStopLoss, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp" TextAlignment="Center" HorizontalContentAlignment="Center" Margin="3" MinWidth="150" Grid.Column="1" Grid.Row="3" Text="{Binding StopLossHigh, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                     </Grid>
                 </sdk:TabItem>
+                <sdk:TabItem Header="Спреды">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" Content="Учитывать спред" IsChecked="{Binding UseSpreads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock VerticalAlignment="Center" Margin="3" Text="Дневной спред:" Grid.Row="1" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Margin="3" Text="Ночной спред:" Grid.Row="2" Grid.Column="0"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="3" IsEnabled="{Binding UseSpreads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding DaySpread, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Margin="3" IsEnabled="{Binding UseSpreads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="{Binding NightSpread, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" KeyDown="Numclient_KeyDown" KeyUp="Numclient_KeyUp"/>
+                    </Grid>
+                </sdk:TabItem>
             </sdk:TabControl>
             <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="2" >
                 <Button Margin="3" Content="Добавить расчет" Command="{Binding AddNewCalculation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
