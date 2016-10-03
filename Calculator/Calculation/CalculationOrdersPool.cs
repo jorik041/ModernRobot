@@ -241,7 +241,7 @@ namespace Calculator.Calculation
                             if (result == StrategyResult.Long)
                                 if (tc[i].Close <= currentSL)
                                 {
-                                    balance = balance + priceDiff + lotSize * tc[i].Close;
+                                    balance = balance + priceDiff + lotSize * (tc[i].Close - (IsInDay(tc[i].DateTimeStamp) ? order.DaySpread : order.NightSpread));
                                     currentSL = 0;
                                     priceDiff = 0;
                                     lotSize = 0;
@@ -250,7 +250,7 @@ namespace Calculator.Calculation
                             if (result == StrategyResult.Short)
                                 if (tc[i].Close >= currentSL)
                                 {
-                                    balance = balance + priceDiff + lotSize * tc[i].Close;
+                                    balance = balance + priceDiff + lotSize * (tc[i].Close + (IsInDay(tc[i].DateTimeStamp) ? order.DaySpread : order.NightSpread));
                                     currentSL = 0;
                                     priceDiff = 0;
                                     lotSize = 0;
@@ -276,10 +276,13 @@ namespace Calculator.Calculation
                     outList.Add(balance);
                     if (saveResults)
                         outDatas.Add(outList.ToArray());
-                    if (maxBalancePerDeal < balancesPerDeal.Last())
-                        maxBalancePerDeal = balancesPerDeal.Last();
-                    if (gapValue < maxBalancePerDeal - balancesPerDeal.Last())
-                        gapValue = maxBalancePerDeal - balancesPerDeal.Last();
+                    if (balancesPerDeal.Any())
+                    {
+                        if (maxBalancePerDeal < balancesPerDeal.Last())
+                            maxBalancePerDeal = balancesPerDeal.Last();
+                        if (gapValue < maxBalancePerDeal - balancesPerDeal.Last())
+                            gapValue = maxBalancePerDeal - balancesPerDeal.Last();
+                    }
                 }
                 strategy.OnStopLossChanged -= stopLossChanged;
             }

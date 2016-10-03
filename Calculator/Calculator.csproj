@@ -47,9 +47,15 @@
     <Compile Include="Calculation\CalculationOrdersPool.cs" />
     <Compile Include="Calculation\CalculationOrderStatus.cs" />
     <Compile Include="Calculation\CalculationResult.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
+    <Compile Include="Helpers\Point.cs" />
     <Compile Include="Interfaces\ICalculationOrdersPool.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategies\FortsMultipliedInv.cs" />
+    <Compile Include="Strategies\FortsMultiplied.cs" />
+    <Compile Include="Strategies\SimpleTrendInv.cs" />
+    <Compile Include="Strategies\SimpleTrend.cs" />
     <Compile Include="Strategies\FortsBasicInv.cs" />
     <Compile Include="Strategies\FortsBasic.cs" />
     <Compile Include="Strategies\StrategyParameter.cs" />
