@@ -28,4 +28,4 @@ Plans for future:
 3) Real market trading driver (Alfa-Direct integration planned)
 4) Real trading realization on server.
 
-Please, use this code for your needs on your own risk.
+Please, use this code for your needs at your own risk.
