@@ -19,12 +19,12 @@ Contents of WCF server part:
 Contents of client part:
 1) DBEditor. A simple application that allows to add a new instrument to DB 
 for next actualization (see instrument settings on finam.ru or in link description downloader module). Stable.
-2) Silverlight testing module. Client application to get data and run tests on server. Stable. NO LONGER USED. 
+2) Silverlight testing module. Client application to get data and test trading strategies on server. Stable. NO LONGER USED. 
 Will be rewritten on ASP.NET.
 
 Plans for future:
 1) New client part on ASP.NET and minor bug fixes.
-2) APPLY machine learning algorithms on sock data to develop new trading strategies.
+2) APPLY machine learning algorithms on stock data to develop new trading strategies.
 3) Real market trading driver (Alfa-Direct integration planned)
 4) Real trading realization on server.
 
