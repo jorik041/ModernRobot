@@ -1,7 +1,7 @@
 # ModernRobot
 Modern Trading System
 
-This repository contains files for Modern Trading Sysstem.
+This repository contains files for Modern Trading System.
 
 The idea is to build a stock data database that actualizes prices every day and uses them for calculations and real trading.
 There is a multithread WCF server connected to MS SQL database and a client parts of this software.
